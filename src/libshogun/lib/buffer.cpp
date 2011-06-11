@@ -12,12 +12,14 @@
 
 using namespace shogun;
 
-ParseBuffer::ParseBuffer(int32_t size)
+template <class T>
+ParseBuffer<T>::ParseBuffer(int32_t size)
 {
 	int32_t buffer_size_features=size*1024*1024;
 	buffer_size=100;		// HACK!
-	ex_buff=new example[buffer_size];
-	fv_buff=new float64_t[buffer_size_features/sizeof(float64_t)];
+	ex_buff=new example<T>[buffer_size];
+	printf("initializing fv_buff with size: %d\n", buffer_size_features);
+	fv_buff=new T[buffer_size_features/sizeof(T)];
 	ex_used=new E_IS_EXAMPLE_USED[buffer_size];
 	
 	ex_in_use_mutex=new pthread_mutex_t[buffer_size];
@@ -36,7 +38,8 @@ ParseBuffer::ParseBuffer(int32_t size)
 	}
 }
 
-ParseBuffer::~ParseBuffer()
+template <class T>
+ParseBuffer<T>::~ParseBuffer()
 {
 	delete[] ex_buff;
 	delete[] fv_buff;
@@ -49,18 +52,21 @@ ParseBuffer::~ParseBuffer()
 	}
 }
 
-void ParseBuffer::inc_read_index()
+template <class T>
+void ParseBuffer<T>::inc_read_index()
 {
 	ex_read_index=(ex_read_index + 1) % buffer_size;
 }
 
-void ParseBuffer::inc_write_index(int32_t len)
+template <class T>
+void ParseBuffer<T>::inc_write_index(int32_t len)
 {
 	ex_write_index=(ex_write_index + 1) % buffer_size;
 	fv_write_index=fv_write_index + len;
 }
 
-int32_t ParseBuffer::write_example(example *ex)
+template <class T>
+int32_t ParseBuffer<T>::write_example(example<T> *ex)
 {
 	ex_buff[ex_write_index].label = ex->label;
 	ex_buff[ex_write_index].fv.vector = &fv_buff[fv_write_index];
@@ -81,9 +87,10 @@ int32_t ParseBuffer::write_example(example *ex)
 	return 1;					// Should check for size and return 0 if insufficient
 }
 
-example* ParseBuffer::get_example()
+template <class T>
+example<T>* ParseBuffer<T>::get_example()
 {
-	example* ex;
+	example<T>* ex;
 	
 	if (ex_read_index >= 0)
 	{
@@ -94,9 +101,10 @@ example* ParseBuffer::get_example()
 		return NULL;
 }
 
-example* ParseBuffer::fetch_example()
+template <class T>
+example<T>* ParseBuffer<T>::fetch_example()
 {
-	example *ex;
+	example<T> *ex;
 	int32_t current_index = ex_read_index;
 	// Because read index will change after get_example
 
@@ -110,8 +118,9 @@ example* ParseBuffer::fetch_example()
 	pthread_mutex_unlock(&ex_in_use_mutex[current_index]);
 	return ex;
 }
-	
-int32_t ParseBuffer::copy_example(example *ex)
+
+template <class T>
+int32_t ParseBuffer<T>::copy_example(example<T> *ex)
 {
 	// Check this mutex call.. It should probably be locked regardless of ex in use
 
@@ -133,7 +142,8 @@ int32_t ParseBuffer::copy_example(example *ex)
 	return ret;
 }
 
-void ParseBuffer::finalize_example()
+template <class T>
+void ParseBuffer<T>::finalize_example()
 {
 	pthread_mutex_lock(&ex_in_use_mutex[ex_read_index]);
 	ex_used[ex_read_index] = E_USED;

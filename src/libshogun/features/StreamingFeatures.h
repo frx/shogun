@@ -25,8 +25,8 @@ namespace shogun
  * i.e., With feature vectors which are floats.
  * Also, assumes file input.
  */
-	
-	class CStreamingFeatures: public CFeatures
+	template <class T>
+		class CStreamingFeatures
 	{
 		/** 
 		 * Initialize members.
@@ -163,7 +163,7 @@ namespace shogun
 		 * 
 		 * @return Vector of type SGVector<float64_t>.
 		 */
-		virtual SGVector<float64_t> get_vector();
+		virtual SGVector<T> get_vector();
 
 		/** 
 		 * Returns the label of the example obtained through fetch_example().
@@ -175,17 +175,99 @@ namespace shogun
 
 	protected:
 		
-		CInputParser parser;	/**< Parser object, to parse input data */
+		CInputParser<T> parser;	/**< Parser object, to parse input data */
 
 		CStreamingFile* working_file;
 
-		float64_t* current_feature_vector; /**< Feature vector last fetched */
+		T* current_feature_vector; /**< Feature vector last fetched */
 		float64_t current_label;	/**< Label of last fetched example */
 		int32_t current_length;	/**< Features in last fetched
-								 * example */
+					 * example */
 		bool has_labels; /**< Whether the examples are
-						  * labelled or not */
+				  * labelled or not */
 
 	};
+
+	template <class T>
+		void CStreamingFeatures<T>::init()
+	{
+		current_feature_vector = NULL;
+		working_file = NULL;
+		current_label = -1;
+		current_length = -1;
+	}
+
+	template <class T>
+		CStreamingFeatures<T>::CStreamingFeatures()
+	{
+		init();
+	}
+
+	template <class T>
+		CStreamingFeatures<T>::CStreamingFeatures(CStreamingFile* file, bool is_labelled, int32_t size)
+	{
+		init();
+		has_labels = is_labelled;
+		working_file = file;
+		parser.init(file, is_labelled, size);
+	}
+
+	template <class T>
+		CStreamingFeatures<T>::~CStreamingFeatures()
+	{
+		parser.end_parser();
+	}
+
+	template <class T>
+		void CStreamingFeatures<T>::start_parser()
+	{
+		// start parser in another thread
+		if (!parser.is_running())
+			parser.start_parser();
+	}
+
+	template <class T>
+		void CStreamingFeatures<T>::end_parser()
+	{
+		parser.end_parser();
+	}
+
+	template <class T>
+		int32_t CStreamingFeatures<T>::fetch_example()
+	{
+		int32_t ret_value;
+
+		ret_value = parser.get_next_example(current_feature_vector, current_length, current_label);
+
+		if (ret_value == 0)
+			return 0;
+
+		return ret_value;
+	}
+
+	template <class T>
+		SGVector<T> CStreamingFeatures<T>::get_vector()
+	{
+		SGVector<T> vec;
+		vec.vector=current_feature_vector;
+		vec.length=current_length;
+
+		return vec;
+	}
+
+	template <class T>
+		float64_t CStreamingFeatures<T>::get_label()
+	{
+		ASSERT(has_labels);
+	
+		return current_label;
+	}
+
+	template <class T>
+		void CStreamingFeatures<T>::release_example()
+	{
+		parser.finalize_example();
+	}
+
 }
 #endif	/* _STREAMINGFEATURES__H__ */

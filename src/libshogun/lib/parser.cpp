@@ -21,7 +21,7 @@ using namespace shogun;
 
 CInputParser::CInputParser()
 {
-	init(NULL, true, PARSER_DEFAULT_BUFFSIZE);
+	//init(NULL, true, PARSER_DEFAULT_BUFFSIZE);
 }
 
 CInputParser::~CInputParser()
@@ -68,19 +68,19 @@ void* CInputParser::parse_loop_entry_point(void* params)
 
 bool CInputParser::is_running()
 {
-    if (parsing_done)
+	if (parsing_done)
 		if (reading_done)
 			return false;
 		else
 			return true;
-    else
+	else
 		return false;
 }
 
 
 int32_t CInputParser::get_vector_and_label(float64_t* &feature_vector,
-										   int32_t &length,
-										   float64_t &label)
+					   int32_t &length,
+					   float64_t &label)
 {
 	input_source->get_real_vector(feature_vector, length);
 	/* The get_real_vector call should be replaced with
@@ -101,7 +101,7 @@ int32_t CInputParser::get_vector_and_label(float64_t* &feature_vector,
 }
 
 int32_t CInputParser::get_vector_only(float64_t* &feature_vector,
-									  int32_t &length)
+				      int32_t &length)
 {
 	input_source->get_real_vector(feature_vector, length);
 	/* The get_real_vector call should be replaced with

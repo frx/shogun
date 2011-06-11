@@ -25,7 +25,8 @@ namespace shogun
 		E_UNLABELLED = 2
 	};
 
-	class CInputParser
+	template <class T>
+		class CInputParser
 	{
 	public:
 
@@ -81,9 +82,9 @@ namespace shogun
 		 * @return 1 on success, 0 on failure.
 		 */
 		
-		int32_t get_vector_and_label(float64_t* &feature_vector,
-									 int32_t &length,
-									 float64_t &label);
+		int32_t get_vector_and_label(T* &feature_vector,
+					     int32_t &length,
+					     float64_t &label);
 
 		/**
 		 * Gets feature vector and length by reference.
@@ -95,7 +96,7 @@ namespace shogun
 		 *
 		 * @return 1 on success, 0 on failure
 		 */
-		int32_t get_vector_only(float64_t* &feature_vector, int32_t &length);
+		int32_t get_vector_only(T* &feature_vector, int32_t &length);
 
 		/**
 		 * Starts the parser, creating a new thread.
@@ -120,7 +121,7 @@ namespace shogun
 		 * 
 		 * @param ex Example to be copied.
 		 */
-		void copy_example_into_buffer(example* ex);
+		void copy_example_into_buffer(example<T>* ex);
 
 		/** 
 		 * Retrieves the next example from the buffer.
@@ -128,7 +129,7 @@ namespace shogun
 		 * 
 		 * @return The example pointer.
 		 */
-		example* retrieve_example();
+		example<T>* retrieve_example();
 		
 		/**
 		 * Gets the next example, assuming it to be labelled.
@@ -142,9 +143,9 @@ namespace shogun
 		 *
 		 * @return 1 if an example could be fetched, 0 otherwise
 		 */
-		int32_t get_next_example(float64_t* &feature_vector,
-										  int32_t &length,
-										  float64_t &label);
+		int32_t get_next_example(T* &feature_vector,
+					 int32_t &length,
+					 float64_t &label);
 
 		/** 
 		 * Gets the next example, assuming it to be unlabelled.
@@ -154,8 +155,8 @@ namespace shogun
 		 * 
 		 * @return 1 if an example could be fetched, 0 otherwise
 		 */
-		int32_t get_next_example(float64_t* &feature_vector,
-								 int32_t &length);
+		int32_t get_next_example(T* &feature_vector,
+					 int32_t &length);
 		
 
 		/**
@@ -193,28 +194,250 @@ namespace shogun
 	protected:
 
 		CStreamingFile* input_source; /**< Input source,
-									   * CStreamingFile object */
+					       * CStreamingFile object */
 
 		pthread_t parse_thread;/**< Parse thread */
 
-		ParseBuffer* examples_buff;
+		ParseBuffer<T>* examples_buff;
 		
 		int32_t number_of_features;
 		int32_t number_of_vectors_parsed;
 		int32_t number_of_vectors_read;
 
-		example* current_example;
+		example<T>* current_example;
 		
-		SGVector<float64_t> current_fv;	/**< Yet to be used in the code! */
-		float64_t* current_feature_vector; /**< Points to feature
-											* vector of last read example */
+		SGVector<T> current_fv;	/**< Yet to be used in the code! */
+		T* current_feature_vector; /**< Points to feature
+					    * vector of last read example */
 		
 		float64_t current_label; /**< Label of last read example */
 		
 		int32_t current_len; /**< Features in last
-							  * read example */
+				      * read example */
 
 		
 	};
+
+#define PARSER_DEFAULT_BUFFSIZE 100
+
+	template <class T>
+		CInputParser<T>::CInputParser()
+	{
+		//init(NULL, true, PARSER_DEFAULT_BUFFSIZE);
+	}
+
+	template <class T>
+		CInputParser<T>::~CInputParser()
+	{
+		end_parser();
+	
+		delete current_example;
+		delete examples_buff;
+	}
+
+	template <class T>
+		void CInputParser<T>::init(CStreamingFile* input_file, bool is_labelled = true, int32_t size = PARSER_DEFAULT_BUFFSIZE)
+	{
+		input_source = input_file;
+
+		if (is_labelled == true)
+			example_type = E_LABELLED;
+		else
+			example_type = E_UNLABELLED;
+
+		examples_buff = new ParseBuffer<T>(size);
+		current_example = new example<T>();
+	
+		parsing_done = false;
+		reading_done = false;
+		number_of_vectors_parsed = 0;
+		number_of_vectors_read = 0;
+
+		current_len = -1;
+		current_label = -1;
+		current_feature_vector = NULL;
+	}
+
+	template <class T>
+		void CInputParser<T>::start_parser()
+	{
+		pthread_create(&parse_thread, NULL, parse_loop_entry_point, this);
+	}
+
+	template <class T>
+		void* CInputParser<T>::parse_loop_entry_point(void* params)
+	{
+		((CInputParser *) params)->main_parse_loop(params);
+
+		return NULL;
+	}
+
+	template <class T>
+		bool CInputParser<T>::is_running()
+	{
+		if (parsing_done)
+			if (reading_done)
+				return false;
+			else
+				return true;
+		else
+			return false;
+	}
+
+	template <class T>
+		int32_t CInputParser<T>::get_vector_and_label(T* &feature_vector,
+							      int32_t &length,
+							      float64_t &label)
+	{
+		input_source->get_real_vector(feature_vector, length);
+		/* The get_real_vector call should be replaced with
+		   a dynamic call depending on the type of feature. */
+
+		if (length < 2)
+		{
+			// Problem reading the example
+			parsing_done=true;
+			return 0;
+		}
+
+		label=feature_vector[0];
+		feature_vector++;
+		length--;
+
+		return 1;
+	}
+
+	template <class T>
+		int32_t CInputParser<T>::get_vector_only(T* &feature_vector,
+							 int32_t &length)
+	{
+		input_source->get_real_vector(feature_vector, length);
+		/* The get_real_vector call should be replaced with
+		   a dynamic call depending on the type of feature. */
+
+		if (length < 1)
+		{
+			// Problem reading the example
+			parsing_done=true;
+			return 0;
+		}
+
+		return 1;
+	}
+
+	template <class T>
+		void CInputParser<T>::copy_example_into_buffer(example<T>* ex)
+	{
+		examples_buff->copy_example(ex);
+	}
+
+	template <class T>
+		void* CInputParser<T>::main_parse_loop(void* params)
+	{
+		// Read the examples into current_* objects
+		// Instead of allocating mem for new objects each time
+
+		CInputParser* this_obj = (CInputParser *) params;
+		this->input_source = this_obj->input_source;
+
+		while (!parsing_done)
+		{
+			if (example_type == E_LABELLED)
+				get_vector_and_label(current_feature_vector, current_len, current_label);
+			else
+				get_vector_only(current_feature_vector,	current_len);
+
+			if (current_len < 0)
+			{
+				parsing_done = true;
+				return NULL;
+			}
+
+			current_example->label = current_label;
+			current_example->fv.vector = current_feature_vector;
+			current_example->fv.length = current_len;
+
+			examples_buff->copy_example(current_example);
+			number_of_vectors_parsed++;
+		}
+
+		return NULL;
+	}
+
+	template <class T>
+		example<T>* CInputParser<T>::retrieve_example()
+	{
+		// Return the next unused example from the buffer
+
+		example<T> *ex;
+	
+		if (number_of_vectors_parsed <= 0)
+			return NULL;
+
+		if (parsing_done)
+		{
+			if (number_of_vectors_read == number_of_vectors_parsed)
+				reading_done = true;
+		}
+
+		if (number_of_vectors_read == number_of_vectors_parsed)
+			return NULL;
+	
+		ex = examples_buff->fetch_example();
+		number_of_vectors_read++;
+
+		return ex;
+	}
+
+	template <class T>
+		int32_t CInputParser<T>::get_next_example(T* &fv, int32_t &length, float64_t &label)
+	{
+		/* if reading is done, no more examples can be fetched. return 0
+		   else, if example can be read, get the example and return 1.
+		   otherwise, wait for further parsing, get the example and
+		   return 1 */
+	
+		example<T> *ex;
+
+		while (1)
+		{
+			if (reading_done)
+				return 0;
+
+			ex = retrieve_example();
+		
+			if (ex == NULL)
+				continue;
+			else
+				break;
+		}
+	
+		fv = ex->fv.vector;
+		length = ex->fv.length;
+		label = ex->label;
+
+		return 1;
+	}
+
+	template <class T>
+		int32_t CInputParser<T>::get_next_example(T* &fv, int32_t &length)
+	{
+		float64_t label_dummy;
+	
+		return get_next_example(fv, length, label_dummy);
+	}
+
+	template <class T>
+		void CInputParser<T>::finalize_example()
+	{
+		examples_buff->finalize_example();
+	}
+
+	template <class T>
+		void CInputParser<T>::end_parser()
+	{
+		pthread_join(parse_thread, NULL);
+	}
+
 }
 #endif // __INPUTPARSER_H__
