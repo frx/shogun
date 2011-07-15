@@ -1,5 +1,5 @@
-#ifndef _ONLINESVMSGD_H___
-#define _ONLINESVMSGD_H___
+#ifndef _ONLINESGDQN_H___
+#define _ONLINESGDQN_H___
 /*
    SVM with stochastic gradient
    Copyright (C) 2007- Leon Bottou
@@ -28,18 +28,18 @@
 
 namespace shogun
 {
-/** @brief class OnlineSVMSGD */
-class COnlineSVMSGD : public COnlineLinearMachine
+/** @brief class OnlineSGDQN */
+class COnlineSGDQN : public COnlineLinearMachine
 {
 	public:
 		/** default constructor  */
-		COnlineSVMSGD();
+		COnlineSGDQN();
 
 		/** constructor
 		 *
 		 * @param C constant C
 		 */
-		COnlineSVMSGD(float64_t C);
+		COnlineSGDQN(float64_t C);
 
 		/** constructor
 		 *
@@ -47,15 +47,15 @@ class COnlineSVMSGD : public COnlineLinearMachine
 		 * @param traindat training features
 		 * @param trainlab labels for training features
 		 */
-		COnlineSVMSGD(float64_t C, CStreamingDotFeatures* traindat);
+		COnlineSGDQN(float64_t C, CStreamingDotFeatures* traindat);
 
-		virtual ~COnlineSVMSGD();
+		virtual ~COnlineSGDQN();
 
 		/** get classifier type
 		 *
-		 * @return classifier type OnlineSVMSGD
+		 * @return classifier type OnlineSGDQN
 		 */
-		virtual inline EClassifierType get_classifier_type() { return CT_SVMSGD; }
+		virtual inline EClassifierType get_classifier_type() { return CT_SGDQN; }
 
 		/** train classifier
 		 *
@@ -66,6 +66,45 @@ class COnlineSVMSGD : public COnlineLinearMachine
 		 * @return whether training was successful
 		 */
 		virtual bool train(CFeatures* data=NULL);
+
+		/** calibrate
+		 *
+		 * @param max_vec_num Maximum number of vectors to calibrate using
+		 * (optional) if set to -1, tries to calibrate using all vectors
+		 * */
+		void calibrate(int32_t max_vec_num=1000);
+
+		/**
+		 * Determine optimal value of t0
+		 *
+		 * @param max_vec_num Maximum number of vectors to use
+		 * @param t0_epochs Number of epochs
+		 *
+		 * @return Optimum t0 value
+		 */
+		float64_t determine_t0(int32_t max_vec_num, int32_t t0_epochs);
+
+		/**
+		 * Test the sgd on max_vec_num vectors.
+		 *
+		 * @param max_vec_num Number of vectors to test upon
+		 * @param cost Cost, returned by reference
+		 */
+		void test(int32_t max_vec_num, float64_t& cost);
+
+		/**
+		 * Set t0
+		 *
+		 * @param t0 t0
+		 */
+		inline void set_t0(float64_t t0) { t=t0; }
+
+		/**
+		 * Get t0
+		 *
+		 * @return t0
+		 */
+		inline float64_t get_t0() { return t; }
 
 		/** set C
 		 *
@@ -98,7 +137,7 @@ class COnlineSVMSGD : public COnlineLinearMachine
 		 * @return the number of training epochs
 		 */
 		inline int32_t get_epochs() { return epochs; }
-		
+
 		/** set lambda
 		 *
 		 * @param l value of regularization parameter lambda
@@ -111,40 +150,8 @@ class COnlineSVMSGD : public COnlineLinearMachine
 		 */
 		inline float64_t get_lambda() { return lambda; }
 
-		/** set if bias shall be enabled
-		 *
-		 * @param enable_bias if bias shall be enabled
-		 */
-		inline void set_bias_enabled(bool enable_bias) { use_bias=enable_bias; }
-
-		/** check if bias is enabled
-		 *
-		 * @return if bias is enabled
-		 */
-		inline bool get_bias_enabled() { return use_bias; }
-
-		/** set if regularized bias shall be enabled
-		 *
-		 * @param enable_bias if regularized bias shall be enabled
-		 */
-		inline void set_regularized_bias_enabled(bool enable_bias) { use_regularized_bias=enable_bias; }
-
-		/** check if regularized bias is enabled
-		 *
-		 * @return if regularized bias is enabled
-		 */
-		inline bool get_regularized_bias_enabled() { return use_regularized_bias; }
-
 		/** @return object name */
-		inline virtual const char* get_name() const { return "OnlineSVMSGD"; }
-
-	protected:
-		/** calibrate
-		 *
-		 * @param max_vec_num Maximum number of vectors to calibrate using
-		 * (optional) if set to -1, tries to calibrate using all vectors
-		 * */
-		void calibrate(int32_t max_vec_num=1000);
+		inline virtual const char* get_name() const { return "OnlineSGDQN"; }
 
 	private:
 		void init();
@@ -152,16 +159,10 @@ class COnlineSVMSGD : public COnlineLinearMachine
 	private:
 		float64_t t;
 		float64_t lambda;
-		float64_t C1;
-		float64_t C2;
-		float64_t wscale;
-		float64_t bscale;
 		int32_t epochs;
 		int32_t skip;
 		int32_t count;
 
-		bool use_bias;
-		bool use_regularized_bias;
 };
 }
 #endif

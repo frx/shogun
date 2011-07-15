@@ -1,17 +1,17 @@
 /*
    SVM with stochastic gradient
    Copyright (C) 2007- Leon Bottou
-   
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
    License as published by the Free Software Foundation; either
    version 2.1 of the License, or (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111, USA
@@ -20,7 +20,7 @@
    Shogun adjustments (w) 2008-2009 Soeren Sonnenburg
 */
 
-#include "OnlineSVMSGD.h"
+#include "OnlineSGDQN.h"
 #include "base/Parameter.h"
 #include "lib/Signal.h"
 
@@ -102,13 +102,13 @@ float64_t dloss(float64_t z)
 }
 
 
-COnlineSVMSGD::COnlineSVMSGD()
+COnlineSGDQN::COnlineSGDQN()
 : COnlineLinearMachine()
 {
 	init();
 }
 
-COnlineSVMSGD::COnlineSVMSGD(float64_t C)
+COnlineSGDQN::COnlineSGDQN(float64_t C)
 : COnlineLinearMachine()
 {
 	init();
@@ -117,7 +117,7 @@ COnlineSVMSGD::COnlineSVMSGD(float64_t C)
 	C2=C;
 }
 
-COnlineSVMSGD::COnlineSVMSGD(float64_t C, CStreamingDotFeatures* traindat)
+COnlineSGDQN::COnlineSGDQN(float64_t C, CStreamingDotFeatures* traindat)
 : COnlineLinearMachine()
 {
 	init();
@@ -127,7 +127,7 @@ COnlineSVMSGD::COnlineSVMSGD(float64_t C, CStreamingDotFeatures* traindat)
 	set_features(traindat);
 }
 
-COnlineSVMSGD::~COnlineSVMSGD()
+COnlineSGDQN::~COnlineSGDQN()
 {
 }
 
@@ -162,10 +162,6 @@ void compute_ratio(SGVector<float64_t> &B,
 		   float64_t lambda,
 		   float64_t loss)
 {
-	// Perform expansion beforehand?
-	// d = (float*) vec, i.e., B
-	// s = (float*) wp, i.e., old w
-	// sp = (float*) wpp, i.e., new w
 	int32_t dims = w_new.vlen;
 	for (int32_t i=0; i<dims; i++)
 	{
@@ -181,7 +177,7 @@ void compute_ratio(SGVector<float64_t> &B,
 	}
 }
 
-bool COnlineSVMSGD::train(CFeatures* data)
+bool COnlineSGDQN::train(CFeatures* data)
 {
 	if (data)
 	{
@@ -191,7 +187,7 @@ bool COnlineSVMSGD::train(CFeatures* data)
 	}
 
 	features->start_parser();
-	
+
 	// allocate memory for w and initialize everyting w and bias with 0
 	ASSERT(features);
 	ASSERT(features->get_has_labels());
@@ -203,8 +199,8 @@ bool COnlineSVMSGD::train(CFeatures* data)
 
 	count = skip;
 	bool updateB = false;
-	
-	// Shift t in order to have a 
+
+	// Shift t in order to have a
 	// reasonable initial learning rate.
 	// This assumes |x| \approx 1.
 	float64_t maxw = 1.0 / sqrt(lambda);
@@ -213,14 +209,14 @@ bool COnlineSVMSGD::train(CFeatures* data)
 	t = 1 / (eta0 * lambda);
 
 	SG_INFO("lambda=%f, epochs=%d, eta0=%f\n", lambda, epochs, eta0);
-	
+
 	//do the sgd
 	calibrate();
 	if (features->is_seekable())
 		features->reset_stream();
 
 	CSignal::clear_cancel();
-	
+
 	int32_t vec_count;
 	for(int32_t e=0; e<epochs && (!CSignal::cancel_computations()); e++)
 	{
@@ -245,11 +241,11 @@ bool COnlineSVMSGD::train(CFeatures* data)
 
 			if (updateB == true)
 			{
-
 #if LOSS < LOGLOSS
 			if (z < 1)
 #endif
 			{
+				// w_1 is a copy of w
 				SGVector<float64_t> w_1;
 				w_1.vector = CMath::clone_vector(w, w_dim);
 
@@ -290,6 +286,7 @@ bool COnlineSVMSGD::train(CFeatures* data)
 				}
 			}
 			updateB = false;
+
 			}
 			else
 			{
@@ -310,11 +307,11 @@ bool COnlineSVMSGD::train(CFeatures* data)
 					CMath::add(w, 1, w, eta * dloss(z) * y, x_mult_Bc, w_dim);
 				}
 			}
-			
+
 			t += 1;
 			features->release_example();
 		}
-		
+
 		// If the stream is seekable, reset the stream to the first
 		// example (for epochs > 1)
 		if (features->is_seekable() && e < epochs-1)
@@ -323,77 +320,97 @@ bool COnlineSVMSGD::train(CFeatures* data)
 			break;
 	}
 	features->end_parser();
-	
+
 	float64_t wnorm =  CMath::dot(w, w, w_dim);
 	SG_INFO("Norm: %.6f, Bias: %.6f\n", wnorm, bias);
 
 	return true;
 }
 
-void COnlineSVMSGD::calibrate(int32_t max_vec_num)
-{ 
-	int32_t c_dim=1;
-	float64_t* c=new float64_t;
-	
+void COnlineSGDQN::calibrate(int32_t max_vec_num)
+{
+	SG_INFO("Calibrating SgdQn. Estimating sparsity..\n");
+
 	// compute average gradient size
 	int32_t n = 0;
-	float64_t m = 0;
 	float64_t r = 0;
 
-	while (features->get_next_example() && m<=1000)
+	while (features->get_next_example())
 	{
-		//Expand c if more features are seen in this example
-		features->expand_if_required(c, c_dim);
-			
 		r += features->get_nnz_features_for_vector();
-		features->add_to_dense_vec(1, c, c_dim, true);
-
-		//waste cpu cycles for readability
-		//(only changed dims need checking)
-		m=CMath::max(c, c_dim);
+		features->release_example();
 		n++;
 
-		features->release_example();
-		if (n>=max_vec_num)
+		if (n >= max_vec_num)
 			break;
 	}
 
-	SG_PRINT("Online SGD calibrated using %d vectors.\n", n);
+	SG_PRINT("Online SgdQn calibrated using %d vectors.\n", n);
 
-	// bias update scaling
-	bscale = m/n;
+	// Get dimensionality
+	int32_t dims = features->get_dim_feature_space();
 
 	// compute weight decay skip
-	skip = (int32_t) ((16 * n * c_dim) / r);
+	skip = (int32_t) ((16 * n * dims) / r);
 
-	SG_INFO("using %d examples. skip=%d  bscale=%.6f\n", n, skip, bscale);
-
-	delete[] c;
+	SG_INFO("using %d examples. skip=%d\n", n, skip);
 }
 
-void COnlineSVMSGD::init()
+float64_t determine_t0(int32_t max_vec_num, int32_t t0_epochs)
+{
+	SG_PRINT("Estimating t0...\n");
+	float64_t t0 = 1;
+	float64_t t0_tmp = 1;
+	float64_t lowest_cost = CMath::ALMOST_INFTY;
+
+	int32_t train_vec = get_max_train_vec();
+	int32_t train_epochs = get_epochs();
+
+	for (int32_t i=0; i<10; i++)
+	{
+		COnlineSGDQN svm(features);
+		svm.set_lambda(lambda);
+		svm.set_t0(t0_tmp);
+		svm.set_epochs(t0_epochs);
+
+		svm.calibrate(max_vec_num/10);
+		if (features->is_seekable())
+			features->reset_stream();
+
+		svm.train(max_vec_num/10);
+
+		float64_t cost;
+		svm.test(max_vec_num/10, cost);
+
+		if (cost < lowest_cost && cost==cost) // Check for NaN
+		{
+			t0 = t0_tmp;
+			lowest_cost = cost;
+		}
+		SG_PRINT("t0 = %f, cost = %f.\n", t0_tmp, cost);
+		t0_tmp = t0_tmp * 10;
+	}
+
+	max_train_vec = train_vec;
+	epochs = train_epochs;
+
+	SG_PRINT("Final choice: t0 = %f.\n", t0);
+	return t0;
+}
+
+void COnlineSGDQN::init()
 {
 	t=1;
-	C1=1;
-	C2=1;
 	lambda=1e-4;
-	wscale=1;
-	bscale=1;
 	epochs=1;
 	skip=1000;
 	count=1000;
-	use_bias=true;
 
-	use_regularized_bias=false;
+	max_t0_vec = 1000;
+	max_train_vec = -1;
 
-	m_parameters->add(&C1, "C1",  "Cost constant 1.");
-	m_parameters->add(&C2, "C2",  "Cost constant 2.");
 	m_parameters->add(&lambda, "lambda", "Regularization parameter.");
-	m_parameters->add(&wscale, "wscale",  "W scale");
-	m_parameters->add(&bscale, "bscale",  "b scale");
 	m_parameters->add(&epochs, "epochs",  "epochs");
 	m_parameters->add(&skip, "skip",  "skip");
 	m_parameters->add(&count, "count",  "count");
-	m_parameters->add(&use_bias, "use_bias",  "Indicates if bias is used.");
-	m_parameters->add(&use_regularized_bias, "use_regularized_bias",  "Indicates if bias is regularized.");
 }
