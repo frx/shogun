@@ -5,9 +5,8 @@
 #include <shogun/lib/vw/substring.h>
 
 using namespace shogun;
-using namespace std;
 
-char* c_string_of_substring(substring s)
+char* shogun::c_string_of_substring(substring s)
 {
 	size_t len = s.end - s.start+1;
 	char* ret = (char *)calloc(len,sizeof(char));
@@ -25,7 +24,7 @@ inline float float_of_substring(substring s)
 	char* endptr = s.end;
 	float f = strtof(s.start,&endptr);
 	if (endptr == s.start && s.start != s.end)
-		SG_SERROR("error: %s is not a float!\n", string(s.start, s.end-s.start).c_str());
+		SG_SERROR("error: %s is not a float!\n", std::string(s.start, s.end-s.start).c_str());
 
 	return f;
 }
@@ -35,19 +34,19 @@ inline float double_of_substring(substring s)
 	char* endptr = s.end;
 	float f = strtod(s.start,&endptr);
 	if (endptr == s.start && s.start != s.end)
-		SG_SERROR("Error!:%s is not a double!\n", string(s.start, s.end-s.start).c_str());
+		SG_SERROR("Error!:%s is not a double!\n", std::string(s.start, s.end-s.start).c_str());
 
 	return f;
 }
 
 inline int int_of_substring(substring s)
 {
-	return atoi(string(s.start, s.end-s.start).c_str());
+	return atoi(std::string(s.start, s.end-s.start).c_str());
 }
 
 inline unsigned long ulong_of_substring(substring s)
 {
-	return strtoul(string(s.start, s.end-s.start).c_str(),NULL,10);
+	return strtoul(std::string(s.start, s.end-s.start).c_str(),NULL,10);
 }
 
 inline unsigned long ss_length(substring s)

@@ -9,8 +9,10 @@
 namespace shogun
 {
 	
-struct global_data
+class global_data
 {
+public:
+	
 	double min_label;
 	double max_label;
 

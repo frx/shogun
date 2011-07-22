@@ -1,8 +1,9 @@
 #include <shogun/lib/vw/parse_primitives.h>
 
-using namespace shogun;
-
-void tokenize(char delim, substring s, v_array<substring>& ret)
+namespace shogun
+{
+	
+void vw_tokenize(char delim, substring s, v_array<substring>& ret)
 {
 	ret.erase();
 	char *last = s.start;
@@ -23,4 +24,6 @@ void tokenize(char delim, substring s, v_array<substring>& ret)
 		substring final = {last, s.start};
 		ret.push(final);
 	}
+}
+
 }

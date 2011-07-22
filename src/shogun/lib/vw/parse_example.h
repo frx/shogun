@@ -6,6 +6,8 @@
 
 namespace shogun
 {
-}
+	
+void feature_value(substring &s, v_array<substring>& name, float &v);
 
+}
 #endif

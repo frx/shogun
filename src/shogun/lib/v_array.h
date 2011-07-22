@@ -14,10 +14,13 @@
 */
 
 #include <stdlib.h>
+#include <shogun/mathematics/Math.h>
 
 #ifndef VARRAY_H__
 #define VARRAY_H__
 
+namespace shogun
+{
 template<class T> class v_array
 {
 public:
@@ -148,8 +151,8 @@ inline void v_array<T>::push_many(const T* new_elem, size_t num)
 	if(end+num >= end_array)
 	{
 		size_t length = end - begin;
-		size_t new_length = max(2 * (size_t)(end_array - begin) + 3, 
-					end - begin + num);
+		size_t new_length = CMath::max(2 * (size_t)(end_array - begin) + 3, 
+					     end - begin + num);
 		begin = (T *)realloc(begin,sizeof(T) * new_length);
 		end = begin + length;
 		end_array = begin + new_length;
@@ -187,4 +190,5 @@ inline v_array<T> v_array<T>::pop(v_array< v_array<T> > &stack)
 		return v_array<T>();
 }
 
+}
 #endif  // VARRAY_H__
