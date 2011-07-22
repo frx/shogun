@@ -20,6 +20,51 @@ namespace shogun
 
 typedef size_t (*hash_func_t)(substring, unsigned long);
 
+const int quadratic_constant = 27942141;
+const int constant = 11650396;
+
+/* VwEnvironment should be shared between VW objects as a replacement
+ * for global data */
+class VwEnvironment
+{
+public:
+	VwEnvironment()
+	{
+		num_bits = 18;
+		mask = (1 << num_bits) - 1;
+	}
+
+	~VwEnvironment()
+	{
+	}
+	
+	double get_min_label() { return min_label; }
+	
+	double get_max_label() { return max_label; }
+
+	size_t get_num_bits() { return num_bits; }
+	
+	void set_num_bits(size_t bits)
+	{
+		num_bits = bits;
+	}
+	
+	size_t get_mask() { return mask; }
+
+	void set_mask(size_t m)
+	{
+		mask = m;
+	}
+
+public:
+	
+	double min_label;
+	double max_label;
+
+	size_t num_bits;
+	size_t mask;
+};
+
 class VwLabel
 {
 
@@ -56,6 +101,17 @@ public:
 		//set_minmax(label);
 	}
 
+	float get_weight()
+	{
+		return weight;
+	}
+
+	float get_initial()
+	{
+		return initial;
+	}
+	
+
 public:
 	/// Label value
 	float64_t label;
@@ -79,9 +135,23 @@ public:
 class VwExample
 {
 public:
+	VwExample(VwEnvironment* env = NULL)
+	{
+		pass = 0;
+		partial_prediction = 0.;
+		num_features = 0;
+		total_sum_feat_sq = 1;
+		example_counter = 0;
+		global_weight = 0;
+		example_t = 0;
+
+		size_t constant_namespace = 128;
+		ae->indices.push(constant_namespace);
+	}
 	
 	VwLabel ld;
 	v_array<char> tag;
+	size_t example_counter;
 
 	v_array<size_t> indices;
 	v_array<VwFeature> atomics[256];
