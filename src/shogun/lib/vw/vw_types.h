@@ -18,6 +18,8 @@
 namespace shogun
 {
 
+typedef size_t (*hash_func_t)(substring, unsigned long);
+
 class VwLabel
 {
 

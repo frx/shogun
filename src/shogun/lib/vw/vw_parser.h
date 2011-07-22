@@ -19,11 +19,14 @@ public:
 	size_t mask;
 };
 
-typedef size_t (*hash_func_t)(substring, unsigned long);
-
 class VwParser
 {
 public:
+	VwParser()
+	{
+		hasher=getHasher("strings");
+	}
+	
 	hash_func_t hasher;
 	
 	int32_t read_features(CIOBuffer* buf, VwExample*& ex);
