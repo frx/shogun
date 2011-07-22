@@ -21,9 +21,44 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-using namespace shogun;
-
 #define MIX(h,k,m) { k *= m; k ^= k >> r; k *= m; h *= m; h ^= k; }
+
+namespace shogun
+{
+	
+size_t hashstring (substring s, unsigned long h)
+{
+	size_t ret = 0;
+	//trim leading whitespace
+	for(; *(s.start) <= 0x20 && s.start < s.end; s.start++);
+	//trim trailing white space
+	for(; *(s.end-1) <= 0x20 && s.end > s.start; s.end--);
+
+	char *p = s.start;
+	while (p != s.end)
+		if (isdigit(*p))
+			ret = 10*ret + *(p++) - '0';
+		else
+			return uniform_hash((unsigned char *)s.start, s.end - s.start, h);
+
+	return ret + h;
+}
+
+size_t hashall (substring s, unsigned long h)
+{
+	return uniform_hash((unsigned char *)s.start, s.end - s.start, h);
+}
+
+hash_func_t getHasher(const std::string& s)
+{
+	if (s=="strings")
+		return hashstring;
+	else if(s=="all")
+		return hashall;
+	else
+		SG_SERROR("Unknown hash function: %s\n");
+	return NULL;
+}
 
 uint32_t uniform_hash(const void *key, size_t len, uint32_t seed)
 {
@@ -72,4 +107,5 @@ uint32_t uniform_hash(const void *key, size_t len, uint32_t seed)
 	h ^= h >> 15;
 
 	return h;
+}
 }
