@@ -8,26 +8,13 @@
 
 namespace shogun
 {
-	
-class global_data
-{
-public:
-	
-	double min_label;
-	double max_label;
-
-	size_t num_bits;
-	size_t mask;
-};
 
 class VwParser
 {
 public:
-	VwParser()
+	VwParser(VwEnvironment = NULL)
 	{
-		hasher=getHasher("strings");
-		global.num_bits = 18;
-		global.mask = (1 << global.num_bits) - 1;
+		
 	}
 	
 	hash_func_t hasher;
@@ -49,7 +36,7 @@ public:
 	}
 
 public:
-	global_data global;
+	VwEnvironment* env;
 };
 
 }
