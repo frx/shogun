@@ -16,6 +16,7 @@ public:
 	double min_label;
 	double max_label;
 
+	size_t num_bits;
 	size_t mask;
 };
 
@@ -25,6 +26,8 @@ public:
 	VwParser()
 	{
 		hasher=getHasher("strings");
+		global.num_bits = 18;
+		global.mask = (1 << global.num_bits) - 1;
 	}
 	
 	hash_func_t hasher;
