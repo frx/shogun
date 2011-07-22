@@ -9,7 +9,7 @@ namespace shogun
 void feature_value(substring &s, v_array<substring>& name, float &v)
 {
 	// Get the value of the feature in the substring
-	vw_tokenize(':', s, name);
+	tokenize(':', s, name);
   
 	switch (name.index())
 	{

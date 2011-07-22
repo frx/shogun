@@ -3,7 +3,7 @@
 namespace shogun
 {
 	
-void vw_tokenize(char delim, substring s, v_array<substring>& ret)
+void tokenize(char delim, substring s, v_array<substring>& ret)
 {
 	ret.erase();
 	char *last = s.start;

@@ -5,7 +5,7 @@
 
 namespace shogun
 {
-	
+
 struct substring
 {
 	char *start;
@@ -15,6 +15,8 @@ struct substring
 char* c_string_of_substring(substring);
 
 void print_substring(substring);
+
+float float_of_substring(substring s);
 
 float double_of_substring(substring);
 

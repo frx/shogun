@@ -31,7 +31,8 @@ public:
 	 */
 	void parse_label(v_array<substring>& words)
 	{
-		switch(words.index()) {
+		switch(words.index())
+		{
 		case 0:
 			break;
 		case 1:
@@ -48,7 +49,7 @@ public:
 			break;
 		default:
 			SG_SERROR("malformed example!\n"
-				 "words.index() = %d\n", words.index());
+				  "words.index() = %d\n", words.index());
 		}
 		/* CALL TO FUNCTION USING GLOBAL DATA! */
 		/* SHIFTED TO PARSE CLASS */
