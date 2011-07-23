@@ -25,6 +25,8 @@ namespace shogun
 				env = new VwEnvironment();
 			else
 				env = env_to_use;
+
+			hasher = hashstring;
 		}
 
 		/**
@@ -55,6 +57,14 @@ namespace shogun
 			env = env_to_use;
 		}
 
+		/**
+		 * Reads input from the buffer and parses it into a VwExample
+		 *
+		 * @param buf IOBuffer which contains input
+		 * @param ex parsed example
+		 *
+		 * @return number of characters read for this example
+		 */
 		int32_t read_features(CIOBuffer* buf, VwExample*& ex);
 
 		/**

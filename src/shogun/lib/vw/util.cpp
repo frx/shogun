@@ -2,7 +2,7 @@
 
 namespace shogun
 {
-	
+
 VwFeature* search(VwFeature* begin, size_t value, VwFeature* end)
 {
 	// Return the smallest position >= value, never referencing end.
@@ -21,5 +21,5 @@ VwFeature* search(VwFeature* begin, size_t value, VwFeature* end)
 			return search(middle, value, end);
 	}
 }
-	
+
 }

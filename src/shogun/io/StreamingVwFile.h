@@ -63,7 +63,9 @@ public:
 	 */
 	void get_vector(VwExample* &ex, int32_t &len)
 	{
-		p->read_features(buf, ex);
+		len = p->read_features(buf, ex);
+		if (len == 0)
+			len = -1;
 	}
 
 	/**
@@ -77,7 +79,11 @@ public:
 	 */
 	void get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label)
 	{
-		p->read_features(buf, ex);
+		label=1;
+		len = p->read_features(buf, ex);
+		if (len == 0)
+			len = -1;
+
 	}
 
 	/**
@@ -108,7 +114,7 @@ public:
 	}
 
 private:
-	/** 
+	/**
 	 * Initialize members
 	 */
 	void init()
@@ -116,7 +122,7 @@ private:
 		p = new VwParser();
 		env = p->get_env();
 	}
-	
+
 protected:
 	/// Parser for vw format
 	VwParser* p;

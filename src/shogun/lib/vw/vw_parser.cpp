@@ -25,10 +25,10 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 
 	/* If first char is not '|', then the first channel contains label data */
 	substring* feature_start = &channels[1];
-  
+
 	if (*line == '|')
 		feature_start = &channels[0]; /* Unlabelled data */
-	else 
+	else
 	{
 		/* First channel has label info */
 		substring label_space = channels[0];
@@ -43,19 +43,18 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			substring tag = words.pop();
 			ae->tag.push_many(tag.start, tag.end - tag.start);
 		}
-      
+
 		(ae->ld).parse_label(words);
-		/* UPDATE GLOBAL MIN AND MAX - IMPLEMENT! */
 		set_minmax((ae->ld).label);
 	}
-  
+
 	size_t mask = env->mask;
 
 	/* Now parse the individual channels, i.e., namespaces */
 	for (substring* i = feature_start; i != channels.end; i++)
 	{
 		substring channel = *i;
-    
+
 		tokenize(' ',channel, words);
 		if (words.begin == words.end)
 			continue;
@@ -70,7 +69,7 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		size_t feature_offset = 0;
 
 		v_array<substring> name;
-		
+
 		if (channel.start[0] != ' ')
 		{
 			/* Nonanonymous namespace specified */
@@ -93,7 +92,7 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 				new_index = true;
 			channel_hash = 0;
 		}
- 
+
 		for (substring* i = words.begin+feature_offset; i != words.end; i++)
 		{
 			/* Get individual features and multiply by scale value */

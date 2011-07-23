@@ -25,7 +25,7 @@
 
 namespace shogun
 {
-	
+
 	size_t hashstring (substring s, unsigned long h)
 	{
 		size_t ret = 0;

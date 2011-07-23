@@ -72,7 +72,7 @@ public:
 	{
 		SG_NOTIMPLEMENTED;
 	}
-	
+
 	/**
 	 * Sets the read function (in case the examples are
 	 * unlabelled) to get_*_vector() from CStreamingFile.
@@ -408,17 +408,13 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 				+= (ae->atomics[(int)(*i)[1]].end - ae->atomics[(int)(*i)[1]].begin)
 				*env->rank;
 		}
-
-
 }
-
 
 void CStreamingVwFeatures::start_parser()
 {
 	if (!parser.is_running())
 		parser.start_parser();
 }
-
 
 void CStreamingVwFeatures::end_parser()
 {
@@ -431,6 +427,9 @@ bool CStreamingVwFeatures::get_next_example()
 	ret_value = (bool) parser.get_next_example(current_example,
 						   current_length,
 						   current_label);
+	if (current_length < 1)
+		return false;
+
 	if (ret_value)
 		setup_example(current_example);
 

@@ -33,24 +33,26 @@ namespace shogun
 		VwEnvironment()
 		{
 			num_bits = 18;
+			partition_bits = 0;
 			mask = (1 << num_bits) - 1;
+			stride = 1;
 		}
 
 		~VwEnvironment()
 		{
 		}
-	
+
 		double get_min_label() { return min_label; }
-	
+
 		double get_max_label() { return max_label; }
 
 		size_t get_num_bits() { return num_bits; }
-	
+
 		void set_num_bits(size_t bits)
 		{
 			num_bits = bits;
 		}
-	
+
 		size_t get_mask() { return mask; }
 
 		void set_mask(size_t m)
@@ -61,7 +63,7 @@ namespace shogun
 	public:
 		double min_label;
 		double max_label;
-	
+
 		/// log_2 of the number of features
 		size_t num_bits;
 		/// log_2 of the number of partitions of features
@@ -75,7 +77,7 @@ namespace shogun
 		bool ignore[256];
 		/// Pairs of features to cross
 		std::vector<string> pairs;
-	
+
 		size_t stride;
 
 		size_t passes_complete;
@@ -89,9 +91,9 @@ namespace shogun
 	{
 
 	public:
-		/** 
+		/**
 		 * Parse a substring to get a label
-		 * 
+		 *
 		 * @param words substrings, each representing a token in the label data of the format
 		 */
 		void parse_label(v_array<substring>& words)
@@ -130,7 +132,7 @@ namespace shogun
 		{
 			return initial;
 		}
-	
+
 
 	public:
 		/// Label value
@@ -155,9 +157,9 @@ namespace shogun
 	class VwExample
 	{
 	public:
-		/** 
+		/**
 		 * Constructor, taking environment as optional argument
-		 * 
+		 *
 		 * @param env env as VwEnvironment*, optional
 		 */
 		VwExample(VwEnvironment* env = NULL)
@@ -171,8 +173,8 @@ namespace shogun
 			example_t = 0;
 		}
 
-		/** 
-		 * Resets the members so the values can be updated 
+		/**
+		 * Resets the members so the values can be updated
 		 * directly.
 		 */
 		inline void reset_members()
@@ -186,8 +188,8 @@ namespace shogun
 
 			/* THIS PART IS FROM parse_atomic_example */
 			/* Erase features, subsets */
-			for (size_t* i = indices.begin; i != indices.end; i++) 
-			{  
+			for (size_t* i = indices.begin; i != indices.end; i++)
+			{
 				atomics[*i].erase();
 				subsets[*i].erase();
 				sum_feat_sq[*i]=0;
@@ -197,7 +199,7 @@ namespace shogun
 			tag.erase();
 			sorted = false;
 		}
-	
+
 		VwLabel ld;
 		v_array<char> tag;
 		size_t example_counter;
@@ -223,7 +225,7 @@ namespace shogun
 
 		size_t ngram;
 		size_t skips;
-	
+
 		bool sorted;
 	};
 
