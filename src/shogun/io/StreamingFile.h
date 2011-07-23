@@ -17,6 +17,7 @@
 #include <shogun/io/SGIO.h>
 #include <shogun/lib/DataType.h>
 #include <shogun/io/IOBuffer.h>
+#include <shogun/lib/vw/vw_types.h>
 
 #include <ctype.h>
 #include <fcntl.h>
@@ -254,6 +255,10 @@ namespace shogun
 			(SGSparseVectorEntry<uint64_t>*& vector, int32_t& len, float64_t& label);
 		virtual void get_sparse_vector_and_label
 			(SGSparseVectorEntry<floatmax_t>*& vector, int32_t& len, float64_t& label);
+
+		virtual void get_vector(VwExample*& ex, int32_t& len);
+
+		virtual void get_vector_and_label(VwExample*& ex, int32_t& len, float64_t &label);
 		//@}
 
 		/** @return object name */

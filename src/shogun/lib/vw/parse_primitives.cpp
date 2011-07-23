@@ -3,27 +3,27 @@
 namespace shogun
 {
 	
-void tokenize(char delim, substring s, v_array<substring>& ret)
-{
-	ret.erase();
-	char *last = s.start;
-	for (; s.start != s.end; s.start++)
+	void tokenize(char delim, substring s, v_array<substring>& ret)
 	{
-		if (*s.start == delim)
+		ret.erase();
+		char *last = s.start;
+		for (; s.start != s.end; s.start++)
 		{
-			if (s.start != last)
+			if (*s.start == delim)
 			{
-				substring temp = {last,s.start};
-				ret.push(temp);
+				if (s.start != last)
+				{
+					substring temp = {last,s.start};
+					ret.push(temp);
+				}
+				last = s.start+1;
 			}
-			last = s.start+1;
+		}
+		if (s.start != last)
+		{
+			substring final = {last, s.start};
+			ret.push(final);
 		}
 	}
-	if (s.start != last)
-	{
-		substring final = {last, s.start};
-		ret.push(final);
-	}
-}
 
 }
