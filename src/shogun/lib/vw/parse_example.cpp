@@ -6,15 +6,15 @@
 
 namespace shogun
 {
-	
+
 	void feature_value(substring &s, v_array<substring>& name, float &v)
 	{
 		// Get the value of the feature in the substring
 		tokenize(':', s, name);
-  
+
 		switch (name.index())
 		{
-			// If feature value is not specified, assume 1.0
+		// If feature value is not specified, assume 1.0
 		case 0:
 		case 1:
 			v = 1.;

@@ -2,7 +2,7 @@
 
 namespace shogun
 {
-	
+
 	void tokenize(char delim, substring s, v_array<substring>& ret)
 	{
 		ret.erase();

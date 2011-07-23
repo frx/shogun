@@ -6,13 +6,13 @@
 namespace shogun
 {
 
-/** 
+/**
  * Return the smallest position >= value, never referencing end.
- * 
+ *
  * @param begin position to begin search from
  * @param value value to search for
  * @param end last address
- * 
+ *
  * @return position of match
  */
 VwFeature* search(VwFeature* begin, size_t value, VwFeature* end);
