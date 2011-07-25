@@ -18,8 +18,9 @@
 
 namespace shogun
 {
-	typedef std::string string;
-
+	using std::string;
+	using std::vector;
+	
 	typedef size_t (*hash_func_t)(substring, unsigned long);
 
 	const int quadratic_constant = 27942141;
@@ -98,6 +99,7 @@ namespace shogun
 		size_t thread_bits;
 		/// Mask used for hashing
 		size_t mask;
+		size_t thread_mask;
 
 		/// Whether some namespaces are ignored
 		bool ignore_some;
@@ -317,6 +319,8 @@ namespace shogun
 			
 	public:
 		float** weight_vectors;
+
+		loss_function* loss;
 	};
 		
 }

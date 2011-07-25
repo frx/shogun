@@ -17,5 +17,14 @@ namespace shogun
  */
 VwFeature* search(VwFeature* begin, size_t value, VwFeature* end);
 
+/** 
+ * Get the inverse square root using a fast Newton's approximation
+ * 
+ * @param x number to operate on
+ * 
+ * @return approx inverse square root of number
+ */
+float InvSqrt(float x);
+
 }
 #endif
