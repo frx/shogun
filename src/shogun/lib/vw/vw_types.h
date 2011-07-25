@@ -15,6 +15,7 @@
 #include <shogun/mathematics/Math.h>
 #include <shogun/lib/vw/substring.h>
 #include <shogun/lib/vw/parse_primitives.h>
+#include <shogun/losses/LossFunction.h>
 
 namespace shogun
 {
@@ -320,7 +321,7 @@ namespace shogun
 	public:
 		float** weight_vectors;
 
-		loss_function* loss;
+		CLossFunction* loss;
 	};
 		
 }

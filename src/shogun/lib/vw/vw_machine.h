@@ -9,20 +9,32 @@ namespace shogun
 class VwMachine
 {
 public:
-	VwMachine()
+	/** 
+	 * Constructor, initializes regressor and environment
+	 * 
+	 * @param regressor regressor
+	 * @param vw_env environment
+	 */
+	VwMachine(VwRegressor* regressor, VwEnvironment* vw_env)
 	{
-		reg = NULL;
+		reg = regressor;
+		env = vw_env;
 	}
 
+	/** 
+	 * Destructor
+	 */
 	virtual ~VwMachine()
 	{
 	}
 
+	/** 
+	 * Train on the example
+	 * 
+	 * @param ex example
+	 * @param update update
+	 */
 	virtual void train(VwExample* &ex, float update) = 0;
-	
-	virtual void perform_update(float* weights, VwFeature& page_feature,
-				    v_array<VwFeature> &offer_features, size_t mask,
-				    float update, float g, VwExample* ex, size_t& ctr) = 0;
 
 protected:
 
