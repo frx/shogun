@@ -15,13 +15,12 @@ public:
 	void train(CStreamingVwFeatures* feat = NULL);
 
 private:
-	/* This func is used only by adaptive_inline_train.. Consider shifting */
-	void one_pf_quad_adaptive_update(float* weights, VwFeature& page_feature,
-					 v_array<VwFeature> &offer_features, size_t mask,
-					 float update, float g, VwExample* ex, size_t& ctr);
+	/** 
+	 * Sets the train/update methods depending on parameters 
+	 * set, eg. adaptive or not
+	 */
+	void set_learner();
 	
-	void adaptive_inline_train(VwExample* &ex, float update);
-
 	void init(CStreamingVwFeatures* feat = NULL);
 	
 protected:
@@ -30,5 +29,7 @@ protected:
 	/// Environment for VW, i.e., globals
 	VwEnvironment* env;
 
+	VwMachine* learner;
+	
 	VwRegressor* reg;
 };
