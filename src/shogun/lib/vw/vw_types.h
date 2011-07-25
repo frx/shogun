@@ -36,6 +36,17 @@ namespace shogun
 			partition_bits = 0;
 			mask = (1 << num_bits) - 1;
 			stride = 1;
+
+			// Inferred from parse_args
+			eta = 10.;
+			eta_decay_rate = 1.;
+
+			adaptive = false;
+			random_weights = false;
+			initial_weight = 0.;
+
+			l1_regularization = 0.;
+			update_sum = 0.;
 		}
 
 		~VwEnvironment()
@@ -60,6 +71,21 @@ namespace shogun
 			mask = m;
 		}
 
+		size_t num_threads()
+		{
+			return 1 << thread_bits;
+		}
+
+		size_t num_partitions()
+		{
+			return 1 << partition_bits;
+		}
+
+		size_t length()
+		{
+			return 1 << num_bits;
+		}
+
 	public:
 		double min_label;
 		double max_label;
@@ -68,6 +94,8 @@ namespace shogun
 		size_t num_bits;
 		/// log_2 of the number of partitions of features
 		size_t partition_bits;
+		/// 
+		size_t thread_bits;
 		/// Mask used for hashing
 		size_t mask;
 
@@ -85,6 +113,17 @@ namespace shogun
 		bool sort_features;
 
 		size_t rank;
+
+		float eta;
+		float eta_decay_rate;
+
+		float l1_regularization;
+		float update_sum;
+
+		bool adaptive;
+
+		bool random_weights;
+		float initial_weight;
 	};
 
 	class VwLabel
@@ -229,5 +268,56 @@ namespace shogun
 		bool sorted;
 	};
 
+	class VwRegressor
+	{
+	public:
+		VwRegressor(VwEnvironment* env = NULL)
+		{
+			weight_vectors = NULL;
+			init(env);
+		}
+		
+		~VwRegressor()
+		{
+			if (weight_vectors)
+				delete[] weight_vectors;
+		}
+
+		void init(VwEnvironment* env = NULL)
+		{
+			size_t length = ((size_t) 1) << env->num_bits;
+			env->thread_mask = (env->stride * (length >> env->thread_bits)) - 1;
+			
+			size_t num_threads = 1;
+			weight_vectors = new float*[num_threads];
+
+			for (size_t i=0; i<num_threads; i++)
+			{
+				/* Initialize vectors to zero */
+				weight_vectors[i] = new float[env->stride * length / num_threads]();
+
+				if (env->random_weights)
+					if (env->rank > 0)
+						for (size_t j = 0; j < env->stride*length/num_threads; j++)
+							weight_vectors[i][j] = (double) 0.1 * rand() / ((double) RAND_MAX + 1.0);
+					else
+						for (size_t j = 0; j < length/num_threads; j++)
+							weight_vectors[i][j] = drand48() - 0.5;
+				
+				if (env->initial_weight != 0.)
+					for (size_t j = 0; j< env->stride*length/num_threads; j+=env->stride)
+						weight_vectors[i][j] = env->initial_weight;
+				
+				if (env->adaptive)
+					for (size_t j = 1; j< env->stride*length/num_threads; j+=env->stride)
+						weight_vectors[i][j] = 1;
+			}
+		}
+		
+			
+	public:
+		float** weight_vectors;
+	};
+		
 }
 #endif

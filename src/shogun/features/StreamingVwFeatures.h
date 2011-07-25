@@ -124,6 +124,13 @@ public:
 	 */
 	virtual bool get_next_example();
 
+	/** 
+	 * Returns the current example.
+	 * 
+	 * @return current example as VwExample*
+	 */
+	virtual VwExample* get_example();
+
 	/**
 	 * Return the label of the current example as a float.
 	 *
@@ -318,7 +325,7 @@ void CStreamingVwFeatures::init(CStreamingFile* file,
 void CStreamingVwFeatures::setup_example(VwExample* ae)
 {
 	/* Shift the necessary stuff to the VwExample constructor */
-	ae->reset_members();
+	// ae->reset_members();
 
 	/* TODO: DO THE NECESSARY FOR BELOW */
 	/*
@@ -330,6 +337,9 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	*/
 
 	ae->pass = env->passes_complete;
+	ae->partial_prediction = 0;
+	ae->num_features = 0;
+	ae->total_sum_feat_sq = 1;
 	ae->example_counter = ++example_count;
 	ae->global_weight = (ae->ld).get_weight();
 	//p->t += ae->global_weight; THIS SHOULD BE IN THE MAIN ALGORITHM
@@ -436,6 +446,10 @@ bool CStreamingVwFeatures::get_next_example()
 	return ret_value;
 }
 
+VwExample* CStreamingVwFeatures::get_example()
+{
+	return current_example;
+}
 
 float64_t CStreamingVwFeatures::get_label()
 {
