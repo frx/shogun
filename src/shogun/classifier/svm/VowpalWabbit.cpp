@@ -80,6 +80,42 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 
 	return prediction;
 }
+
+float CVowpalWabbit::finalize_prediction(float ret)
+{
+	if (isnan(ret))
+		return 0.5;
+	if (ret > env->max_label)
+		return env->max_label;
+	if (ret < env->min_label)
+		return env->min_label;
+
+	return ret;
+}
+
+void CVowpalWabbit::local_predict(VwExample* ex)
+{
+	ex->final_prediction = finalize_prediction(ex->partial_prediction);
+
+	float t;
+
+	t = ex->example_t;
+
+	if (ex->ld.label != FLT_MAX)
+	{
+		ex->loss = reg->loss->loss(ex->final_prediction, ex->ld.label) * ex->ld.weight;
+
+		double update = 0.;
+		// TODO: adaptive code here
+
+		update = (env->eta)/pow(t, env->power_t) * ex->ld.weight;
+		//printf("update is: %f t = %f. env->power_t = %f.\n", update, t, env->power_t);
+		ex->eta_round = reg->loss->get_update(ex->final_prediction, ex->ld.label, update, ex->total_sum_feat_sq);
+
+		env->update_sum += update;
+	}
+}
+
 float CVowpalWabbit::predict(VwExample* ex)
 {
 	float prediction;
@@ -88,6 +124,10 @@ float CVowpalWabbit::predict(VwExample* ex)
 	else
 		prediction = inline_predict(ex);
 
+	ex->partial_prediction += prediction;
+
+	local_predict(ex);
+	
 	return prediction;
 }
 	
@@ -100,6 +140,7 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 	VwExample* example = NULL;
 	int32_t current_pass = 0;
 
+	int cnt = 0;
 	features->start_parser();
 	while (features->get_next_example())
 	{
@@ -111,9 +152,11 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 			current_pass = example->pass;
 		}
 
+		cnt++;
+		float out = predict(example);
 		learner->train(example, example->eta_round);
-		predict(example);
 		
+		printf("Example %d: Prediction = %f.\n", cnt, out);
 		features->release_example();
 	}
 	features->end_parser();

@@ -30,6 +30,10 @@ private:
 	virtual float inline_l1_predict(VwExample* &ex);
 
 	virtual float inline_predict(VwExample* &ex);
+
+	virtual float finalize_prediction(float ret);
+	
+	virtual void local_predict(VwExample* ex);
 	
 protected:
 	/// Features

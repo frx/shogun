@@ -16,6 +16,7 @@
 #include <shogun/lib/vw/substring.h>
 #include <shogun/lib/vw/parse_primitives.h>
 #include <shogun/losses/LossFunction.h>
+#include <shogun/losses/SquaredLoss.h>
 
 namespace shogun
 {
@@ -49,6 +50,9 @@ namespace shogun
 
 			l1_regularization = 0.;
 			update_sum = 0.;
+
+			power_t = 0.5;
+			t = 0.;
 		}
 
 		~VwEnvironment()
@@ -127,6 +131,9 @@ namespace shogun
 
 		bool random_weights;
 		float initial_weight;
+
+		float power_t;
+		float t;
 	};
 
 	class VwLabel
@@ -138,6 +145,13 @@ namespace shogun
 		 *
 		 * @param words substrings, each representing a token in the label data of the format
 		 */
+		VwLabel()
+		{
+			label = FLT_MAX;
+			weight = 1.;
+			initial = 0.;
+		}
+		
 		void parse_label(v_array<substring>& words)
 		{
 			switch(words.index())
@@ -277,6 +291,7 @@ namespace shogun
 		VwRegressor(VwEnvironment* env = NULL)
 		{
 			weight_vectors = NULL;
+			loss = new CSquaredLoss();
 			init(env);
 		}
 		
