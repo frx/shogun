@@ -61,6 +61,8 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	ae->total_sum_feat_sq = 1;
 	ae->example_counter = ++example_count;
 	ae->global_weight = (ae->ld).get_weight();
+	env->t += ae->global_weight;
+	ae->example_t = env->t;
 	//p->t += ae->global_weight; THIS SHOULD BE IN THE MAIN ALGORITHM
 	//ae->example_t = p->t; AS SHOULD THIS
 
