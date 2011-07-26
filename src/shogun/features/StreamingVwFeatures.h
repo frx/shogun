@@ -123,6 +123,16 @@ public:
 	{
 		return env;
 	}
+
+	/** 
+	 * Set the environment
+	 * 
+	 * @param vw_env environment
+	 */
+	virtual void set_env(VwEnvironment* vw_env)
+	{
+		env=vw_env;
+	}
 	
 	/**
 	 * Instructs the parser to return the next example.

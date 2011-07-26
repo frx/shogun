@@ -9,14 +9,17 @@ CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
 
 void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 {
-	features=feat;
 	env=feat->get_env();
+	features=feat;
+	reg=new VwRegressor(env);
 }
 
 void CVowpalWabbit::set_learner()
 {
 	if (env->adaptive)
 		learner = new VwAdaptiveMachine(reg, env);
+	else
+		learner = new VwRegularMachine(reg, env);
 }
 
 float CVowpalWabbit::inline_l1_predict(VwExample* &ex)

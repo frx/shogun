@@ -23,6 +23,8 @@ void CStreamingVwFeatures::init()
 	working_file=NULL;
 	seekable=false;
 	current_length=-1;
+
+	env = new VwEnvironment();
 }
 
 void CStreamingVwFeatures::init(CStreamingFile* file,
