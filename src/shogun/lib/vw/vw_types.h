@@ -27,8 +27,8 @@ namespace shogun
 	const int quadratic_constant = 27942141;
 	const int constant = 11650396;
 
-/* VwEnvironment should be shared between VW objects as a replacement
- * for global data */
+	/* VwEnvironment should be shared between VW objects as a replacement
+	 * for global data */
 	class VwEnvironment
 	{
 	public:
@@ -300,12 +300,14 @@ namespace shogun
 				weight_vectors[i] = new float[env->stride * length / num_threads]();
 
 				if (env->random_weights)
+				{
 					if (env->rank > 0)
 						for (size_t j = 0; j < env->stride*length/num_threads; j++)
 							weight_vectors[i][j] = (double) 0.1 * rand() / ((double) RAND_MAX + 1.0);
 					else
 						for (size_t j = 0; j < length/num_threads; j++)
 							weight_vectors[i][j] = drand48() - 0.5;
+				}
 				
 				if (env->initial_weight != 0.)
 					for (size_t j = 0; j< env->stride*length/num_threads; j+=env->stride)

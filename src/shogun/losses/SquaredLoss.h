@@ -1,7 +1,7 @@
 #ifndef _SQUAREDLOSS_H__
 #define _SQUAREDLOSS_H__
 
-#include <shogun/lib/losses/LossFunction.h>
+#include <shogun/losses/LossFunction.h>
 
 namespace shogun
 {
@@ -28,6 +28,10 @@ public:
 	float64_t first_derivative(float64_t prediction, float64_t label);
 
 	float64_t second_derivative(float64_t prediction, float64_t label);
+
+	virtual const char* get_name() const { return "SquaredLoss"; }
 };
 
 }
+
+#endif

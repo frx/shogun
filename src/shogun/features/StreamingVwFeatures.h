@@ -15,6 +15,7 @@
 #include <shogun/features/StreamingDotFeatures.h>
 #include <shogun/lib/DataType.h>
 #include <shogun/lib/vw/vw_types.h>
+#include <shogun/lib/vw/sparse_dense.h>
 #include <shogun/lib/vw/util.h>
 #include <shogun/io/StreamingVwFile.h>
 #include <shogun/io/InputParser.h>
@@ -114,6 +115,15 @@ public:
 		SG_NOTIMPLEMENTED;
 	}
 
+	/** 
+	 * Get the environment
+	 * @return environment
+	 */
+	virtual VwEnvironment* get_env()
+	{
+		return env;
+	}
+	
 	/**
 	 * Instructs the parser to return the next example.
 	 *
@@ -254,7 +264,7 @@ private:
 	 * Initializes members to null values.
 	 * current_length is set to -1.
 	 */
-	void init();
+	virtual void init();
 
 	/**
 	 * Calls init, and also initializes the parser with the given args.
@@ -263,9 +273,9 @@ private:
 	 * @param is_labelled whether labelled or not
 	 * @param size number of examples in the parser's ring
 	 */
-	void init(CStreamingFile *file, bool is_labelled, int32_t size);
+	virtual void init(CStreamingFile *file, bool is_labelled, int32_t size);
 
-	void setup_example(VwExample* ae);
+	virtual void setup_example(VwExample* ae);
 
 protected:
 
