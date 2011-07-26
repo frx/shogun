@@ -1,4 +1,5 @@
-#include <shogun/lib/losses/SquaredLoss.h>
+#include <shogun/mathematics/Math.h>
+#include <shogun/losses/SquaredLoss.h>
 
 using namespace shogun;
 

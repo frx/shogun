@@ -1,12 +1,13 @@
 #ifndef _LOSSFUNCTION_H__
 #define _LOSSFUNCTION_H__
 
+#include <shogun/base/SGObject.h>
 #include <shogun/lib/common.h>
 
 namespace shogun
 {
 
-class CLossFunction
+class CLossFunction: public CSGObject
 {
 public:
 	/** 
@@ -66,6 +67,8 @@ public:
 	 * @return second derivative
 	 */
 	virtual float64_t second_derivative(float64_t prediction, float64_t label) = 0;
+
+	virtual const char* get_name() const { return "LossFunction"; }
 };
 }
 #endif

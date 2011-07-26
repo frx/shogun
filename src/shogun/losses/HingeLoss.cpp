@@ -1,4 +1,4 @@
-#include <shogun/lib/losses/HingeLoss.h>
+#include <shogun/losses/HingeLoss.h>
 
 using namespace shogun;
 
