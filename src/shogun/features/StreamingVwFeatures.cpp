@@ -182,6 +182,16 @@ float64_t CStreamingVwFeatures::get_label()
 
 void CStreamingVwFeatures::release_example()
 {
+	env->example_number++;
+	env->weighted_examples += current_example->ld.weight;
+
+	if (current_example->ld.label == FLT_MAX)
+		env->weighted_labels += 0;
+	else
+		env->weighted_labels += current_example->ld.label * current_example->ld.weight;
+	env->total_features += current_example->num_features;
+	env->sum_loss += current_example->loss;
+
 	current_example->reset_members();
 	parser.finalize_example();
 }

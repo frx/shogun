@@ -40,6 +40,9 @@ namespace shogun
 			mask = (1 << num_bits) - 1;
 			stride = 1;
 
+			min_label = 0.;
+			max_label = 1.;
+
 			// Inferred from parse_args
 			eta = 10.;
 			eta_decay_rate = 1.;
@@ -53,6 +56,14 @@ namespace shogun
 
 			power_t = 0.5;
 			t = 1.;
+			initial_t = 1.;
+
+			example_number = 0;
+			weighted_examples = 0.;
+			weighted_unlabeled_examples = 0.;
+			weighted_labels = 0.;
+			total_features = 0;
+			sum_loss = 0.;
 		}
 
 		~VwEnvironment()
@@ -134,6 +145,15 @@ namespace shogun
 
 		float power_t;
 		float t;
+
+		double initial_t;
+		long long int example_number;
+		double weighted_examples;
+		double weighted_unlabeled_examples;
+		double weighted_labels;
+		size_t total_features;
+		double sum_loss;
+
 	};
 
 	class VwLabel
