@@ -43,7 +43,6 @@ namespace shogun
 			min_label = 0.;
 			max_label = 1.;
 
-			// Inferred from parse_args
 			eta = 10.;
 			eta_decay_rate = 1.;
 
@@ -262,8 +261,6 @@ namespace shogun
 			global_weight = 0;
 			example_t = 0;
 
-			/* THIS PART IS FROM parse_atomic_example */
-			/* Erase features, subsets */
 			for (size_t* i = indices.begin; i != indices.end; i++)
 			{
 				atomics[*i].erase();
