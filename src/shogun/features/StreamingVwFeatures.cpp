@@ -182,6 +182,7 @@ float64_t CStreamingVwFeatures::get_label()
 
 void CStreamingVwFeatures::release_example()
 {
+	current_example->reset_members();
 	parser.finalize_example();
 }
 
