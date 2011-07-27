@@ -18,6 +18,7 @@ public:
 
 	virtual float predict(VwExample* ex);
 
+	virtual VwEnvironment* get_env() { return env; }
 private:
 	/** 
 	 * Sets the train/update methods depending on parameters 
