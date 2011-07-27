@@ -25,7 +25,7 @@ void CVowpalWabbit::set_learner()
 float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 {
 	size_t thread_num = 0;
-	
+
 	float prediction = ex->ld.get_initial();
 
 	float* weights = reg->weight_vectors[thread_num];
@@ -75,6 +75,7 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 				prediction += one_pf_quad_predict(weights, *temp.begin,
 								  ex->atomics[(int)(*i)[1]],
 								  thread_mask);
+
 		}
 	}
 
@@ -109,8 +110,9 @@ void CVowpalWabbit::local_predict(VwExample* ex)
 		// TODO: adaptive code here
 
 		update = (env->eta)/pow(t, env->power_t) * ex->ld.weight;
-		//printf("update is: %f t = %f. env->power_t = %f.\n", update, t, env->power_t);
+
 		ex->eta_round = reg->loss->get_update(ex->final_prediction, ex->ld.label, update, ex->total_sum_feat_sq);
+
 
 		env->update_sum += update;
 	}
@@ -127,16 +129,16 @@ float CVowpalWabbit::predict(VwExample* ex)
 	ex->partial_prediction += prediction;
 
 	local_predict(ex);
-	
+
 	return prediction;
 }
-	
+
 void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 {
 	ASSERT(features);
 
 	set_learner();
-	
+
 	VwExample* example = NULL;
 	int32_t current_pass = 0;
 
@@ -155,12 +157,12 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		cnt++;
 		float out = predict(example);
 		learner->train(example, example->eta_round);
-		
-		printf("Example %d: Prediction = %f.\n", cnt, out);
+		printf ("\nExample %d: Prediction = %f.\n", cnt, example->final_prediction);
+		example->eta_round = 0.;
 		features->release_example();
 	}
 	features->end_parser();
-	
+
 	if (env->l1_regularization > 0.)
 	{
 		uint32_t length = 1 << env->num_bits;
@@ -169,5 +171,5 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		for (uint32_t i = 0; i < length; i++)
 			reg->weight_vectors[0][stride*i] = real_weight(reg->weight_vectors[0][stride*i], gravity);
 	}
-	
+
 }

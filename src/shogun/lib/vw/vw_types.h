@@ -22,7 +22,7 @@ namespace shogun
 {
 	using std::string;
 	using std::vector;
-	
+
 	typedef size_t (*hash_func_t)(substring, unsigned long);
 
 	const int quadratic_constant = 27942141;
@@ -52,7 +52,7 @@ namespace shogun
 			update_sum = 0.;
 
 			power_t = 0.5;
-			t = 0.;
+			t = 1.;
 		}
 
 		~VwEnvironment()
@@ -100,7 +100,7 @@ namespace shogun
 		size_t num_bits;
 		/// log_2 of the number of partitions of features
 		size_t partition_bits;
-		/// 
+		///
 		size_t thread_bits;
 		/// Mask used for hashing
 		size_t mask;
@@ -151,7 +151,7 @@ namespace shogun
 			weight = 1.;
 			initial = 0.;
 		}
-		
+
 		void parse_label(v_array<substring>& words)
 		{
 			switch(words.index())
@@ -233,7 +233,7 @@ namespace shogun
 		 * Resets the members so the values can be updated
 		 * directly.
 		 */
-		inline void reset_members()
+		void reset_members()
 		{
 			partial_prediction = 0.;
 			num_features = 0;
@@ -294,7 +294,7 @@ namespace shogun
 			loss = new CSquaredLoss();
 			init(env);
 		}
-		
+
 		~VwRegressor()
 		{
 			if (weight_vectors)
@@ -305,7 +305,7 @@ namespace shogun
 		{
 			size_t length = ((size_t) 1) << env->num_bits;
 			env->thread_mask = (env->stride * (length >> env->thread_bits)) - 1;
-			
+
 			size_t num_threads = 1;
 			weight_vectors = new float*[num_threads];
 
@@ -323,23 +323,23 @@ namespace shogun
 						for (size_t j = 0; j < length/num_threads; j++)
 							weight_vectors[i][j] = drand48() - 0.5;
 				}
-				
+
 				if (env->initial_weight != 0.)
 					for (size_t j = 0; j< env->stride*length/num_threads; j+=env->stride)
 						weight_vectors[i][j] = env->initial_weight;
-				
+
 				if (env->adaptive)
 					for (size_t j = 1; j< env->stride*length/num_threads; j+=env->stride)
 						weight_vectors[i][j] = 1;
 			}
 		}
-		
-			
+
+
 	public:
 		float** weight_vectors;
 
 		CLossFunction* loss;
 	};
-		
+
 }
 #endif
