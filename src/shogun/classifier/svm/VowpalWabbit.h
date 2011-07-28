@@ -34,8 +34,6 @@ private:
 
 	virtual float finalize_prediction(float ret);
 	
-	virtual void local_predict(VwExample* ex);
-	
 protected:
 	/// Features
 	CStreamingVwFeatures* features;

@@ -56,7 +56,6 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	*/
 
 	ae->pass = env->passes_complete;
-	ae->partial_prediction = 0;
 	ae->num_features = 0;
 	ae->total_sum_feat_sq = 1;
 	ae->example_counter = ++example_count;
@@ -208,8 +207,47 @@ float64_t CStreamingVwFeatures::dot(CStreamingDotFeatures* df)
 	SG_NOTIMPLEMENTED;
 }
 
+float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
+{
+	float64_t ret = 0.;
+	for (size_t* i = ex->indices.begin; i!= ex->indices.end; i++)
+	{
+		for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
+			ret += vec2[f->weight_index & env->mask] * f->x;
+	}
+	return ret;
+}
 
+float CStreamingVwFeatures::dense_dot(const float* vec2, int32_t vec2_len)
+{
+	return dense_dot(current_example, vec2);
+}
 
+void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val)
+{
+	if (abs_val)
+	{
+		for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
+		{
+			for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
+				vec2[f->weight_index & env->mask] += alpha * abs(f->x);
+		}
+	}
+	else
+	{
+		for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
+		{
+			for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
+				vec2[f->weight_index & env->mask] += alpha * f->x;
+		}
+	}
+}
+
+void CStreamingVwFeatures::add_to_dense_vec(float alpha, float* vec2, int32_t vec2_len, bool abs_val)
+{
+	add_to_dense_vec(alpha, current_example, vec2, vec2_len, abs_val);
+}
+	
 int32_t CStreamingVwFeatures::get_num_features()
 {
 	return current_length;

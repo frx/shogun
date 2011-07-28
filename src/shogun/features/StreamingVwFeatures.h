@@ -189,6 +189,18 @@ public:
 	 */
 	virtual float64_t dot(CStreamingDotFeatures *df);
 
+	/** 
+	 * Dot product of an example with a vector
+	 * 
+	 * @param ex example, as VwExample
+	 * @param vec2 vector to take dot product with
+	 * 
+	 * @return dot product
+	 */
+	virtual float dense_dot(VwExample* &ex, const float* vec2);
+
+	virtual float dense_dot(const float* vec2, int32_t vec2_len);
+	
 	/**
 	 * Dot product with another dense vector.
 	 *
@@ -201,6 +213,10 @@ public:
 		SG_NOTIMPLEMENTED;
 	}
 
+	virtual void add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val = false);
+		
+	virtual void add_to_dense_vec(float alpha, float* vec2, int32_t vec2_len, bool abs_val = false);
+	
 	/**
 	 * Add alpha*current_vector to another dense vector.
 	 * Takes the absolute value of current_vector if specified.

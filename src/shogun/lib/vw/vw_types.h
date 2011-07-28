@@ -240,7 +240,7 @@ namespace shogun
 		VwExample(VwEnvironment* env = NULL)
 		{
 			pass = 0;
-			partial_prediction = 0.;
+			final_prediction = 0.;
 			num_features = 0;
 			total_sum_feat_sq = 1;
 			example_counter = 0;
@@ -254,7 +254,6 @@ namespace shogun
 		 */
 		void reset_members()
 		{
-			partial_prediction = 0.;
 			num_features = 0;
 			total_sum_feat_sq = 1;
 			example_counter = 0;
@@ -284,7 +283,6 @@ namespace shogun
 
 		size_t num_features;
 		size_t pass;
-		float64_t partial_prediction;
 		float64_t final_prediction;
 		float64_t global_prediction;
 		float64_t loss;
@@ -318,6 +316,17 @@ namespace shogun
 				delete[] weight_vectors;
 		}
 
+		float64_t get_loss(float64_t prediction, float64_t label)
+		{
+			return loss->loss(prediction, label);
+		}
+
+		float64_t get_update(float64_t prediction, float64_t label,
+				     float64_t eta_t, float64_t norm)
+		{
+			return loss->get_update(prediction, label, eta_t, norm);
+		}
+		
 		void init(VwEnvironment* env = NULL)
 		{
 			size_t length = ((size_t) 1) << env->num_bits;
