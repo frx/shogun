@@ -32,7 +32,7 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 	size_t thread_mask = env->thread_mask;
 	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
-		prediction += sd_truncadd(weights, thread_mask, ex->subsets[*i][thread_num], ex->subsets[*i][thread_num+1], env->l1_regularization * env->update_sum);
+		prediction += sd_truncadd(weights, thread_mask, ex->atomics[*i].begin, ex->atomics[*i].end, env->l1_regularization * env->update_sum);
 	}
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
@@ -59,13 +59,11 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 
 	float* weights = reg->weight_vectors[thread_num];
 	size_t thread_mask = env->thread_mask;
-	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
-		prediction += sd_add(weights, thread_mask,
-				     ex->subsets[*i][thread_num],
-				     ex->subsets[*i][thread_num+1]);
+	prediction += features->dense_dot(weights, 0);
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
+		
 		if (ex->subsets[(int)(*i)[0]].index() > 0)
 		{
 			v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
@@ -94,29 +92,6 @@ float CVowpalWabbit::finalize_prediction(float ret)
 	return ret;
 }
 
-void CVowpalWabbit::local_predict(VwExample* ex)
-{
-	ex->final_prediction = finalize_prediction(ex->partial_prediction);
-
-	float t;
-
-	t = ex->example_t;
-
-	if (ex->ld.label != FLT_MAX)
-	{
-		ex->loss = reg->loss->loss(ex->final_prediction, ex->ld.label) * ex->ld.weight;
-
-		double update = 0.;
-		// TODO: adaptive code here
-
-		update = (env->eta)/pow(t, env->power_t) * ex->ld.weight;
-
-		ex->eta_round = reg->loss->get_update(ex->final_prediction, ex->ld.label, update, ex->total_sum_feat_sq);
-
-		env->update_sum += update;
-	}
-}
-
 float CVowpalWabbit::predict(VwExample* ex)
 {
 	float prediction;
@@ -125,9 +100,18 @@ float CVowpalWabbit::predict(VwExample* ex)
 	else
 		prediction = inline_predict(ex);
 
-	ex->partial_prediction += prediction;
+	ex->final_prediction += prediction;
+	ex->final_prediction = finalize_prediction(ex->final_prediction);
+	float t = ex->example_t;
 
-	local_predict(ex);
+	if (ex->ld.label != FLT_MAX)
+	{
+		ex->loss = reg->get_loss(ex->final_prediction, ex->ld.label) * ex->ld.weight;
+		double update = 0.;
+		update = (env->eta)/pow(t, env->power_t) * ex->ld.weight;
+		ex->eta_round = reg->get_update(ex->final_prediction, ex->ld.label, update, ex->total_sum_feat_sq);
+		env->update_sum += update;
+	}
 
 	return prediction;
 }
