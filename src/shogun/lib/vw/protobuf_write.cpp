@@ -2,21 +2,21 @@
 
 using namespace shogun;
 
-CProtobufCacheWriter::CProtobufCacheWriter(const char* fname):
-	CVwCacheWriter(fname)
+ProtobufCacheWriter::ProtobufCacheWriter(const char* fname):
+	VwCacheWriter(fname)
 {
 	file_stream = new FileOutputStream(fd);
 	coded_stream = new CodedOutputStream(file_stream);
 }
 
-CProtobufCacheWriter::~CProtobufCacheWriter()
+ProtobufCacheWriter::~ProtobufCacheWriter()
 {
 	delete coded_stream;
 	delete file_stream;
 	close(fd);
 }
        
-void CProtobufCacheWriter::cache_example(const VwExample*& ex)
+void ProtobufCacheWriter::cache_example(const VwExample*& ex)
 {
 	vwcache::Example ex_cached;
 
