@@ -17,12 +17,12 @@ using namespace google::protobuf::io;
 namespace shogun
 {
 
-class CProtobufCacheWriter: public CVwCacheWriter
+class ProtobufCacheWriter: public VwCacheWriter
 {
 public:
-	CProtobufCacheWriter(const char* fname);
+	ProtobufCacheWriter(const char* fname);
 
-	virtual ~CProtobufCacheWriter();
+	virtual ~ProtobufCacheWriter();
 
 	virtual void cache_example(const VwExample* &ex);
 	

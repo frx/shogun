@@ -7,7 +7,7 @@
 namespace shogun
 {
 
-class CVwCacheWriter
+class VwCacheWriter
 {
 public:
 	/** 
@@ -15,7 +15,7 @@ public:
 	 * 
 	 * @param fname name of file to open
 	 */
-	CVwCacheWriter(const char* fname)
+	VwCacheWriter(const char* fname)
 	{
 		fd = open(fname, O_CREAT | O_TRUNC | O_RDWR);
  
@@ -26,7 +26,7 @@ public:
 	/** 
 	 * Destructor
 	 */
-	virtual ~CVwCacheWriter() {}
+	virtual ~VwCacheWriter() {}
 
 	/** 
 	 * Function to cache one example to the file
