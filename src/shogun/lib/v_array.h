@@ -70,7 +70,7 @@ public:
 	 * 
 	 * @return number of array elements
 	 */
-	inline unsigned int index() { return end-begin; }
+	inline unsigned int index() const { return end-begin; }
 
 	/** 
 	 * Empty the array.
