@@ -26,7 +26,7 @@ public:
 	virtual float64_t loss(float64_t prediction, float64_t label) = 0;
 
 	/** 
-	 * Get the update for an example
+	 * Get the updated learning rate for an example
 	 * 
 	 * @param prediction prediction
 	 * @param label label

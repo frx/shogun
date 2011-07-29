@@ -17,7 +17,6 @@ inline EFeatureType CStreamingVwFeatures::get_feature_type()
 	return F_DREAL;
 }
 
-
 void CStreamingVwFeatures::init()
 {
 	working_file=NULL;
@@ -25,11 +24,12 @@ void CStreamingVwFeatures::init()
 	current_length=-1;
 
 	env = new VwEnvironment();
+	example_count = 0;
 }
 
 void CStreamingVwFeatures::init(CStreamingFile* file,
-				    bool is_labelled,
-				    int32_t size)
+				bool is_labelled,
+				int32_t size)
 {
 	init();
 	has_labels = is_labelled;
@@ -43,16 +43,13 @@ void CStreamingVwFeatures::init(CStreamingFile* file,
 
 void CStreamingVwFeatures::setup_example(VwExample* ae)
 {
-	/* Shift the necessary stuff to the VwExample constructor */
-	// ae->reset_members();
-
 	/* TODO: DO THE NECESSARY FOR BELOW */
 	/*
-	if(env->sort_features && ae->sorted == false)
-		unique_sort_features(ae);
+	  if(env->sort_features && ae->sorted == false)
+	  unique_sort_features(ae);
 
-	if(env->ngram > 1)
-		generateGrams(env->ngram, env->skips, ae);
+	  if(env->ngram > 1)
+	  generateGrams(env->ngram, env->skips, ae);
 	*/
 
 	ae->pass = env->passes_complete;
@@ -94,26 +91,8 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 				j->weight_index = j->weight_index*stride;
 	}
 
-	/* Partition the features according to number of experts */
-	// Should loop through the features to determine the boundaries
-	size_t length = env->mask + 1;
-	size_t expert_size = env->stride * (length >> env->partition_bits); //#features/expert
 	for (size_t* i = ae->indices.begin; i != ae->indices.end; i++)
 	{
-		// Subsets is already erased just before parsing.
-		VwFeature* f = ae->atomics[*i].begin;
-		ae->subsets[*i].push(f);
-		size_t current = expert_size;
-		while (current <= length * env->stride)
-		{
-			VwFeature* ret = f;
-			if (ae->atomics[*i].end > f)
-				ret = search(f, current, ae->atomics[*i].end);
-			ae->subsets[*i].push(ret);
-			f = ret;
-			current += expert_size;
-		}
-		ASSERT(f == ae->atomics[*i].end);
 		ae->num_features += ae->atomics[*i].end - ae->atomics[*i].begin;
 		ae->total_sum_feat_sq += ae->sum_feat_sq[*i];
 	}
@@ -163,6 +142,9 @@ bool CStreamingVwFeatures::get_next_example()
 	if (ret_value)
 		setup_example(current_example);
 
+	current_label = current_example->ld.label;
+	current_length = current_example->num_features;
+
 	return ret_value;
 }
 
@@ -178,7 +160,6 @@ float64_t CStreamingVwFeatures::get_label()
 	return current_label;
 }
 
-
 void CStreamingVwFeatures::release_example()
 {
 	env->example_number++;
@@ -188,6 +169,7 @@ void CStreamingVwFeatures::release_example()
 		env->weighted_labels += 0;
 	else
 		env->weighted_labels += current_example->ld.label * current_example->ld.weight;
+
 	env->total_features += current_example->num_features;
 	env->sum_loss += current_example->loss;
 
@@ -195,12 +177,10 @@ void CStreamingVwFeatures::release_example()
 	parser.finalize_example();
 }
 
-
 int32_t CStreamingVwFeatures::get_dim_feature_space()
 {
 	return current_length;
 }
-
 
 float64_t CStreamingVwFeatures::dot(CStreamingDotFeatures* df)
 {
@@ -221,6 +201,21 @@ float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
 float CStreamingVwFeatures::dense_dot(const float* vec2, int32_t vec2_len)
 {
 	return dense_dot(current_example, vec2);
+}
+
+float CStreamingVwFeatures::dense_dot_truncated(const float* vec2, VwExample* &ex, float gravity)
+{
+	float ret = 0.;
+	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
+	{
+		for (VwFeature* f = ex->atomics[*i].begin; f!= ex->atomics[*i].end; f++)
+		{
+			float w = vec2[f->weight_index & env->mask];
+			float wprime = real_weight(w,gravity);
+			ret += wprime*f->x;
+		}
+	}
+	return ret;
 }
 
 void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val)
@@ -247,7 +242,7 @@ void CStreamingVwFeatures::add_to_dense_vec(float alpha, float* vec2, int32_t ve
 {
 	add_to_dense_vec(alpha, current_example, vec2, vec2_len, abs_val);
 }
-	
+
 int32_t CStreamingVwFeatures::get_num_features()
 {
 	return current_length;

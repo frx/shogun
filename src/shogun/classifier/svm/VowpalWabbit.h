@@ -33,6 +33,8 @@ private:
 	virtual float inline_predict(VwExample* &ex);
 
 	virtual float finalize_prediction(float ret);
+
+	virtual void print_update(VwExample* &ex);
 	
 protected:
 	/// Features
