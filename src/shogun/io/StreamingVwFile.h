@@ -13,6 +13,7 @@
 #include <shogun/io/StreamingFile.h>
 #include <shogun/lib/vw/vw_types.h>
 #include <shogun/lib/vw/vw_parser.h>
+#include <shogun/lib/vw/protobuf_read.h>
 
 namespace shogun
 {
@@ -49,6 +50,8 @@ public:
 	virtual ~CStreamingVwFile()
 	{
 		delete p;
+		if (read_from_cache)
+			delete cache_reader;
 	}
 
 	/**
@@ -63,6 +66,15 @@ public:
 	 */
 	void get_vector(VwExample* &ex, int32_t &len)
 	{
+		if (read_from_cache)
+		{
+			ex  = cache_reader->read_cached_example();
+			if (ex == NULL)
+				len = -1;
+			else
+				len = 1;
+		}
+
 		len = p->read_features(buf, ex);
 		if (len == 0)
 			len = -1;
@@ -106,6 +118,28 @@ public:
 		return env;
 	}
 
+	/**
+	 * Whether the file is a cache file or not
+	 *
+	 * @param read_cache is file a cache file
+	 */
+	void set_read_from_cache(bool read_cache)
+	{
+		read_from_cache = read_cache;
+		if (read_from_cache)
+			cache_reader = new ProtobufCacheReader(buf->working_file);
+	}
+
+	/**
+	 * Get whether file is a cache
+	 *
+	 * @return whether reading from a cache
+	 */
+	bool get_read_from_cache()
+	{
+		return read_from_cache;
+	}
+
 	/** @return object name */
 	inline virtual const char* get_name() const
 	{
@@ -129,6 +163,12 @@ protected:
 
 	/// Environment used for vw - used by parser
 	VwEnvironment* env;
+
+	/// Read the file as a cache file
+	bool read_from_cache;
+
+	/// Cache reader
+	ProtobufCacheReader* cache_reader;
 };
 }
 #endif //__STREAMING_VWFILE_H__

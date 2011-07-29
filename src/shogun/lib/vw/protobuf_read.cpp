@@ -29,11 +29,17 @@ VwExample* ProtobufCacheReader::read_cached_example()
 
 	google::protobuf::uint32 read_size;
 	if (!coded_stream->ReadVarint32(&read_size))
-		SG_SERROR("Failed to read object size from cached input!\n");
+	{
+		SG_SINFO("Failed to read object size from cached input!\n");
+		return NULL;
+	}
 	
 	CodedInputStream::Limit lim = coded_stream->PushLimit(read_size);
 	if (!ex_cached.ParseFromCodedStream(coded_stream))
-		SG_SERROR("Failed to parse from cached input!\n");
+	{
+		SG_SINFO("Failed to parse from cached input!\n");
+		return NULL;
+	}
 	
 	coded_stream->PopLimit(lim);
 
