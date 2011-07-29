@@ -16,7 +16,7 @@ ProtobufCacheWriter::~ProtobufCacheWriter()
 	close(fd);
 }
        
-void ProtobufCacheWriter::cache_example(const VwExample*& ex)
+void ProtobufCacheWriter::cache_example(VwExample*& ex)
 {
 	vwcache::Example ex_cached;
 

@@ -33,7 +33,7 @@ public:
 	 * 
 	 * @param ex example to cache
 	 */
-	virtual void cache_example(const VwExample* &ex) = 0;
+	virtual void cache_example(VwExample* &ex) = 0;
 
 protected:
 
