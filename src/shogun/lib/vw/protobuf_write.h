@@ -24,7 +24,7 @@ public:
 
 	virtual ~ProtobufCacheWriter();
 
-	virtual void cache_example(const VwExample* &ex);
+	virtual void cache_example(VwExample* &ex);
 	
 protected:
 	/// FileOutputStream from the opened file

@@ -1,5 +1,6 @@
 #include <shogun/lib/vw/parse_example.h>
 #include <shogun/lib/vw/vw_parser.h>
+#include <shogun/lib/vw/protobuf_write.h>
 
 using namespace shogun;
 
@@ -110,6 +111,8 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		/* Add index to list of indices if required */
 		if (new_index && ae->atomics[index].begin != ae->atomics[index].end)
 			ae->indices.push(index);
+
+		cache_writer->cache_example(ae);
 	}
 
 	return num_chars;
