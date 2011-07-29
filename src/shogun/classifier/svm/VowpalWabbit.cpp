@@ -30,10 +30,8 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 
 	float* weights = reg->weight_vectors[thread_num];
 	size_t thread_mask = env->thread_mask;
-	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
-	{
-		prediction += sd_truncadd(weights, thread_mask, ex->atomics[*i].begin, ex->atomics[*i].end, env->l1_regularization * env->update_sum);
-	}
+
+	prediction += features->dense_dot_truncated(weights, ex, env->l1_regularization * env->update_sum);
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
@@ -63,7 +61,7 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
-		
+
 		if (ex->subsets[(int)(*i)[0]].index() > 0)
 		{
 			v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
@@ -124,6 +122,14 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 
 	VwExample* example = NULL;
 	int32_t current_pass = 0;
+	float dump_interval = exp(1.);
+
+	const char * header_fmt = "%-10s %-10s %8s %8s %10s %8s %8s\n";
+	fprintf(stdout, header_fmt,
+		"average", "since", "example", "example",
+		"current", "current", "current");
+	fprintf(stdout, header_fmt,
+		"loss", "last", "counter", "weight", "label", "predict", "features");
 
 	int cnt = 0;
 	features->start_parser();
@@ -142,6 +148,13 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		learner->train(example, example->eta_round);
 		//printf ("\nExample %d: Prediction = %f.\n", cnt, example->final_prediction);
 		example->eta_round = 0.;
+
+		if (env->weighted_examples + example->ld.weight > dump_interval)
+		{
+			print_update(example);
+			dump_interval *= 2;
+		}
+
 		features->release_example();
 	}
 	features->end_parser();
@@ -155,4 +168,17 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 			reg->weight_vectors[0][stride*i] = real_weight(reg->weight_vectors[0][stride*i], gravity);
 	}
 
+
+}
+
+void CVowpalWabbit::print_update(VwExample* &ex)
+{
+	printf("%-10.6f %-10.6f %8lld %8.1f %8.4f %8.4f %8lu\n",
+	       env->sum_loss/env->weighted_examples,
+	       0.0,
+	       env->example_number,
+	       env->weighted_examples,
+	       ex->ld.label,
+	       ex->final_prediction,
+	       (long unsigned int)ex->num_features);
 }

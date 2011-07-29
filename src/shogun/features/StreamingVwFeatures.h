@@ -115,7 +115,7 @@ public:
 		SG_NOTIMPLEMENTED;
 	}
 
-	/** 
+	/**
 	 * Get the environment
 	 * @return environment
 	 */
@@ -124,16 +124,16 @@ public:
 		return env;
 	}
 
-	/** 
+	/**
 	 * Set the environment
-	 * 
+	 *
 	 * @param vw_env environment
 	 */
 	virtual void set_env(VwEnvironment* vw_env)
 	{
 		env=vw_env;
 	}
-	
+
 	/**
 	 * Instructs the parser to return the next example.
 	 *
@@ -144,9 +144,9 @@ public:
 	 */
 	virtual bool get_next_example();
 
-	/** 
+	/**
 	 * Returns the current example.
-	 * 
+	 *
 	 * @return current example as VwExample*
 	 */
 	virtual VwExample* get_example();
@@ -178,6 +178,22 @@ public:
 	virtual int32_t get_dim_feature_space();
 
 	/**
+	 * Reduce element 'w' to max(w-gravity, 0)
+	 *
+	 * @param w value to truncate
+	 * @param gravity value to truncate using
+	 *
+	 * @return truncated value
+	 */
+	inline virtual float real_weight(float w, float gravity)
+	{
+		float wprime = 0;
+		if (gravity < fabsf(w))
+			wprime = sign(w)*(fabsf(w) - gravity);
+		return wprime;
+	}
+
+	/**
 	 * Dot product taken with another StreamingDotFeatures object.
 	 *
 	 * Currently only works if it is a CStreamingVwFeatures object.
@@ -189,18 +205,18 @@ public:
 	 */
 	virtual float64_t dot(CStreamingDotFeatures *df);
 
-	/** 
+	/**
 	 * Dot product of an example with a vector
-	 * 
+	 *
 	 * @param ex example, as VwExample
 	 * @param vec2 vector to take dot product with
-	 * 
+	 *
 	 * @return dot product
 	 */
 	virtual float dense_dot(VwExample* &ex, const float* vec2);
 
 	virtual float dense_dot(const float* vec2, int32_t vec2_len);
-	
+
 	/**
 	 * Dot product with another dense vector.
 	 *
@@ -213,10 +229,22 @@ public:
 		SG_NOTIMPLEMENTED;
 	}
 
+	/**
+	 * Calculate dot product of features with another vector, truncating the elements
+	 * of that vector by magnitude 'gravity' to a minimum final magnitude of zero.
+	 *
+	 * @param vec2 vector to take dot product with
+	 * @param ex example whose features have to be taken
+	 * @param gravity value to use for truncating
+	 *
+	 * @return dot product
+	 */
+	virtual float dense_dot_truncated(const float* vec2, VwExample* &ex, float gravity);
+
 	virtual void add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val = false);
-		
+
 	virtual void add_to_dense_vec(float alpha, float* vec2, int32_t vec2_len, bool abs_val = false);
-	
+
 	/**
 	 * Add alpha*current_vector to another dense vector.
 	 * Takes the absolute value of current_vector if specified.
