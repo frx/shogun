@@ -37,6 +37,7 @@ namespace shogun
 		{
 			num_bits = 18;
 			partition_bits = 0;
+			thread_bits = 0;
 			mask = (1 << num_bits) - 1;
 			stride = 1;
 

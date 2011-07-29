@@ -29,7 +29,7 @@ namespace shogun
 
 			hasher = hashstring;
 			
-			cache_writer = new ProtobufCacheWriter("/home/shashwat/cache_shogun");
+			cache_writer = new ProtobufCacheWriter("cache_shogun.dat");
 		}
 
 		/**
@@ -38,6 +38,7 @@ namespace shogun
 		~VwParser()
 		{
 			delete env;
+			delete cache_writer;
 		}
 
 		/**
