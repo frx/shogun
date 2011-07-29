@@ -15,7 +15,7 @@ ProtobufCacheWriter::~ProtobufCacheWriter()
 	delete file_stream;
 	close(fd);
 }
-       
+
 void ProtobufCacheWriter::cache_example(VwExample*& ex)
 {
 	vwcache::Example ex_cached;
@@ -27,11 +27,12 @@ void ProtobufCacheWriter::cache_example(VwExample*& ex)
 	ld.set_initial(ex->ld.initial);
 
 	// Store the tag
+
 	if (ex->tag.index() > 0)
 	{
-		char* tag = new char[ex->tag.index()];
+		char* tag = new char[ex->tag.index() + 1];
 		memcpy(tag, ex->tag.begin, ex->tag.index());
-			
+		tag[ex->tag.index()]='\0';
 		*(ex_cached.mutable_tag()) = tag;
 	}
 

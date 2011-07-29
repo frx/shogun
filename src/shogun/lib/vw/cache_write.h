@@ -17,7 +17,7 @@ public:
 	 */
 	VwCacheWriter(const char* fname)
 	{
-		fd = open(fname, O_CREAT | O_TRUNC | O_RDWR);
+		fd = open(fname, O_CREAT | O_TRUNC | O_RDWR, 0666);
  
 		if (fd < 0)
 			SG_SERROR("Error opening the file %s for writing cache!\n");

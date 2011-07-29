@@ -23,7 +23,6 @@ void CStreamingVwFeatures::init()
 	seekable=false;
 	current_length=-1;
 
-	env = new VwEnvironment();
 	example_count = 0;
 }
 
