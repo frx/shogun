@@ -102,13 +102,13 @@ namespace shogun
 		 * Increments the 'read' position in the buffer.
 		 * 
 		 */
-		virtual void inc_read_index();
+		inline virtual void inc_read_index();
 
 		/** 
 		 * Increments the 'write' position in the buffer.
 		 * 
 		 */
-		virtual void inc_write_index();
+		inline virtual void inc_write_index();
 	
 	protected:
 	

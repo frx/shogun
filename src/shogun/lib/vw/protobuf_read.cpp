@@ -7,6 +7,7 @@ ProtobufCacheReader::ProtobufCacheReader(const char* fname):
 {
 	file_stream = new FileInputStream(fd);
 	coded_stream = new CodedInputStream(file_stream);
+	coded_stream->SetTotalBytesLimit(INT_MAX, -1);
 }
 
 ProtobufCacheReader::ProtobufCacheReader(int f):
@@ -14,6 +15,7 @@ ProtobufCacheReader::ProtobufCacheReader(int f):
 {
 	file_stream = new FileInputStream(fd);
 	coded_stream = new CodedInputStream(file_stream);
+	coded_stream->SetTotalBytesLimit(INT_MAX, -1);	
 }
 
 ProtobufCacheReader::~ProtobufCacheReader()
@@ -26,7 +28,7 @@ ProtobufCacheReader::~ProtobufCacheReader()
 VwExample* ProtobufCacheReader::read_cached_example()
 {
 	vwcache::Example ex_cached;
-
+	
 	google::protobuf::uint32 read_size;
 	if (!coded_stream->ReadVarint32(&read_size))
 	{
@@ -69,6 +71,8 @@ VwExample* ProtobufCacheReader::read_cached_example()
 			ours->push(f);
 		}
 	}
+
+	return ex;
 }
 			
 					 

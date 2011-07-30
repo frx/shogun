@@ -21,10 +21,10 @@ void ProtobufCacheWriter::cache_example(VwExample*& ex)
 	vwcache::Example ex_cached;
 
 	// Store the label
-	vwcache::LabelData ld = ex_cached.ld();
-	ld.set_label(ex->ld.label);
-	ld.set_weight(ex->ld.weight);
-	ld.set_initial(ex->ld.initial);
+	vwcache::LabelData* ld = ex_cached.mutable_ld();
+	ld->set_label(ex->ld.label);
+	ld->set_weight(ex->ld.weight);
+	ld->set_initial(ex->ld.initial);
 
 	// Store the tag
 
@@ -37,7 +37,7 @@ void ProtobufCacheWriter::cache_example(VwExample*& ex)
 	}
 
 	// Loop over namespaces
-	for (google::protobuf::uint32* i = ex->indices.begin; i != ex->indices.end; i++)
+	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
 		vwcache::Channel* channel = ex_cached.add_channels();
 		channel->set_index(*i);

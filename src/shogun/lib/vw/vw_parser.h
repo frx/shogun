@@ -30,6 +30,7 @@ namespace shogun
 			hasher = hashstring;
 			
 			cache_writer = new ProtobufCacheWriter("cache_shogun.dat");
+			write_cache = true;
 		}
 
 		/**
@@ -71,6 +72,26 @@ namespace shogun
 		 */
 		int32_t read_features(CIOBuffer* buf, VwExample*& ex);
 
+		/** 
+		 * Set whether to write cache file or not
+		 * 
+		 * @param wr_cache write cache or not
+		 */
+		void set_write_cache(bool wr_cache)
+		{
+			write_cache = wr_cache;
+		}
+
+		/** 
+		 * Return whether cache will be written or not
+		 * 
+		 * @return will cache be written?
+		 */
+		bool get_write_cache()
+		{
+			return write_cache;
+		}
+		
 		/**
 		 * Update min and max labels seen in the environment
 		 *
@@ -113,6 +134,8 @@ namespace shogun
 		VwEnvironment* env;
 
 		ProtobufCacheWriter* cache_writer;
+
+		bool write_cache;
 	};
 
 }
