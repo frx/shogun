@@ -73,6 +73,7 @@ public:
 				len = -1;
 			else
 				len = 1;
+			return;
 		}
 
 		len = p->read_features(buf, ex);
@@ -91,6 +92,17 @@ public:
 	 */
 	void get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label)
 	{
+		if (read_from_cache)
+		{
+			ex  = cache_reader->read_cached_example();
+			if (ex == NULL)
+				len = -1;
+			else
+				len = 1;
+			label = 1;
+			return;
+		}
+
 		label=1;
 		len = p->read_features(buf, ex);
 		if (len == 0)
@@ -140,6 +152,27 @@ public:
 		return read_from_cache;
 	}
 
+	/** 
+	 * Set whether cache will be written
+	 * 
+	 * @param write_cache whether to write to cache
+	 */
+	void set_write_to_cache(bool write_cache)
+	{
+		write_to_cache = write_cache;
+		p->set_write_cache(write_cache);
+	}
+
+	/** 
+	 * Get whether cache will be written
+	 * 
+	 * @return whether to write to cache
+	 */
+	bool get_write_to_cache()
+	{
+		return write_to_cache;
+	}
+	
 	/** @return object name */
 	inline virtual const char* get_name() const
 	{
@@ -155,6 +188,8 @@ private:
 	{
 		p = new VwParser();
 		env = p->get_env();
+		read_from_cache = false;
+		write_to_cache = true;
 	}
 
 protected:
@@ -164,6 +199,9 @@ protected:
 	/// Environment used for vw - used by parser
 	VwEnvironment* env;
 
+	/// Write data to a binary cache file
+	bool write_to_cache;
+	
 	/// Read the file as a cache file
 	bool read_from_cache;
 

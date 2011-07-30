@@ -33,7 +33,6 @@ void protobuf_AssignDesc_example_2epb();
 void protobuf_ShutdownFile_example_2epb();
 
 class LabelData;
-class Feature;
 class Channel;
 class Example;
 
@@ -141,98 +140,6 @@ class LabelData : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class Feature : public ::google::protobuf::Message {
- public:
-  Feature();
-  virtual ~Feature();
-  
-  Feature(const Feature& from);
-  
-  inline Feature& operator=(const Feature& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-  
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-  
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Feature& default_instance();
-  
-  void Swap(Feature* other);
-  
-  // implements Message ----------------------------------------------
-  
-  Feature* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Feature& from);
-  void MergeFrom(const Feature& from);
-  void Clear();
-  bool IsInitialized() const;
-  
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  
-  ::google::protobuf::Metadata GetMetadata() const;
-  
-  // nested types ----------------------------------------------------
-  
-  // accessors -------------------------------------------------------
-  
-  // optional int32 diff_index = 1;
-  inline bool has_diff_index() const;
-  inline void clear_diff_index();
-  static const int kDiffIndexFieldNumber = 1;
-  inline ::google::protobuf::int32 diff_index() const;
-  inline void set_diff_index(::google::protobuf::int32 value);
-  
-  // optional float x = 2;
-  inline bool has_x() const;
-  inline void clear_x();
-  static const int kXFieldNumber = 2;
-  inline float x() const;
-  inline void set_x(float value);
-  
-  // @@protoc_insertion_point(class_scope:vwcache.Feature)
- private:
-  inline void set_has_diff_index();
-  inline void clear_has_diff_index();
-  inline void set_has_x();
-  inline void clear_has_x();
-  
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-  
-  ::google::protobuf::int32 diff_index_;
-  float x_;
-  
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-  
-  friend void  protobuf_AddDesc_example_2epb();
-  friend void protobuf_AssignDesc_example_2epb();
-  friend void protobuf_ShutdownFile_example_2epb();
-  
-  void InitAsDefaultInstance();
-  static Feature* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class Channel : public ::google::protobuf::Message {
  public:
   Channel();
@@ -294,17 +201,10 @@ class Channel : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 index() const;
   inline void set_index(::google::protobuf::uint32 value);
   
-  // optional uint32 first_index = 2 [default = 0];
-  inline bool has_first_index() const;
-  inline void clear_first_index();
-  static const int kFirstIndexFieldNumber = 2;
-  inline ::google::protobuf::uint32 first_index() const;
-  inline void set_first_index(::google::protobuf::uint32 value);
-  
-  // repeated int32 diff_index = 3 [packed = true];
+  // repeated int32 diff_index = 2 [packed = true];
   inline int diff_index_size() const;
   inline void clear_diff_index();
-  static const int kDiffIndexFieldNumber = 3;
+  static const int kDiffIndexFieldNumber = 2;
   inline ::google::protobuf::int32 diff_index(int index) const;
   inline void set_diff_index(int index, ::google::protobuf::int32 value);
   inline void add_diff_index(::google::protobuf::int32 value);
@@ -313,10 +213,10 @@ class Channel : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_diff_index();
   
-  // repeated float x = 4 [packed = true];
+  // repeated float x = 3 [packed = true];
   inline int x_size() const;
   inline void clear_x();
-  static const int kXFieldNumber = 4;
+  static const int kXFieldNumber = 3;
   inline float x(int index) const;
   inline void set_x(int index, float value);
   inline void add_x(float value);
@@ -329,20 +229,17 @@ class Channel : public ::google::protobuf::Message {
  private:
   inline void set_has_index();
   inline void clear_has_index();
-  inline void set_has_first_index();
-  inline void clear_has_first_index();
   
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   
-  ::google::protobuf::uint32 index_;
-  ::google::protobuf::uint32 first_index_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > diff_index_;
   mutable int _diff_index_cached_byte_size_;
   ::google::protobuf::RepeatedField< float > x_;
   mutable int _x_cached_byte_size_;
+  ::google::protobuf::uint32 index_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
   
   friend void  protobuf_AddDesc_example_2epb();
   friend void protobuf_AssignDesc_example_2epb();
@@ -536,54 +433,6 @@ inline void LabelData::set_initial(float value) {
 
 // -------------------------------------------------------------------
 
-// Feature
-
-// optional int32 diff_index = 1;
-inline bool Feature::has_diff_index() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void Feature::set_has_diff_index() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void Feature::clear_has_diff_index() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Feature::clear_diff_index() {
-  diff_index_ = 0;
-  clear_has_diff_index();
-}
-inline ::google::protobuf::int32 Feature::diff_index() const {
-  return diff_index_;
-}
-inline void Feature::set_diff_index(::google::protobuf::int32 value) {
-  set_has_diff_index();
-  diff_index_ = value;
-}
-
-// optional float x = 2;
-inline bool Feature::has_x() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Feature::set_has_x() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void Feature::clear_has_x() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Feature::clear_x() {
-  x_ = 0;
-  clear_has_x();
-}
-inline float Feature::x() const {
-  return x_;
-}
-inline void Feature::set_x(float value) {
-  set_has_x();
-  x_ = value;
-}
-
-// -------------------------------------------------------------------
-
 // Channel
 
 // optional uint32 index = 1;
@@ -608,29 +457,7 @@ inline void Channel::set_index(::google::protobuf::uint32 value) {
   index_ = value;
 }
 
-// optional uint32 first_index = 2 [default = 0];
-inline bool Channel::has_first_index() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Channel::set_has_first_index() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void Channel::clear_has_first_index() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Channel::clear_first_index() {
-  first_index_ = 0u;
-  clear_has_first_index();
-}
-inline ::google::protobuf::uint32 Channel::first_index() const {
-  return first_index_;
-}
-inline void Channel::set_first_index(::google::protobuf::uint32 value) {
-  set_has_first_index();
-  first_index_ = value;
-}
-
-// repeated int32 diff_index = 3 [packed = true];
+// repeated int32 diff_index = 2 [packed = true];
 inline int Channel::diff_index_size() const {
   return diff_index_.size();
 }
@@ -655,7 +482,7 @@ Channel::mutable_diff_index() {
   return &diff_index_;
 }
 
-// repeated float x = 4 [packed = true];
+// repeated float x = 3 [packed = true];
 inline int Channel::x_size() const {
   return x_.size();
 }

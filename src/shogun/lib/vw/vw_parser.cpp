@@ -112,8 +112,11 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		if (new_index && ae->atomics[index].begin != ae->atomics[index].end)
 			ae->indices.push(index);
 
-		cache_writer->cache_example(ae);
+
 	}
 
+	if (write_cache)
+		cache_writer->cache_example(ae);
+	
 	return num_chars;
 }
