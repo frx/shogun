@@ -35,16 +35,13 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
-		if (ex->subsets[(int)(*i)[0]].index() > 0)
-		{
-			v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
-			temp.begin = ex->subsets[(int)(*i)[0]][thread_num];
-			temp.end = ex->subsets[(int)(*i)[0]][thread_num+1];
-			for (; temp.begin != temp.end; temp.begin++)
-				prediction += one_pf_quad_predict_trunc(weights, *temp.begin,
-									ex->atomics[(int)(*i)[1]], thread_mask,
-									env->l1_regularization * env->update_sum);
-		}
+		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
+		temp.begin = ex->atomics[(int)(*i)[0]].begin;
+		temp.end = ex->atomics[(int)(*i)[0]].end;
+		for (; temp.begin != temp.end; temp.begin++)
+			prediction += one_pf_quad_predict_trunc(weights, *temp.begin,
+								ex->atomics[(int)(*i)[1]], thread_mask,
+								env->l1_regularization * env->update_sum);
 	}
 
 	return prediction;
@@ -61,18 +58,13 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 
 	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
-
-		if (ex->subsets[(int)(*i)[0]].index() > 0)
-		{
-			v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
-			temp.begin = ex->subsets[(int)(*i)[0]][thread_num];
-			temp.end = ex->subsets[(int)(*i)[0]][thread_num+1];
-			for (; temp.begin != temp.end; temp.begin++)
-				prediction += one_pf_quad_predict(weights, *temp.begin,
-								  ex->atomics[(int)(*i)[1]],
-								  thread_mask);
-
-		}
+		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
+		temp.begin = ex->atomics[(int)(*i)[0]].begin;
+		temp.end = ex->atomics[(int)(*i)[0]].end;
+		for (; temp.begin != temp.end; temp.begin++)
+			prediction += one_pf_quad_predict(weights, *temp.begin,
+							  ex->atomics[(int)(*i)[1]],
+							  thread_mask);
 	}
 
 	return prediction;
