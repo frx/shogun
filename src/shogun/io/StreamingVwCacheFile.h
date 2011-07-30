@@ -75,6 +75,28 @@ public:
 
 	}
 
+	/**
+	 * Set environment for vw
+	 *
+	 * @param env VwEnvironment* environment
+	 */
+	void set_env(VwEnvironment* env_to_use)
+	{
+		if (env)
+			delete env;
+		env = env_to_use;
+	}
+
+	/**
+	 * Return the environment
+	 *
+	 * @return environment as VwEnvironment*
+	 */
+	VwEnvironment* get_env()
+	{
+		return env;
+	}
+
 private:
 	/**
 	 * Initialize members
@@ -84,6 +106,9 @@ private:
 protected:
 	/// Cache reader
 	VwCacheReader* cache_reader;
+
+	/// Environment used for vw
+	VwEnvironment* env;
 };
 }
 #endif //__STREAMING_VWCACHEFILE_H__
