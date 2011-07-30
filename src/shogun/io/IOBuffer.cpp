@@ -156,3 +156,23 @@ ssize_t CIOBuffer::readto(char* &pointer, char terminal)
 			return 0;
 	}
 }
+
+void CIOBuffer::buf_write(char* &pointer, int n)
+{
+	if (space.end + n <= space.end_array)
+	{
+		pointer = space.end;
+		space.end += n;
+	}
+	else // Time to dump the file
+	{
+		if (space.end != space.begin)
+			flush();
+		else // Array is short, so increase size.
+		{
+			space.reserve(2 * (space.end_array - space.begin));
+			endloaded = space.begin;
+		}
+		buf_write(pointer,n);
+	}
+}
