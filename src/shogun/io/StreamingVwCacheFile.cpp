@@ -19,7 +19,7 @@ CStreamingVwCacheFile::CStreamingVwCacheFile()
 	init();
 }
 
-CStreamingVwCacheFile::CStreamingVwCacheFile(char* fname, char rw='r')
+CStreamingVwCacheFile::CStreamingVwCacheFile(char* fname, char rw)
 	: CStreamingFile(fname, rw)
 {
 	init();

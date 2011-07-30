@@ -7,8 +7,11 @@
  * Written (W) 2011 Shashwat Lal Das
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society
  */
+
 #include <shogun/io/StreamingVwFile.h>
 #include <shogun/lib/vw/vw_parser.h>
+
+using namespace shogun;
 
 CStreamingVwFile::CStreamingVwFile()
 	: CStreamingFile()
@@ -16,7 +19,7 @@ CStreamingVwFile::CStreamingVwFile()
 	init();
 }
 
-CStreamingVwFile::CStreamingVwFile(char* fname, char rw='r')
+CStreamingVwFile::CStreamingVwFile(char* fname, char rw)
 	: CStreamingFile(fname, rw)
 {
 	init();
