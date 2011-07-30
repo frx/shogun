@@ -7,29 +7,29 @@
  * Written (W) 2011 Shashwat Lal Das
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society
  */
-#ifndef __STREAMING_VWFILE_H__
-#define __STREAMING_VWFILE_H__
+#ifndef __STREAMING_VWCACHEFILE_H__
+#define __STREAMING_VWCACHEFILE_H__
 
 #include <shogun/io/StreamingFile.h>
 #include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/vw_parser.h>
-#include <shogun/lib/vw/protobuf_read.h>
+#include <shogun/lib/vw/cache_read.h>
 
 namespace shogun
 {
-/** @brief Class StreamingVwFile to read vector-by-vector from
- * Vowpal Wabbit data files.
- * It reads the example and label into one object of VwExample type.
-*/
+/** @brief Class StreamingVwCacheFile to read vector-by-vector from VW
+ * cache files.
+ * It reads the example and label into one object of
+ * VwExample type.
+ */
 
-class CStreamingVwFile: public CStreamingFile
+class CStreamingVwCacheFile: public CStreamingFile
 {
 public:
 	/**
 	 * Default constructor
 	 *
 	 */
-	CStreamingVwFile();
+	CStreamingVwCacheFile();
 
 	/**
 	 * Constructor taking file name argument
@@ -38,19 +38,19 @@ public:
 	 * @param rw read/write mode
 	 * @param name name
 	 */
-	CStreamingVwFile(char* fname, char rw='r');
+	CStreamingVwCacheFile(char* fname, char rw='r');
 
 	/**
 	 * Destructor
 	 */
-	virtual ~CStreamingVwFile();
+	virtual ~CStreamingVwCacheFile();
 
 	/**
 	 * Returns the parsed example.
 	 *
 	 * The example contains the label if available, and
 	 * also contains length of the feature vector.
-	 * These parameters are redundant.
+	 * These parameters, passed separately are redundant.
 	 *
 	 * @param ex examples as VwExample*, set by reference
 	 * @param len length of vector, untouched
@@ -68,51 +68,10 @@ public:
 	 */
 	virtual void get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label);
 
-	/**
-	 * Set environment for vw
-	 *
-	 * @param env VwEnvironment* environment
-	 */
-	void set_env(VwEnvironment* env_to_use)
-	{
-		p->set_env(env_to_use);
-	}
-
-	/**
-	 * Return the environment
-	 *
-	 * @return environment as VwEnvironment*
-	 */
-	VwEnvironment* get_env()
-	{
-		return env;
-	}
-
-	/**
-	 * Set whether cache will be written
-	 *
-	 * @param write_cache whether to write to cache
-	 */
-	void set_write_to_cache(bool write_cache)
-	{
-		write_to_cache = write_cache;
-		p->set_write_cache(write_cache);
-	}
-
-	/**
-	 * Get whether cache will be written
-	 *
-	 * @return whether to write to cache
-	 */
-	bool get_write_to_cache()
-	{
-		return write_to_cache;
-	}
-
 	/** @return object name */
 	inline virtual const char* get_name() const
 	{
-		return "StreamingVwFile";
+		return "StreamingVwCacheFile";
 
 	}
 
@@ -123,14 +82,8 @@ private:
 	virtual void init();
 
 protected:
-	/// Parser for vw format
-	VwParser* p;
-
-	/// Environment used for vw - used by parser
-	VwEnvironment* env;
-
-	/// Write data to a binary cache file
-	bool write_to_cache;
+	/// Cache reader
+	VwCacheReader* cache_reader;
 };
 }
-#endif //__STREAMING_VWFILE_H__
+#endif //__STREAMING_VWCACHEFILE_H__
