@@ -21,7 +21,6 @@ namespace shogun
  * It reads the example and label into one object of
  * VwExample type.
  */
-
 class CStreamingVwCacheFile: public CStreamingFile
 {
 public:

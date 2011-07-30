@@ -159,11 +159,18 @@ namespace shogun
 		return readto(pointer, '\n');
 	}
 
+	/**
+	 * Return a pointer to the next n bytes to write into
+	 *
+	 * @param pointer returned pointer
+	 * @param n number of bytes to write
+	 */
+	void buf_write(char* &pointer, int n);
+
 	virtual const char* get_name() const
 	{
 		return "IOBuffer";
 	}
-
 
 public:
 
@@ -177,7 +184,6 @@ public:
 
 	/// file descriptor
 	int working_file;
-
 };
 }
 #endif	/* IOBUFFER_H__ */
