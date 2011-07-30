@@ -50,5 +50,6 @@ void CStreamingVwCacheFile::get_vector_and_label(VwExample* &ex, int32_t &len, f
 
 void CStreamingVwCacheFile::init()
 {
+	env = new VwEnvironment();
 	cache_reader = new ProtobufCacheReader(buf->working_file);
 }
