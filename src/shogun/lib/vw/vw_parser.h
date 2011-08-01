@@ -7,6 +7,7 @@
 #include <shogun/lib/vw/parse_primitives.h>
 #include <shogun/lib/vw/parse_example.h>
 #include <shogun/lib/vw/protobuf_write.h>
+#include <shogun/lib/vw/nativecache_write.h>
 
 namespace shogun
 {
@@ -29,7 +30,7 @@ namespace shogun
 
 			hasher = hashstring;
 			
-			cache_writer = new ProtobufCacheWriter("cache_shogun.dat");
+			cache_writer = new NativeCacheWriter("cache_shogun.dat");
 			write_cache = true;
 		}
 
@@ -133,7 +134,7 @@ namespace shogun
 		/// Environment of VW - used by parser
 		VwEnvironment* env;
 
-		ProtobufCacheWriter* cache_writer;
+		VwCacheWriter* cache_writer;
 
 		bool write_cache;
 	};

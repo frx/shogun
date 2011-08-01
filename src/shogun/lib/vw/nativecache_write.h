@@ -15,46 +15,46 @@ namespace shogun
 class NativeCacheWriter: public VwCacheWriter
 {
 public:
-	/** 
+	/**
 	 * Constructor, opens a file whose name is specified
-	 * 
+	 *
 	 * @param fname file name
 	 */
 	NativeCacheWriter(const char* fname);
 
-	/** 
+	/**
 	 * Destructor
 	 */
 	virtual ~NativeCacheWriter();
 
-	/** 
+	/**
 	 * Cache one example
-	 * 
+	 *
 	 * @param ex example to write to cache
 	 */
 	virtual void cache_example(VwExample* &ex);
 
 private:
-	/** 
+	/**
 	 * Initialize members
 	 */
 	void init();
 
-	/** 
+	/**
 	 * Use run-length encoding on an int
-	 * 
+	 *
 	 * @param p compressed data ptr
 	 * @param i int to compress
-	 * 
+	 *
 	 * @return ptr to compressed data
 	 */
 	char* run_len_encode(char *p, size_t i);
 
-	/** 
+	/**
 	 * Encode a signed int into an unsigned representation
-	 * 
+	 *
 	 * @param n signed int
-	 * 
+	 *
 	 * @return unsigned int
 	 */
 	inline uint32_t ZigZagEncode(int32_t n)
@@ -63,30 +63,47 @@ private:
 
 		return ret;
 	}
-	
-	/** 
+
+	/**
+	 * Cache a label into the buffer, helper function
+	 *
+	 * @param ld label
+	 * @param c pointer to last written buffer position
+	 *
+	 * @return new position of pointer
+	 */
+	char* bufcache_label(VwLabel* ld, char* c);
+
+	/**
+	 * Cache label into buffer
+	 *
+	 * @param ld label
+	 */
+	void cache_label(VwLabel* ld);
+
+	/**
 	 * Write the tag into the buffer
-	 * 
+	 *
 	 * @param tag tag
 	 */
 	void cache_tag(v_array<char> tag);
 
-	/** 
+	/**
 	 * Write a byte into the buffer
-	 * 
+	 *
 	 * @param s byte of data
 	 */
 	void output_byte(unsigned char s);
 
-	/** 
+	/**
 	 * Write the features into the buffer
-	 * 
+	 *
 	 * @param index namespace index
 	 * @param begin first feature
 	 * @param end pointer to end of features
 	 */
 	void output_features(unsigned char index, VwFeature* begin, VwFeature* end);
-	
+
 protected:
 	CIOBuffer buf;
 
@@ -97,7 +114,7 @@ private:
 
 	size_t int_size;
 };
-	
+
 }
 
 #endif // _VW_NATIVECACHE_WRITE_H__
