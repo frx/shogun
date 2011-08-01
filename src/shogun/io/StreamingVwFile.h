@@ -113,7 +113,6 @@ public:
 	inline virtual const char* get_name() const
 	{
 		return "StreamingVwFile";
-
 	}
 
 private:
