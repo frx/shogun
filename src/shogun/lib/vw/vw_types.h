@@ -216,13 +216,13 @@ public:
 
 public:
 	/// Label value
-	float64_t label;
+	float label;
 
 	/// Weight of example
-	float64_t weight;
+	float weight;
 
 	/// Initial approximation
-	float64_t initial;
+	float initial;
 
 };
 
