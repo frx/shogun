@@ -9,20 +9,19 @@
  */
 
 #include <shogun/io/StreamingVwCacheFile.h>
-#include <shogun/lib/vw/nativecache_read.h>
 
 using namespace shogun;
 
-CStreamingVwCacheFile::CStreamingVwCacheFile()
+CStreamingVwCacheFile::CStreamingVwCacheFile(EVwCacheType cache_type)
 	: CStreamingFile()
 {
-	init();
+	init(cache_type);
 }
 
-CStreamingVwCacheFile::CStreamingVwCacheFile(char* fname, char rw)
+CStreamingVwCacheFile::CStreamingVwCacheFile(char* fname, char rw, EVwCacheType cache_type)
 	: CStreamingFile(fname, rw)
 {
-	init();
+	init(cache_type);
 }
 
 CStreamingVwCacheFile::~CStreamingVwCacheFile()
@@ -48,8 +47,12 @@ void CStreamingVwCacheFile::get_vector_and_label(VwExample* &ex, int32_t &len, f
 		len = 1;
 }
 
-void CStreamingVwCacheFile::init()
+void CStreamingVwCacheFile::init(EVwCacheType cache_type)
 {
+	cache_format = cache_type;
 	env = new VwEnvironment();
-	cache_reader = new NativeCacheReader(buf->working_file);
+	if (cache_type == C_NATIVE)
+		cache_reader = new NativeCacheReader(buf->working_file, env);
+	else if (cache_type == C_PROTOBUF)
+		cache_reader = new ProtobufCacheReader(buf->working_file, env);
 }

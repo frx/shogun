@@ -20,12 +20,12 @@ namespace shogun
 class ProtobufCacheWriter: public VwCacheWriter
 {
 public:
-	ProtobufCacheWriter(const char* fname);
+	ProtobufCacheWriter(const char* fname, VwEnvironment* env_to_use);
 
 	virtual ~ProtobufCacheWriter();
 
 	virtual void cache_example(VwExample* &ex);
-	
+
 protected:
 	/// FileOutputStream from the opened file
 	FileOutputStream* file_stream;
@@ -33,7 +33,7 @@ protected:
 	/// Coded stream which wraps the FileOutputStream
 	CodedOutputStream* coded_stream;
 };
-	
+
 }
 
 #endif

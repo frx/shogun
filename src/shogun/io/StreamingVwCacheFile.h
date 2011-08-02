@@ -13,9 +13,17 @@
 #include <shogun/io/StreamingFile.h>
 #include <shogun/lib/vw/vw_types.h>
 #include <shogun/lib/vw/cache_read.h>
+#include <shogun/lib/vw/protobuf_read.h>
+#include <shogun/lib/vw/nativecache_read.h>
 
 namespace shogun
 {
+enum EVwCacheType
+{
+	C_NATIVE = 0,
+	C_PROTOBUF = 1
+};
+
 /** @brief Class StreamingVwCacheFile to read vector-by-vector from VW
  * cache files.
  * It reads the example and label into one object of
@@ -28,7 +36,7 @@ public:
 	 * Default constructor
 	 *
 	 */
-	CStreamingVwCacheFile();
+	CStreamingVwCacheFile(EVwCacheType cache_type = C_NATIVE);
 
 	/**
 	 * Constructor taking file name argument
@@ -37,7 +45,7 @@ public:
 	 * @param rw read/write mode
 	 * @param name name
 	 */
-	CStreamingVwCacheFile(char* fname, char rw='r');
+	CStreamingVwCacheFile(char* fname, char rw='r', EVwCacheType cache_type = C_NATIVE);
 
 	/**
 	 * Destructor
@@ -83,7 +91,12 @@ public:
 	{
 		if (env)
 			delete env;
+		delete cache_reader;
 		env = env_to_use;
+		if (cache_format == C_NATIVE)
+			cache_reader = new NativeCacheReader(buf->working_file, env);
+		else if (cache_format == C_PROTOBUF)
+			cache_reader = new ProtobufCacheReader(buf->working_file, env);
 	}
 
 	/**
@@ -100,7 +113,7 @@ private:
 	/**
 	 * Initialize members
 	 */
-	virtual void init();
+	virtual void init(EVwCacheType cache_type);
 
 protected:
 	/// Cache reader
@@ -108,6 +121,9 @@ protected:
 
 	/// Environment used for vw
 	VwEnvironment* env;
+
+	/// Cache type
+	EVwCacheType cache_format;
 };
 }
 #endif //__STREAMING_VWCACHEFILE_H__
