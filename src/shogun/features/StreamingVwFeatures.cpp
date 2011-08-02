@@ -26,9 +26,7 @@ void CStreamingVwFeatures::init()
 	example_count = 0;
 }
 
-void CStreamingVwFeatures::init(CStreamingFile* file,
-				bool is_labelled,
-				int32_t size)
+void CStreamingVwFeatures::init(CStreamingFile* file, bool is_labelled, int32_t size)
 {
 	init();
 	has_labels = is_labelled;
@@ -58,8 +56,6 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	ae->global_weight = (ae->ld).get_weight();
 	env->t += ae->global_weight;
 	ae->example_t = env->t;
-	//p->t += ae->global_weight; THIS SHOULD BE IN THE MAIN ALGORITHM
-	//ae->example_t = p->t; AS SHOULD THIS
 
 	/* If some namespaces should be ignored, remove them */
 	if (env->ignore_some)
