@@ -25,7 +25,7 @@ ProtobufCacheReader::~ProtobufCacheReader()
 	close(fd);
 }
 
-VwExample* ProtobufCacheReader::read_cached_example()
+bool ProtobufCacheReader::read_cached_example(VwExample* const ex)
 {
 	vwcache::Example ex_cached;
 	
@@ -44,8 +44,6 @@ VwExample* ProtobufCacheReader::read_cached_example()
 	}
 	
 	coded_stream->PopLimit(lim);
-
-	VwExample* ex = new VwExample();
 
 	// Read label
 	ex->ld.label = ex_cached.ld().label();
@@ -72,7 +70,5 @@ VwExample* ProtobufCacheReader::read_cached_example()
 		}
 	}
 
-	return ex;
+	return true;
 }
-			
-					 

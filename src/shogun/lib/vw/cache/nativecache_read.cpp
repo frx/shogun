@@ -64,7 +64,7 @@ char* NativeCacheReader::run_len_decode(char *p, size_t& i)
 	return p;
 }
 
-char* NativeCacheReader::bufread_label(VwLabel* ld, char* c)
+char* NativeCacheReader::bufread_label(VwLabel* const ld, char* c)
 {
 	ld->label = *(float *)c;
 	c += sizeof(ld->label);
@@ -76,7 +76,7 @@ char* NativeCacheReader::bufread_label(VwLabel* ld, char* c)
 	return c;
 }
 
-size_t NativeCacheReader::read_cached_label(VwLabel* ld)
+size_t NativeCacheReader::read_cached_label(VwLabel* const ld)
 {
 	char *c;
 	size_t total = sizeof(ld->label)+sizeof(ld->weight)+sizeof(ld->initial);
@@ -87,7 +87,7 @@ size_t NativeCacheReader::read_cached_label(VwLabel* ld)
 	return total;
 }
 
-size_t NativeCacheReader::read_cached_tag(VwExample* ae)
+size_t NativeCacheReader::read_cached_tag(VwExample* const ae)
 {
 	char* c;
 	size_t tag_size;
@@ -105,10 +105,8 @@ size_t NativeCacheReader::read_cached_tag(VwExample* ae)
 	return tag_size+sizeof(tag_size);
 }
 
-VwExample* NativeCacheReader::read_cached_example()
+bool NativeCacheReader::read_cached_example(VwExample* const ae)
 {
-	VwExample* ae = new VwExample();
-
 	size_t mask =  env->mask;
 	size_t total = read_cached_label(&ae->ld);
 	if (total == 0)
@@ -184,5 +182,5 @@ VwExample* NativeCacheReader::read_cached_example()
 		buf.set(c);
 	}
 
-	return ae;
+	return true;
 }

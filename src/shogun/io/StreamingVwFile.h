@@ -13,7 +13,6 @@
 #include <shogun/io/StreamingFile.h>
 #include <shogun/lib/vw/vw_types.h>
 #include <shogun/lib/vw/vw_parser.h>
-#include <shogun/lib/vw/protobuf_read.h>
 
 namespace shogun
 {

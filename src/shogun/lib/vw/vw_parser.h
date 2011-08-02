@@ -6,8 +6,8 @@
 #include <shogun/lib/vw/hash.h>
 #include <shogun/lib/vw/parse_primitives.h>
 #include <shogun/lib/vw/parse_example.h>
-#include <shogun/lib/vw/protobuf_write.h>
-#include <shogun/lib/vw/nativecache_write.h>
+#include <shogun/lib/vw/cache/protobuf_write.h>
+#include <shogun/lib/vw/cache/nativecache_write.h>
 
 namespace shogun
 {
