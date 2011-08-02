@@ -5,17 +5,17 @@ using namespace shogun;
 NativeCacheWriter::NativeCacheWriter(const char* fname)
 	: VwCacheWriter(fname)
 {
-	string version = "5.1";
-	size_t numbits = 18;
-	size_t v_length = version.length()+1;
-
 	init();
 	buf.use_file(fd);
+
+	string version = "5.1";
+	size_t numbits = 18;	// TODO: Pass this to the constructor
+	size_t v_length = version.length()+1;
+
+	// Version and numbits info
 	buf.write_file(&v_length, sizeof(size_t));
 	buf.write_file(version.c_str(),v_length);
-
 	buf.write_file(&numbits, sizeof(size_t));
-
 }
 
 NativeCacheWriter::~NativeCacheWriter()
