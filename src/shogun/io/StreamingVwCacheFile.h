@@ -12,9 +12,9 @@
 
 #include <shogun/io/StreamingFile.h>
 #include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/cache_read.h>
-#include <shogun/lib/vw/protobuf_read.h>
-#include <shogun/lib/vw/nativecache_read.h>
+#include <shogun/lib/vw/cache/cache_read.h>
+#include <shogun/lib/vw/cache/protobuf_read.h>
+#include <shogun/lib/vw/cache/nativecache_read.h>
 
 namespace shogun
 {
