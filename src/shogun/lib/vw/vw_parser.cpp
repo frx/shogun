@@ -78,7 +78,10 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			{
 				index = (unsigned char)(*name[0].start);
 				if (ae->atomics[index].begin == ae->atomics[index].end)
+				{
+					ae->sum_feat_sq[index] = 0;
 					new_index = true;
+				}
 			}
 			channel_hash = hasher(name[0], hash_base);
 		}
@@ -87,7 +90,10 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			/* Use default namespace with index below */
 			index = (unsigned char)' ';
 			if (ae->atomics[index].begin == ae->atomics[index].end)
+			{
+				ae->sum_feat_sq[index] = 0;
 				new_index = true;
+			}
 			channel_hash = 0;
 		}
 

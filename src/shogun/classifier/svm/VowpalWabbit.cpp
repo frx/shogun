@@ -138,7 +138,7 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		cnt++;
 		float out = predict(example);
 		learner->train(example, example->eta_round);
-		//printf ("\nExample %d: Prediction = %f.\n", cnt, example->final_prediction);
+		printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
 		example->eta_round = 0.;
 
 		if (env->weighted_examples + example->ld.weight > dump_interval)

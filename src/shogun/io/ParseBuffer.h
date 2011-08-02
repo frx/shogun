@@ -26,13 +26,11 @@ namespace shogun
 	};
 
 	template <class T>
-		class example
+		class Example
 	{
 	public:
-		example()
+		Example(): fv((T*) new T(), 1)
 		{
-			fv.vector = new T();
-			fv.vlen = 1;
 			label = FLT_MAX;
 		}
 
@@ -63,7 +61,7 @@ namespace shogun
 		 *
 		 * @return pointer to example
 		 */
-		inline example<T>* get_free_example()
+		inline Example<T>* get_free_example()
 		{
 			return &ex_buff[ex_write_index];
 		}
@@ -76,21 +74,21 @@ namespace shogun
 		 * 
 		 * @return 1 if successful, 0 on failure (if no space available)
 		 */
-		int32_t write_example(example<T>* ex);
+		int32_t write_example(Example<T>* ex);
 	
 		/** 
 		 * Returns the example that should be read next from the buffer.
 		 * 
 		 * @return example object at next 'read' position
 		 */
-		example<T>* get_example();
+		Example<T>* get_example();
 
 		/** 
 		 * Returns the next example from the buffer if unused, or NULL.
 		 * 
 		 * @return unused example object at next 'read' position or NULL.
 		 */
-		example<T>* fetch_example();
+		Example<T>* fetch_example();
 
 		/** 
 		 * Copies an example into the buffer, waiting for the
@@ -100,7 +98,7 @@ namespace shogun
 		 * 
 		 * @return 1 on success, 0 on memory errors
 		 */
-		int32_t copy_example(example<T>* ex);
+		int32_t copy_example(Example<T>* ex);
 
 		/** 
 		 * Mark the example in 'read' position as 'used'.
@@ -127,7 +125,7 @@ namespace shogun
 	protected:
 	
 		int32_t buffer_size;		/**< buffer size as number of examples */
-		example<T>* ex_buff;			/**< buffer of example objects */
+		Example<T>* ex_buff;			/**< buffer of example objects */
 
 		E_IS_EXAMPLE_USED* ex_used;
 		pthread_mutex_t* ex_in_use_mutex;
@@ -141,7 +139,7 @@ namespace shogun
 		CParseBuffer<T>::CParseBuffer(int32_t size)
 	{
 		buffer_size=size;
-		ex_buff=new example<T>[buffer_size]();
+		ex_buff=new Example<T>[buffer_size]();
 		SG_SINFO("Initialized with ring size: %d.\n", buffer_size);
 		ex_used=new E_IS_EXAMPLE_USED[buffer_size];
 	
@@ -185,7 +183,7 @@ namespace shogun
 	}
 
 	template <class T>
-		int32_t CParseBuffer<T>::write_example(example<T> *ex)
+		int32_t CParseBuffer<T>::write_example(Example<T> *ex)
 	{
 		ex_buff[ex_write_index].label = ex->label;
 		ex_buff[ex_write_index].fv.vector = ex->fv.vector;
@@ -200,9 +198,9 @@ namespace shogun
 	}
 
 	template <class T>
-		example<T>* CParseBuffer<T>::get_example()
+		Example<T>* CParseBuffer<T>::get_example()
 	{
-		example<T>* ex;
+		Example<T>* ex;
 	
 		if (ex_read_index >= 0)
 		{
@@ -214,9 +212,9 @@ namespace shogun
 	}
 
 	template <class T>
-		example<T>* CParseBuffer<T>::fetch_example()
+		Example<T>* CParseBuffer<T>::fetch_example()
 	{
-		example<T> *ex;
+		Example<T> *ex;
 		int32_t current_index = ex_read_index;
 		// Because read index will change after get_example
 
@@ -232,7 +230,7 @@ namespace shogun
 	}
 
 	template <class T>
-		int32_t CParseBuffer<T>::copy_example(example<T> *ex)
+		int32_t CParseBuffer<T>::copy_example(Example<T> *ex)
 	{
 		// Check this mutex call.. It should probably be locked regardless of ex in use
 

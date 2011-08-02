@@ -172,7 +172,7 @@ namespace shogun
 		 * 
 		 * @param ex Example to be copied.
 		 */
-		void copy_example_into_buffer(example<T>* ex);
+		void copy_example_into_buffer(Example<T>* ex);
 
 		/** 
 		 * Retrieves the next example from the buffer.
@@ -180,7 +180,7 @@ namespace shogun
 		 * 
 		 * @return The example pointer.
 		 */
-		example<T>* retrieve_example();
+		Example<T>* retrieve_example();
 		
 		/**
 		 * Gets the next example, assuming it to be labelled.
@@ -267,7 +267,7 @@ namespace shogun
 		int32_t number_of_vectors_read;
 
 		/// Example currently being used
-		example<T>* current_example;
+		Example<T>* current_example;
 
 		/// Feature vector of current example
 		T* current_feature_vector;
@@ -315,7 +315,7 @@ namespace shogun
 
 		pthread_mutex_destroy(&examples_state_lock);
 		pthread_cond_destroy(&examples_state_changed);
-		delete current_example;
+	
 		delete examples_buff;
 	}
 
@@ -330,7 +330,6 @@ namespace shogun
 			example_type = E_UNLABELLED;
 
 		examples_buff = new CParseBuffer<T>(size);
-		current_example = new example<T>();
 	
 		parsing_done = false;
 		reading_done = false;
@@ -396,7 +395,7 @@ namespace shogun
 							      int32_t &length,
 							      float64_t &label)
 	{
-		example<T>* ex = examples_buff->get_free_example();
+		Example<T>* ex = examples_buff->get_free_example();
 		(input_source->*read_vector_and_label)(ex->fv.vector, ex->fv.vlen, ex->label);
 
 		feature_vector = ex->fv.vector;
@@ -416,7 +415,7 @@ namespace shogun
 		int32_t CInputParser<T>::get_vector_only(T* &feature_vector,
 							 int32_t &length)
 	{
-		example<T>* ex = examples_buff->get_free_example();
+		Example<T>* ex = examples_buff->get_free_example();
 		(input_source->*read_vector)(ex->fv.vector, ex->fv.vlen);
 
 		feature_vector = ex->fv.vector;
@@ -432,7 +431,7 @@ namespace shogun
 	}
 
 	template <class T>
-		void CInputParser<T>::copy_example_into_buffer(example<T>* ex)
+		void CInputParser<T>::copy_example_into_buffer(Example<T>* ex)
 	{
 		examples_buff->copy_example(ex);
 	}
@@ -503,10 +502,10 @@ namespace shogun
 	}
 
 	template <class T>
-		example<T>* CInputParser<T>::retrieve_example()
+		Example<T>* CInputParser<T>::retrieve_example()
 	{
 		/* This function should be guarded by mutexes while calling  */
-		example<T> *ex;
+		Example<T> *ex;
 
 		if (parsing_done)
 		{
@@ -541,7 +540,7 @@ namespace shogun
 		   otherwise, wait for further parsing, get the example and
 		   return 1 */
 	
-		example<T> *ex;
+		Example<T> *ex;
 
 		while (1)
 		{
