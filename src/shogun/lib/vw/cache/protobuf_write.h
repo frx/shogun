@@ -1,7 +1,7 @@
 #ifndef _VW_PROTOBUF_WRITE_H__
 #define _VW_PROTOBUF_WRITE_H__
 
-#include <shogun/lib/vw/cache_write.h>
+#include <shogun/lib/vw/cache/cache_write.h>
 
 #include <iostream>
 #include <fstream>

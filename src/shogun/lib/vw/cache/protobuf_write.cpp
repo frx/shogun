@@ -1,4 +1,4 @@
-#include <shogun/lib/vw/protobuf_write.h>
+#include <shogun/lib/vw/cache/protobuf_write.h>
 
 using namespace shogun;
 
