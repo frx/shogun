@@ -116,5 +116,4 @@ private:
 };
 
 }
-
 #endif // _VW_NATIVECACHE_WRITE_H__
