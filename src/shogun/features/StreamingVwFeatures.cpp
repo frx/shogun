@@ -32,6 +32,7 @@ void CStreamingVwFeatures::init(CStreamingFile* file, bool is_labelled, int32_t 
 	has_labels = is_labelled;
 	working_file = file;
 	parser.init(file, is_labelled, size);
+	parser.set_do_delete(false);
 	seekable=false;
 
 	/* Get environment from the StreamingVwFile */

@@ -29,7 +29,12 @@ namespace shogun
 		class example
 	{
 	public:
-		example(): fv((T*) NULL, 0) { }
+		example()
+		{
+			fv.vector = new T();
+			fv.vlen = 1;
+			label = FLT_MAX;
+		}
 
 		float64_t label;
 		SGVector<T> fv;
@@ -136,7 +141,7 @@ namespace shogun
 		CParseBuffer<T>::CParseBuffer(int32_t size)
 	{
 		buffer_size=size;
-		ex_buff=new example<T>[buffer_size];
+		ex_buff=new example<T>[buffer_size]();
 		SG_SINFO("Initialized with ring size: %d.\n", buffer_size);
 		ex_used=new E_IS_EXAMPLE_USED[buffer_size];
 	
@@ -187,6 +192,9 @@ namespace shogun
 		ex_buff[ex_write_index].fv.vlen = ex->fv.vlen;
 		ex_used[ex_write_index] = E_NOT_USED;
 		inc_write_index();
+
+		if (ex_read_index < 0)
+			ex_read_index = 0;
 
 		return 1;	
 	}
@@ -239,9 +247,6 @@ namespace shogun
 	
 		ret=write_example(ex);
 
-		if (ex_read_index < 0)
-			ex_read_index = 0;
-	
 		pthread_mutex_unlock(&ex_in_use_mutex[current_index]);
 		return ret;
 	}

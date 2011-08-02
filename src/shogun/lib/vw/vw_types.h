@@ -108,6 +108,9 @@ private:
 		weighted_labels = 0.;
 		total_features = 0;
 		sum_loss = 0.;
+
+		ignore_some = false;
+		rank = 0;
 	}
 
 public:

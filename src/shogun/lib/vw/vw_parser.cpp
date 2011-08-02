@@ -5,8 +5,6 @@ using namespace shogun;
 
 int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
-	ae = new VwExample();
-
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
 	if (num_chars == 0)
