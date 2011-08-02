@@ -23,6 +23,8 @@ configure.log
 *.swo
 *.mex*
 *.oct
+*.gcda
+*.gcno
 
 # /doc/
 /doc/html
