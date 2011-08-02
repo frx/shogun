@@ -61,7 +61,7 @@ public:
 	 *
 	 * @return read example
 	 */
-	virtual VwExample* read_cached_example() = 0;
+	virtual bool read_cached_example(VwExample* const ae) = 0;
 
 protected:
 

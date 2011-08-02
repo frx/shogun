@@ -26,7 +26,7 @@ public:
 
 	virtual ~ProtobufCacheReader();
 
-	virtual VwExample* read_cached_example();
+	virtual bool read_cached_example(VwExample* const ae);
 
 protected:
 	/// FileInputStream from the opened file

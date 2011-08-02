@@ -1,6 +1,5 @@
 #include <shogun/lib/vw/parse_example.h>
 #include <shogun/lib/vw/vw_parser.h>
-#include <shogun/lib/vw/protobuf_write.h>
 
 using namespace shogun;
 

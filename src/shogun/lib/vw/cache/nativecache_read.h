@@ -46,7 +46,7 @@ public:
 	 *
 	 * @return example as VwExample*
 	 */
-	virtual VwExample* read_cached_example();
+	virtual bool read_cached_example(VwExample* const ae);
 
 private:
 
@@ -90,7 +90,7 @@ private:
 	 *
 	 * @return new pointer position
 	 */
-	char* bufread_label(VwLabel* ld, char* c);
+	char* bufread_label(VwLabel* const ld, char* c);
 
 	/**
 	 * Read a label from the buffer
@@ -99,7 +99,7 @@ private:
 	 *
 	 * @return number of bytes read
 	 */
-	size_t read_cached_label(VwLabel* ld);
+	size_t read_cached_label(VwLabel* const ld);
 
 	/**
 	 * Read the tag of an example from the cache
@@ -108,7 +108,7 @@ private:
 	 *
 	 * @return
 	 */
-	size_t read_cached_tag(VwExample* ae);
+	size_t read_cached_tag(VwExample* const ae);
 
 
 protected:
