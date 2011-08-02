@@ -9,7 +9,7 @@
  */
 
 #include <shogun/io/StreamingVwCacheFile.h>
-#include <shogun/lib/vw/protobuf_read.h>
+#include <shogun/lib/vw/nativecache_read.h>
 
 using namespace shogun;
 
@@ -51,5 +51,5 @@ void CStreamingVwCacheFile::get_vector_and_label(VwExample* &ex, int32_t &len, f
 void CStreamingVwCacheFile::init()
 {
 	env = new VwEnvironment();
-	cache_reader = new ProtobufCacheReader(buf->working_file);
+	cache_reader = new NativeCacheReader(buf->working_file);
 }
