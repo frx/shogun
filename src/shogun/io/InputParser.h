@@ -396,7 +396,12 @@ namespace shogun
 							      int32_t &length,
 							      float64_t &label)
 	{
-		(input_source->*read_vector_and_label)(feature_vector, length, label);
+		example<T>* ex = examples_buff->get_free_example();
+		(input_source->*read_vector_and_label)(ex->fv.vector, ex->fv.vlen, ex->label);
+
+		feature_vector = ex->fv.vector;
+		length = ex->fv.vlen;
+		label = ex->label;
 
 		if (length < 1)
 		{
@@ -411,7 +416,11 @@ namespace shogun
 		int32_t CInputParser<T>::get_vector_only(T* &feature_vector,
 							 int32_t &length)
 	{
-		(input_source->*read_vector)(feature_vector, length);
+		example<T>* ex = examples_buff->get_free_example();
+		(input_source->*read_vector)(ex->fv.vector, ex->fv.vlen);
+
+		feature_vector = ex->fv.vector;
+		length = ex->fv.vlen;
 
 		if (length < 1)
 		{

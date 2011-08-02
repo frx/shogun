@@ -29,10 +29,8 @@ namespace shogun
 		class example
 	{
 	public:
-		example()
-		{
-			fv.vector=NULL;
-		}
+		example(): fv((T*) NULL, 0) { }
+
 		float64_t label;
 		SGVector<T> fv;
 	};
@@ -53,6 +51,17 @@ namespace shogun
 		 * 
 		 */
 		~CParseBuffer();
+
+		/**
+		 * Return the next position to write the example
+		 * into the ring.
+		 *
+		 * @return pointer to example
+		 */
+		inline example<T>* get_free_example()
+		{
+			return &ex_buff[ex_write_index];
+		}
 
 		/** 
 		 * Writes the given example into the appropriate buffer space.

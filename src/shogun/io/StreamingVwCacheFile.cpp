@@ -29,7 +29,7 @@ CStreamingVwCacheFile::~CStreamingVwCacheFile()
 	delete cache_reader;
 }
 
-void CStreamingVwCacheFile::get_vector(VwExample* &ex, int32_t &len)
+void CStreamingVwCacheFile::get_vector(VwExample* &ex, int32_t& len)
 {
 	cache_reader->read_cached_example(ex);
 	if (ex == NULL)
