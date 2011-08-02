@@ -20,9 +20,9 @@ namespace shogun
 class ProtobufCacheReader: public VwCacheReader
 {
 public:
-	ProtobufCacheReader(const char* fname);
+	ProtobufCacheReader(const char* fname, VwEnvironment* env_to_use);
 
-	ProtobufCacheReader(int f);
+	ProtobufCacheReader(int f, VwEnvironment* env_to_use);
 
 	virtual ~ProtobufCacheReader();
 

@@ -2,16 +2,16 @@
 
 using namespace shogun;
 
-NativeCacheReader::NativeCacheReader(const char* fname)
-	: VwCacheReader(fname), int_size(6), char_size(2)
+NativeCacheReader::NativeCacheReader(const char* fname, VwEnvironment* env_to_use)
+	: VwCacheReader(fname, env_to_use), int_size(6), char_size(2)
 {
 	init();
 	buf.use_file(fd);
 	check_cache_metadata();
 }
 
-NativeCacheReader::NativeCacheReader(int f)
-	: VwCacheReader(f), int_size(6), char_size(2)
+NativeCacheReader::NativeCacheReader(int f, VwEnvironment* env_to_use)
+	: VwCacheReader(f, env_to_use), int_size(6), char_size(2)
 {
 	init();
 	buf.use_file(fd);
@@ -32,21 +32,21 @@ void NativeCacheReader::init()
 void NativeCacheReader::check_cache_metadata()
 {
 	string version = "5.1";
-	size_t numbits = 18;	// TODO: Pass this to the class
-		
+	size_t numbits = env->num_bits;
+
 	size_t v_length;
 	buf.read_file((char*)&v_length, sizeof(v_length));
 	if(v_length > 29)
 		SG_SERROR("Cache version too long, cache file is probably invalid.\n");
-	
+
 	char t[v_length];
 	buf.read_file(t,v_length);
 	if (strcmp(t,version.c_str()) != 0)
 		SG_SERROR("Cache has possibly incompatible version!\n");
-  
+
 	int total = sizeof(size_t);
 	char* p[total];
-	if (buf.read_file(p, total) < total) 
+	if (buf.read_file(p, total) < total)
 		return;
 
 	size_t cache_numbits = *(size_t *)p;
@@ -72,7 +72,7 @@ char* NativeCacheReader::bufread_label(VwLabel* ld, char* c)
 	c += sizeof(ld->weight);
 	ld->initial = *(float *)c;
 	c += sizeof(ld->initial);
-	
+
 	return c;
 }
 
@@ -80,7 +80,7 @@ size_t NativeCacheReader::read_cached_label(VwLabel* ld)
 {
 	char *c;
 	size_t total = sizeof(ld->label)+sizeof(ld->weight)+sizeof(ld->initial);
-	if (buf.buf_read(c, total) < total) 
+	if (buf.buf_read(c, total) < total)
 		return 0;
 	c = bufread_label(ld,c);
 
@@ -95,11 +95,11 @@ size_t NativeCacheReader::read_cached_tag(VwExample* ae)
 		return 0;
 	tag_size = *(size_t*)c;
 	c += sizeof(tag_size);
-  
+
 	buf.set(c);
-	if (buf.buf_read(c, tag_size) < tag_size) 
+	if (buf.buf_read(c, tag_size) < tag_size)
 		return 0;
-  
+
 	ae->tag.erase();
 	ae->tag.push_many(c, tag_size);
 	return tag_size+sizeof(tag_size);
@@ -108,8 +108,8 @@ size_t NativeCacheReader::read_cached_tag(VwExample* ae)
 VwExample* NativeCacheReader::read_cached_example()
 {
 	VwExample* ae = new VwExample();
-	// TODO: Use the env to get mask
-	size_t mask =  (1<<18) - 1;
+
+	size_t mask =  env->mask;
 	size_t total = read_cached_label(&ae->ld);
 	if (total == 0)
 		return 0;
@@ -130,7 +130,7 @@ VwExample* NativeCacheReader::read_cached_example()
 		size_t temp;
 		unsigned char index = 0;
 		temp = buf.buf_read(c, sizeof(index) + sizeof(size_t));
-		
+
 		if (temp < sizeof(index) + sizeof(size_t))
 			SG_SERROR("Truncated example! %d < %d bytes expected.\n",
 				  temp, char_size + sizeof(size_t));

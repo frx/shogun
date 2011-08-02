@@ -20,7 +20,7 @@ public:
 	 *
 	 * @param fname file name
 	 */
-	NativeCacheWriter(const char* fname);
+	NativeCacheWriter(const char* fname, VwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

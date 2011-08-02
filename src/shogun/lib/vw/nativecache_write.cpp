@@ -2,14 +2,14 @@
 
 using namespace shogun;
 
-NativeCacheWriter::NativeCacheWriter(const char* fname)
-	: VwCacheWriter(fname)
+NativeCacheWriter::NativeCacheWriter(const char* fname, VwEnvironment* env_to_use)
+	: VwCacheWriter(fname, env_to_use)
 {
 	init();
 	buf.use_file(fd);
 
 	string version = "5.1";
-	size_t numbits = 18;	// TODO: Pass this to the constructor
+	size_t numbits = env->num_bits;
 	size_t v_length = version.length()+1;
 
 	// Version and numbits info
