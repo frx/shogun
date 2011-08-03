@@ -29,11 +29,17 @@ namespace shogun
 		class Example
 	{
 	public:
-		Example(): fv((T*) new T(), 1)
+		Example()
 		{
+			fv.vector = new T();
+			fv.vlen = 1;
 			label = FLT_MAX;
 		}
 
+		~Example()
+		{
+			delete fv.vector;
+		}
 		float64_t label;
 		SGVector<T> fv;
 	};
@@ -130,6 +136,8 @@ namespace shogun
 		E_IS_EXAMPLE_USED* ex_used;
 		pthread_mutex_t* ex_in_use_mutex;
 		pthread_cond_t* ex_in_use_cond;
+		pthread_mutex_t* read_lock;
+		pthread_mutex_t* write_lock;
 	
 		int32_t ex_write_index;		/**< write position for next example */
 		int32_t ex_read_index;		/**< position of next example to be read */
@@ -145,6 +153,8 @@ namespace shogun
 	
 		ex_in_use_mutex=new pthread_mutex_t[buffer_size];
 		ex_in_use_cond=new pthread_cond_t[buffer_size];
+		read_lock=new pthread_mutex_t;
+		write_lock=new pthread_mutex_t;
 	
 		ex_write_index=0;
 		ex_read_index=-1;
@@ -155,6 +165,8 @@ namespace shogun
 			pthread_cond_init(&ex_in_use_cond[i], NULL);
 			pthread_mutex_init(&ex_in_use_mutex[i], NULL);
 		}
+		pthread_mutex_init(read_lock, NULL);
+		pthread_mutex_init(write_lock, NULL);
 	}
 
 	template <class T>
@@ -168,6 +180,8 @@ namespace shogun
 			pthread_mutex_destroy(&ex_in_use_mutex[i]);
 			pthread_cond_destroy(&ex_in_use_cond[i]);
 		}
+		delete[] ex_in_use_mutex;
+		delete[] ex_in_use_cond;
 	}
 
 	template <class T>
@@ -200,13 +214,8 @@ namespace shogun
 	template <class T>
 		Example<T>* CParseBuffer<T>::get_example()
 	{
-		Example<T>* ex;
-	
 		if (ex_read_index >= 0)
-		{
-			ex = &ex_buff[ex_read_index];
-			return ex;
-		}
+			return &ex_buff[ex_read_index];
 		else
 			return NULL;
 	}
@@ -214,6 +223,8 @@ namespace shogun
 	template <class T>
 		Example<T>* CParseBuffer<T>::fetch_example()
 	{
+		pthread_mutex_lock(read_lock);
+		
 		Example<T> *ex;
 		int32_t current_index = ex_read_index;
 		// Because read index will change after get_example
@@ -226,6 +237,8 @@ namespace shogun
 			ex = NULL;
 	
 		pthread_mutex_unlock(&ex_in_use_mutex[current_index]);
+
+		pthread_mutex_unlock(read_lock);
 		return ex;
 	}
 
@@ -234,10 +247,13 @@ namespace shogun
 	{
 		// Check this mutex call.. It should probably be locked regardless of ex in use
 
+		pthread_mutex_lock(write_lock);
+		//printf("COPY0: Write lock locked.\n");
 		int32_t ret;
 		int32_t current_index = ex_write_index;
 
 		pthread_mutex_lock(&ex_in_use_mutex[current_index]);
+		//printf("COPY1: mutex[wr_ind=%d] locked.\n", current_index);
 		while (ex_used[ex_write_index] == E_NOT_USED)
 		{
 			pthread_cond_wait(&ex_in_use_cond[ex_write_index], &ex_in_use_mutex[ex_write_index]);
@@ -246,13 +262,20 @@ namespace shogun
 		ret=write_example(ex);
 
 		pthread_mutex_unlock(&ex_in_use_mutex[current_index]);
+		//printf("COPY2: mutex[%d] unlocked.\n", current_index);
+		pthread_mutex_unlock(write_lock);
+		//printf("COPY3: write lock unlocked.\n");
+
 		return ret;
 	}
 
 	template <class T>
 		void CParseBuffer<T>::finalize_example(bool do_delete)
 	{
+		pthread_mutex_lock(read_lock);
+		//printf("FIN0: In finalize example.. read_lock locked!\n");
 		pthread_mutex_lock(&ex_in_use_mutex[ex_read_index]);
+		//printf("FIN1: Continuing.. lock[rd_index=%d] locked.\n", ex_read_index);
 		ex_used[ex_read_index] = E_USED;
 
 		if (do_delete)
@@ -260,8 +283,11 @@ namespace shogun
 
 		pthread_cond_signal(&ex_in_use_cond[ex_read_index]);
 		pthread_mutex_unlock(&ex_in_use_mutex[ex_read_index]);
-	
+		//printf("FIN2: Next, %d lock unlocked.\n", ex_read_index);
 		inc_read_index();
+				
+		pthread_mutex_unlock(read_lock);
+		//printf("FIN3: Read lock unlocked!\n");
 	}
 
 }

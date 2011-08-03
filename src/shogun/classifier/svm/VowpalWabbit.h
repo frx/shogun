@@ -13,6 +13,8 @@ class CVowpalWabbit
 {
 public:
 	CVowpalWabbit(CStreamingVwFeatures* feat = NULL);
+
+	~CVowpalWabbit();
 	
 	virtual void train(CStreamingVwFeatures* feat = NULL);
 

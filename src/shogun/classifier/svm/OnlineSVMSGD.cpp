@@ -34,7 +34,7 @@ using namespace shogun;
 #define LOGLOSSMARGIN 11
 
 // Select loss
-#define LOSS SQUAREDHINGELOSS
+#define LOSS HINGELOSS
 
 // One when bias is regularized
 #define REGULARIZEBIAS 0

@@ -4,7 +4,17 @@ using namespace shogun;
 
 CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
 {
+	reg=NULL;
+	learner=NULL;
 	init(feat);
+}
+
+CVowpalWabbit::~CVowpalWabbit()
+{
+	if (reg)
+		delete reg;
+	if (learner)
+		delete learner;
 }
 
 void CVowpalWabbit::init(CStreamingVwFeatures* feat)
@@ -90,6 +100,7 @@ float CVowpalWabbit::predict(VwExample* ex)
 	else
 		prediction = inline_predict(ex);
 
+	ex->final_prediction = 0;
 	ex->final_prediction += prediction;
 	ex->final_prediction = finalize_prediction(ex->final_prediction);
 	float t = ex->example_t;
@@ -136,9 +147,13 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		}
 
 		cnt++;
+		example->eta_round = 0.;
+		example->final_prediction = 0.;
+		
 		float out = predict(example);
+		//printf("eta round is: %f.\n", example->eta_round);
 		learner->train(example, example->eta_round);
-		printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
+		//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
 		example->eta_round = 0.;
 
 		if (env->weighted_examples + example->ld->weight > dump_interval)
@@ -165,6 +180,7 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 
 void CVowpalWabbit::print_update(VwExample* &ex)
 {
+
 	printf("%-10.6f %-10.6f %8lld %8.1f %8.4f %8.4f %8lu\n",
 	       env->sum_loss/env->weighted_examples,
 	       0.0,

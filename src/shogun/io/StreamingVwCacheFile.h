@@ -45,7 +45,7 @@ public:
 	 * @param rw read/write mode
 	 * @param name name
 	 */
-	CStreamingVwCacheFile(char* fname, char rw='r', EVwCacheType cache_type = C_NATIVE);
+	CStreamingVwCacheFile(const char* fname, char rw='r', EVwCacheType cache_type = C_NATIVE);
 
 	/**
 	 * Destructor

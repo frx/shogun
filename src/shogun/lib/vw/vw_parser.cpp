@@ -14,8 +14,6 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 	substring example_string = {line, line + num_chars};
 
 	/* Channels containing separate namespaces/label information*/
-	v_array<substring> channels;
-	v_array<substring> words;
 	channels.erase();
 
 	/* Split at '|' character */
@@ -65,8 +63,6 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		size_t index = 0;
 		bool new_index = false;
 		size_t feature_offset = 0;
-
-		v_array<substring> name;
 
 		if (channel.start[0] != ' ')
 		{

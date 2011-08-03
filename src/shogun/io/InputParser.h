@@ -476,21 +476,11 @@ namespace shogun
 				return NULL;
 			}
 
-			/* Don't copy if members are modified in-place */
-			if ((current_example->fv.vector == current_feature_vector) &&
-			    (current_example->label == current_label) &&
-			    (current_example->fv.vlen == current_len))
-			{
-				examples_buff->write_example(current_example);
-			}
-			else
-			{
-				current_example->label = current_label;
-				current_example->fv.vector = current_feature_vector;
-				current_example->fv.vlen = current_len;
-
-				examples_buff->copy_example(current_example);
-			}
+			current_example->label = current_label;
+			current_example->fv.vector = current_feature_vector;
+			current_example->fv.vlen = current_len;
+			
+			examples_buff->copy_example(current_example);
 
 			pthread_mutex_lock(&examples_state_lock);
 			number_of_vectors_parsed++;

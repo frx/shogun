@@ -16,11 +16,13 @@ void VwRegularMachine::train(VwExample* &ex, float update)
 	// Hack
 	size_t thread_num = 0;
 	float* weights = reg->weight_vectors[thread_num];
-	
+
+	int j=0;
 	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
 		for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
 		{
+			//printf("j=%d.\n", j++);
 			weights[f->weight_index & thread_mask] += update * f->x;
 		}
 	}
