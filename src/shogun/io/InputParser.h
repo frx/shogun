@@ -395,12 +395,7 @@ namespace shogun
 							      int32_t &length,
 							      float64_t &label)
 	{
-		Example<T>* ex = examples_buff->get_free_example();
-		(input_source->*read_vector_and_label)(ex->fv.vector, ex->fv.vlen, ex->label);
-
-		feature_vector = ex->fv.vector;
-		length = ex->fv.vlen;
-		label = ex->label;
+		(input_source->*read_vector_and_label)(feature_vector, length, label);
 
 		if (length < 1)
 		{

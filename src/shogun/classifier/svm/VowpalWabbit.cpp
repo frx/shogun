@@ -60,7 +60,7 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 float CVowpalWabbit::inline_predict(VwExample* &ex)
 {
 	size_t thread_num = 0;
-	float prediction = ex->ld->get_initial();
+	float prediction = ex->ld->initial;
 
 	float* weights = reg->weight_vectors[thread_num];
 	size_t thread_mask = env->thread_mask;

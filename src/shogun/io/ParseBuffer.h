@@ -25,6 +25,9 @@ namespace shogun
 		E_USED = 3
 	};
 
+	static int delete_ex_count;
+	static int create_ex_count;
+	
 	template <class T>
 		class Example
 	{
@@ -32,13 +35,16 @@ namespace shogun
 		Example()
 		{
 			fv.vector = new T();
+			printf("Created vector at %p for example %d.\n", fv.vector, create_ex_count++);
 			fv.vlen = 1;
 			label = FLT_MAX;
 		}
 
 		~Example()
 		{
-			delete fv.vector;
+			printf("Deleting address: %p for example %d.\n", fv.vector, delete_ex_count++);
+			if (fv.vector != NULL)
+				delete fv.vector;
 		}
 		float64_t label;
 		SGVector<T> fv;
@@ -141,6 +147,8 @@ namespace shogun
 	
 		int32_t ex_write_index;		/**< write position for next example */
 		int32_t ex_read_index;		/**< position of next example to be read */
+
+		Example<T>* ex_buff_ring;
 	};
 
 	template <class T>
@@ -182,6 +190,8 @@ namespace shogun
 		}
 		delete[] ex_in_use_mutex;
 		delete[] ex_in_use_cond;
+		delete read_lock;
+		delete write_lock;
 	}
 
 	template <class T>
@@ -279,7 +289,10 @@ namespace shogun
 		ex_used[ex_read_index] = E_USED;
 
 		if (do_delete)
+		{
 			delete[] ex_buff[ex_read_index].fv.vector;
+			ex_buff[ex_read_index].fv.vector=NULL;
+		}
 
 		pthread_cond_signal(&ex_in_use_cond[ex_read_index]);
 		pthread_mutex_unlock(&ex_in_use_mutex[ex_read_index]);

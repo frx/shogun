@@ -78,6 +78,7 @@ char* NativeCacheReader::bufread_label(VwLabel* const ld, char* c)
 
 size_t NativeCacheReader::read_cached_label(VwLabel* const ld)
 {
+	//printf("RD: label addr: %p.\n", ld);
 	char *c;
 	size_t total = sizeof(ld->label)+sizeof(ld->weight)+sizeof(ld->initial);
 	if (buf.buf_read(c, total) < total)
