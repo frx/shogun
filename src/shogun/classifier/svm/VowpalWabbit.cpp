@@ -26,7 +26,7 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 {
 	size_t thread_num = 0;
 
-	float prediction = ex->ld.get_initial();
+	float prediction = ex->ld->get_initial();
 
 	float* weights = reg->weight_vectors[thread_num];
 	size_t thread_mask = env->thread_mask;
@@ -50,7 +50,7 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 float CVowpalWabbit::inline_predict(VwExample* &ex)
 {
 	size_t thread_num = 0;
-	float prediction = ex->ld.get_initial();
+	float prediction = ex->ld->get_initial();
 
 	float* weights = reg->weight_vectors[thread_num];
 	size_t thread_mask = env->thread_mask;
@@ -94,12 +94,12 @@ float CVowpalWabbit::predict(VwExample* ex)
 	ex->final_prediction = finalize_prediction(ex->final_prediction);
 	float t = ex->example_t;
 
-	if (ex->ld.label != FLT_MAX)
+	if (ex->ld->label != FLT_MAX)
 	{
-		ex->loss = reg->get_loss(ex->final_prediction, ex->ld.label) * ex->ld.weight;
+		ex->loss = reg->get_loss(ex->final_prediction, ex->ld->label) * ex->ld->weight;
 		double update = 0.;
-		update = (env->eta)/pow(t, env->power_t) * ex->ld.weight;
-		ex->eta_round = reg->get_update(ex->final_prediction, ex->ld.label, update, ex->total_sum_feat_sq);
+		update = (env->eta)/pow(t, env->power_t) * ex->ld->weight;
+		ex->eta_round = reg->get_update(ex->final_prediction, ex->ld->label, update, ex->total_sum_feat_sq);
 		env->update_sum += update;
 	}
 
@@ -141,7 +141,7 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
 		example->eta_round = 0.;
 
-		if (env->weighted_examples + example->ld.weight > dump_interval)
+		if (env->weighted_examples + example->ld->weight > dump_interval)
 		{
 			print_update(example);
 			dump_interval *= 2;
@@ -170,7 +170,7 @@ void CVowpalWabbit::print_update(VwExample* &ex)
 	       0.0,
 	       env->example_number,
 	       env->weighted_examples,
-	       ex->ld.label,
+	       ex->ld->label,
 	       ex->final_prediction,
 	       (long unsigned int)ex->num_features);
 }

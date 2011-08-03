@@ -42,8 +42,8 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			ae->tag.push_many(tag.start, tag.end - tag.start);
 		}
 
-		(ae->ld).parse_label(words);
-		set_minmax((ae->ld).label);
+		ae->ld->parse_label(words);
+		set_minmax(ae->ld->label);
 	}
 
 	size_t mask = env->mask;

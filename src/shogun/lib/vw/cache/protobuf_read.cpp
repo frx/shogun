@@ -46,9 +46,9 @@ bool ProtobufCacheReader::read_cached_example(VwExample* const ex)
 	coded_stream->PopLimit(lim);
 
 	// Read label
-	ex->ld.label = ex_cached.ld().label();
-	ex->ld.weight = ex_cached.ld().weight();
-	ex->ld.initial = ex_cached.ld().initial();
+	ex->ld->label = ex_cached.ld().label();
+	ex->ld->weight = ex_cached.ld().weight();
+	ex->ld->initial = ex_cached.ld().initial();
 
 	// Read tag
 	ex->tag.push_many(ex_cached.mutable_tag()->c_str(), ex_cached.mutable_tag()->length());

@@ -54,7 +54,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	ae->num_features = 0;
 	ae->total_sum_feat_sq = 1;
 	ae->example_counter = ++example_count;
-	ae->global_weight = (ae->ld).get_weight();
+	ae->global_weight = ae->ld->get_weight();
 	env->t += ae->global_weight;
 	ae->example_t = env->t;
 
@@ -138,7 +138,7 @@ bool CStreamingVwFeatures::get_next_example()
 	if (ret_value)
 		setup_example(current_example);
 
-	current_label = current_example->ld.label;
+	current_label = current_example->ld->label;
 	current_length = current_example->num_features;
 
 	return ret_value;
@@ -159,12 +159,12 @@ float64_t CStreamingVwFeatures::get_label()
 void CStreamingVwFeatures::release_example()
 {
 	env->example_number++;
-	env->weighted_examples += current_example->ld.weight;
+	env->weighted_examples += current_example->ld->weight;
 
-	if (current_example->ld.label == FLT_MAX)
+	if (current_example->ld->label == FLT_MAX)
 		env->weighted_labels += 0;
 	else
-		env->weighted_labels += current_example->ld.label * current_example->ld.weight;
+		env->weighted_labels += current_example->ld->label * current_example->ld->weight;
 
 	env->total_features += current_example->num_features;
 	env->sum_loss += current_example->loss;

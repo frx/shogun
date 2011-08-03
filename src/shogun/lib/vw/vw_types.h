@@ -254,6 +254,14 @@ public:
 		example_counter = 0;
 		global_weight = 0;
 		example_t = 0;
+
+		global_prediction = 0.;
+		loss = 0.;
+		eta_round = 0.;
+		eta_global = 0.;
+		revert_weight = 0.;
+
+		ld = new VwLabel();
 	}
 
 	/**
@@ -281,7 +289,7 @@ public:
 
 
 public:
-	VwLabel ld;
+	VwLabel* ld;
 	v_array<char> tag;
 	size_t example_counter;
 
