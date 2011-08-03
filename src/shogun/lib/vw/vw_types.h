@@ -108,6 +108,7 @@ private:
 		weighted_labels = 0.;
 		total_features = 0;
 		sum_loss = 0.;
+		passes_complete = 0;
 
 		ignore_some = false;
 		rank = 0;
@@ -242,26 +243,35 @@ class VwExample
 public:
 	/**
 	 * Constructor, taking environment as optional argument
-	 *
-	 * @param env env as VwEnvironment*, optional
 	 */
-	VwExample(VwEnvironment* env = NULL)
+	VwExample(): tag(), indices(), atomics(),
+		num_features(0), pass(0), final_prediction(0.),
+		global_prediction(0), loss(0), eta_round(0.),
+		eta_global(0), global_weight(0),
+		example_t(0), total_sum_feat_sq(1), revert_weight(0)
 	{
-		pass = 0;
-		final_prediction = 0.;
-		num_features = 0;
-		total_sum_feat_sq = 1;
-		example_counter = 0;
-		global_weight = 0;
-		example_t = 0;
-
-		global_prediction = 0.;
-		loss = 0.;
-		eta_round = 0.;
-		eta_global = 0.;
-		revert_weight = 0.;
-
 		ld = new VwLabel();
+		//printf("this=%p, ld=%p.\n", this, ld);
+	}
+
+	~VwExample()
+	{
+		//printf("this=%p.\n", this);
+		//printf("deleting ld at %p.\n", ld);
+		if (ld)
+			delete ld;
+		if (tag.end_array != tag.begin)
+		{
+			free(tag.begin);
+			tag.end_array = tag.begin;
+		}
+
+		for (size_t j = 0; j < 256; j++)
+		{
+			if (atomics[j].begin != atomics[j].end_array)
+				free(atomics[j].begin);
+		}
+		free(indices.begin);
 	}
 
 	/**
@@ -275,6 +285,9 @@ public:
 		example_counter = 0;
 		global_weight = 0;
 		example_t = 0;
+		eta_round = 0;
+		final_prediction = 0;
+		loss = 0;
 
 		for (size_t* i = indices.begin; i != indices.end; i++)
 		{
@@ -298,16 +311,16 @@ public:
 
 	size_t num_features;
 	size_t pass;
-	float64_t final_prediction;
-	float64_t global_prediction;
-	float64_t loss;
-	float64_t eta_round;
-	float64_t eta_global;
-	float64_t global_weight;
-	float64_t example_t;
+	float final_prediction;
+	float global_prediction;
+	float loss;
+	float eta_round;
+	float eta_global;
+	float global_weight;
+	float example_t;
 	float64_t sum_feat_sq[256];
-	float64_t total_sum_feat_sq;
-	float64_t revert_weight;
+	float total_sum_feat_sq;
+	float revert_weight;
 
 	size_t ngram;
 	size_t skips;
@@ -327,8 +340,8 @@ public:
 
 	~VwRegressor()
 	{
-		if (weight_vectors)
-			delete[] weight_vectors;
+		delete[] weight_vectors;
+		SG_UNREF(loss);
 	}
 
 	float64_t get_loss(float64_t prediction, float64_t label)

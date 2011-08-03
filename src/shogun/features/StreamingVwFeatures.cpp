@@ -137,6 +137,8 @@ bool CStreamingVwFeatures::get_next_example()
 
 	if (ret_value)
 		setup_example(current_example);
+	else
+		return false;
 
 	current_label = current_example->ld->label;
 	current_length = current_example->num_features;

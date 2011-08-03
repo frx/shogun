@@ -39,6 +39,13 @@ namespace shogun
 		 */
 		~VwParser()
 		{
+			free(channels.begin);
+			channels.begin = channels.end = channels.end_array = NULL;
+			free(words.begin);
+			words.begin = words.end = words.end_array = NULL;
+			free(name.begin);
+			name.begin = name.end = name.end_array = NULL;
+			
 			delete env;
 			delete cache_writer;
 		}
@@ -137,6 +144,11 @@ namespace shogun
 		VwCacheWriter* cache_writer;
 
 		bool write_cache;
+
+	private:
+		v_array<substring> channels;
+		v_array<substring> words;
+		v_array<substring> name;
 	};
 
 }
