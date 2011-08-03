@@ -50,11 +50,13 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	  generateGrams(env->ngram, env->skips, ae);
 	*/
 
+	//printf("SETUP: ld addr = %p.\n", ae->ld);
+	
 	ae->pass = env->passes_complete;
 	ae->num_features = 0;
 	ae->total_sum_feat_sq = 1;
 	ae->example_counter = ++example_count;
-	ae->global_weight = ae->ld->get_weight();
+	ae->global_weight = ae->ld->weight;
 	env->t += ae->global_weight;
 	ae->example_t = env->t;
 
