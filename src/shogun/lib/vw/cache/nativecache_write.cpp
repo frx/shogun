@@ -126,7 +126,7 @@ void NativeCacheWriter::output_features(unsigned char index, VwFeature* begin, V
 
 void NativeCacheWriter::cache_example(VwExample* &ex)
 {
-	cache_label(&ex->ld);
+	cache_label(ex->ld);
 	cache_tag(ex->tag);
 	output_byte(ex->indices.index());
 	for (size_t* b = ex->indices.begin; b != ex->indices.end; b++)

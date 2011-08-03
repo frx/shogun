@@ -31,20 +31,18 @@ CStreamingVwCacheFile::~CStreamingVwCacheFile()
 
 void CStreamingVwCacheFile::get_vector(VwExample* &ex, int32_t& len)
 {
-	cache_reader->read_cached_example(ex);
-	if (ex == NULL)
-		len = -1;
-	else
+	if (cache_reader->read_cached_example(ex))
 		len = 1;
+	else
+		len = -1;
 }
 
 void CStreamingVwCacheFile::get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label)
 {
-	cache_reader->read_cached_example(ex);
-	if (ex == NULL)
-		len = -1;
-	else
+	if (cache_reader->read_cached_example(ex))
 		len = 1;
+	else
+		len = -1;
 }
 
 void CStreamingVwCacheFile::init(EVwCacheType cache_type)

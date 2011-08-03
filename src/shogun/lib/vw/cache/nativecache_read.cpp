@@ -108,7 +108,7 @@ size_t NativeCacheReader::read_cached_tag(VwExample* const ae)
 bool NativeCacheReader::read_cached_example(VwExample* const ae)
 {
 	size_t mask =  env->mask;
-	size_t total = read_cached_label(&ae->ld);
+	size_t total = read_cached_label(ae->ld);
 	if (total == 0)
 		return 0;
 	if (read_cached_tag(ae) == 0)

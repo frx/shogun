@@ -22,9 +22,9 @@ void ProtobufCacheWriter::cache_example(VwExample*& ex)
 
 	// Store the label
 	vwcache::LabelData* ld = ex_cached.mutable_ld();
-	ld->set_label(ex->ld.label);
-	ld->set_weight(ex->ld.weight);
-	ld->set_initial(ex->ld.initial);
+	ld->set_label(ex->ld->label);
+	ld->set_weight(ex->ld->weight);
+	ld->set_initial(ex->ld->initial);
 
 	// Store the tag
 

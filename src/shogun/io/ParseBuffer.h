@@ -139,7 +139,7 @@ namespace shogun
 		CParseBuffer<T>::CParseBuffer(int32_t size)
 	{
 		buffer_size=size;
-		ex_buff=new Example<T>[buffer_size]();
+		ex_buff = new Example<T>[buffer_size]();
 		SG_SINFO("Initialized with ring size: %d.\n", buffer_size);
 		ex_used=new E_IS_EXAMPLE_USED[buffer_size];
 	
