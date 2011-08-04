@@ -73,9 +73,17 @@ namespace shogun
 		 *
 		 * @return pointer to example
 		 */
-		inline Example<T>* get_free_example()
+		Example<T>* get_free_example()
 		{
-			return &ex_buff[ex_write_index];
+			pthread_mutex_lock(write_lock);
+			pthread_mutex_lock(&ex_in_use_mutex[ex_write_index]);
+			while (ex_used[ex_write_index] == E_NOT_USED)
+				pthread_cond_wait(&ex_in_use_cond[ex_write_index], &ex_in_use_mutex[ex_write_index]);
+			Example<T>* ex=&ex_buff[ex_write_index];
+			pthread_mutex_unlock(&ex_in_use_mutex[ex_write_index]);
+			pthread_mutex_unlock(write_lock);
+			
+			return ex;
 		}
 
 		/** 
@@ -165,7 +173,7 @@ namespace shogun
 		write_lock=new pthread_mutex_t;
 	
 		ex_write_index=0;
-		ex_read_index=-1;
+		ex_read_index=0;
 
 		for (int32_t i=0; i<buffer_size; i++)
 		{
@@ -215,8 +223,8 @@ namespace shogun
 		ex_used[ex_write_index] = E_NOT_USED;
 		inc_write_index();
 
-		if (ex_read_index < 0)
-			ex_read_index = 0;
+		//if (ex_read_index < 0)
+		//	ex_read_index = 0;
 
 		return 1;	
 	}

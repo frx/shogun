@@ -453,6 +453,7 @@ namespace shogun
 			pthread_testcancel();
 
 			current_example = examples_buff->get_free_example();
+			//printf("LOOP: current_example = %p.\n", current_example);
 			current_feature_vector = current_example->fv.vector;
 			current_len = current_example->fv.vlen;
 			current_label = current_example->label;
@@ -512,6 +513,7 @@ namespace shogun
 		}
 
 		ex = examples_buff->fetch_example();
+		//printf("GET: ex = %p.\n", ex);
 		number_of_vectors_read++;
 		
 		return ex;
@@ -559,6 +561,9 @@ namespace shogun
 			}
 		}
 
+		//if (current_example == ex)
+		//	printf("EQUAL!!!\n");
+		
 		fv = ex->fv.vector;
 		length = ex->fv.vlen;
 		label = ex->label;

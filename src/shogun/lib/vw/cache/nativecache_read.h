@@ -48,6 +48,8 @@ public:
 	 */
 	virtual bool read_cached_example(VwExample* const ae);
 
+	virtual bool read_org(VwExample* const ae);
+
 private:
 
 	/**
