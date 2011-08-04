@@ -30,7 +30,7 @@ namespace shogun
 
 			hasher = hashstring;
 			
-			cache_writer = new NativeCacheWriter("cache_shogun.dat", env);
+			cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
 			write_cache = true;
 		}
 
