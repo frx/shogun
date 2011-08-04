@@ -35,14 +35,14 @@ namespace shogun
 		Example()
 		{
 			fv.vector = new T();
-			printf("Created vector at %p for example %d.\n", fv.vector, create_ex_count++);
+			//printf("Created vector at %p for example %d.\n", fv.vector, create_ex_count++);
 			fv.vlen = 1;
 			label = FLT_MAX;
 		}
 
 		~Example()
 		{
-			printf("Deleting address: %p for example %d.\n", fv.vector, delete_ex_count++);
+			//printf("Deleting address: %p for example %d.\n", fv.vector, delete_ex_count++);
 			if (fv.vector != NULL)
 				delete fv.vector;
 		}

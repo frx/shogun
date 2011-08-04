@@ -22,6 +22,7 @@ void VwRegularMachine::train(VwExample* &ex, float update)
 	{
 		for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
 		{
+			j++;
 			//printf("j=%d.\n", j++);
 			weights[f->weight_index & thread_mask] += update * f->x;
 		}

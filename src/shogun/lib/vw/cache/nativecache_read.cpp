@@ -111,14 +111,14 @@ bool NativeCacheReader::read_cached_example(VwExample* const ae)
 	size_t mask =  env->mask;
 	size_t total = read_cached_label(ae->ld);
 	if (total == 0)
-		return 0;
+		return false;
 	if (read_cached_tag(ae) == 0)
-		return 0;
+		return false;
 
 	char* c;
 	unsigned char num_indices = 0;
 	if (buf.buf_read(c, sizeof(num_indices)) < sizeof(num_indices))
-		return 0;
+		return false;
 	num_indices = *(unsigned char*)c;
 	c += sizeof(num_indices);
 
