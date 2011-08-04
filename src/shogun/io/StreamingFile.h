@@ -46,7 +46,7 @@ namespace shogun
 		 * @param fname filename to open
 		 * @param rw mode, 'r' or 'w'
 		 */
-		CStreamingFile(char* fname, char rw='r');
+		CStreamingFile(const char* fname, char rw='r');
 
 		/** default destructor */
 		virtual ~CStreamingFile();
