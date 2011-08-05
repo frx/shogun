@@ -20,6 +20,8 @@ public:
 
 	virtual float predict(VwExample* ex);
 
+	void set_adaptive(bool adaptive_learning);
+
 	virtual VwEnvironment* get_env() { return env; }
 private:
 	/** 

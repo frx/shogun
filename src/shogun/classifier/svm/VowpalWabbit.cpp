@@ -178,6 +178,18 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 
 }
 
+void CVowpalWabbit::set_adaptive(bool adaptive_learning)
+{
+	if (adaptive_learning)
+	{
+		env->adaptive = true;
+		env->stride = 2;
+		env->power_t = 0.;
+	}
+	else
+		env->adaptive = false;
+}
+
 void CVowpalWabbit::print_update(VwExample* &ex)
 {
 

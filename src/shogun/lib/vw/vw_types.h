@@ -176,11 +176,8 @@ public:
 	 *
 	 * @param words substrings, each representing a token in the label data of the format
 	 */
-	VwLabel()
+	VwLabel(): label(FLT_MAX), weight(1.), initial(0.)
 	{
-		label = FLT_MAX;
-		weight = 1.;
-		initial = 0.;
 	}
 
 	void parse_label(v_array<substring>& words)
@@ -251,13 +248,10 @@ public:
 		example_t(0), total_sum_feat_sq(1), revert_weight(0)
 	{
 		ld = new VwLabel();
-		//printf("this=%p, ld=%p.\n", this, ld);
 	}
 
 	~VwExample()
 	{
-		//printf("this=%p.\n", this);
-		//printf("deleting ld at %p.\n", ld);
 		if (ld)
 			delete ld;
 		if (tag.end_array != tag.begin)
