@@ -28,7 +28,7 @@ void VwRegularMachine::train(VwExample* &ex, float update)
 		}
 	}
 
-	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
 		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
 		temp.begin = ex->atomics[(int)(*i)[0]].begin;

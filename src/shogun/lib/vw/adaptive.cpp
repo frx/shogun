@@ -19,7 +19,7 @@ void VwAdaptiveMachine::train(VwExample* &ex, float update)
 	size_t thread_mask = env->thread_mask;
 	float* weights = reg->weight_vectors[thread_num];
 
-	float g = reg->loss->square_grad(ex->final_prediction, ex->ld->label) * ex->ld->weight;
+	float g = reg->loss->get_square_grad(ex->final_prediction, ex->ld->label) * ex->ld->weight;
 	size_t ctr = 0;
 	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
@@ -31,7 +31,7 @@ void VwAdaptiveMachine::train(VwExample* &ex, float update)
 			w[0] += update * t;
 		}
 	}
-	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
 		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
 		temp.begin = ex->atomics[(int)(*i)[0]].begin;
