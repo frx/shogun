@@ -175,6 +175,13 @@ float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
 	return ret;
 }
 
+/*float64_t CStreamingVwFeatures::sparse_dot(SGSparseVector<float64_t> vec1, const float* vec2)
+{
+	float64_t ret = 0.;
+	for (int32_t i = 0; i < vec.vlen; i++)
+	{
+		ret += vec[i].entry * vec2[*/
+
 float CStreamingVwFeatures::dense_dot(const float* vec2, int32_t vec2_len)
 {
 	return dense_dot(current_example, vec2);
