@@ -43,7 +43,7 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 
 	prediction += features->dense_dot_truncated(weights, ex, env->l1_regularization * env->update_sum);
 
-	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
 		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
 		temp.begin = ex->atomics[(int)(*i)[0]].begin;
@@ -66,7 +66,7 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 	size_t thread_mask = env->thread_mask;
 	prediction += features->dense_dot(weights, 0);
 
-	for (vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
 	{
 		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
 		temp.begin = ex->atomics[(int)(*i)[0]].begin;
