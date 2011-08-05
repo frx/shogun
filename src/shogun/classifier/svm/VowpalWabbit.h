@@ -23,6 +23,8 @@ public:
 	void set_adaptive(bool adaptive_learning);
 
 	virtual VwEnvironment* get_env() { return env; }
+
+	virtual float64_t apply(SGSparseVector<float64_t> vec);
 private:
 	/** 
 	 * Sets the train/update methods depending on parameters 
