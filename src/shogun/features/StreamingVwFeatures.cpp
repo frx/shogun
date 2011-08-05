@@ -41,17 +41,6 @@ void CStreamingVwFeatures::init(CStreamingFile* file, bool is_labelled, int32_t 
 
 void CStreamingVwFeatures::setup_example(VwExample* ae)
 {
-	/* TODO: DO THE NECESSARY FOR BELOW */
-	/*
-	  if(env->sort_features && ae->sorted == false)
-	  unique_sort_features(ae);
-
-	  if(env->ngram > 1)
-	  generateGrams(env->ngram, env->skips, ae);
-	*/
-
-	//printf("SETUP: ld addr = %p.\n", ae->ld);
-	
 	ae->pass = env->passes_complete;
 	ae->num_features = 0;
 	ae->total_sum_feat_sq = 1;
@@ -66,7 +55,6 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 		for (size_t* i = ae->indices.begin; i != ae->indices.end; i++)
 			if (env->ignore[*i])
 			{
-				// Delete namespace
 				ae->atomics[*i].erase();
 				memmove(i,i+1,(ae->indices.end - (i+1))*sizeof(size_t));
 				ae->indices.end--;
@@ -193,7 +181,7 @@ float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
 	for (size_t* i = ex->indices.begin; i!= ex->indices.end; i++)
 	{
 		for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
-			ret += vec2[f->weight_index & env->mask] * f->x;
+			ret += vec2[f->weight_index & env->thread_mask] * f->x;
 	}
 	return ret;
 }
@@ -210,7 +198,7 @@ float CStreamingVwFeatures::dense_dot_truncated(const float* vec2, VwExample* &e
 	{
 		for (VwFeature* f = ex->atomics[*i].begin; f!= ex->atomics[*i].end; f++)
 		{
-			float w = vec2[f->weight_index & env->mask];
+			float w = vec2[f->weight_index & env->thread_mask];
 			float wprime = real_weight(w,gravity);
 			ret += wprime*f->x;
 		}
@@ -225,7 +213,7 @@ void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* 
 		for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 		{
 			for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
-				vec2[f->weight_index & env->mask] += alpha * abs(f->x);
+				vec2[f->weight_index & env->thread_mask] += alpha * abs(f->x);
 		}
 	}
 	else
@@ -233,7 +221,7 @@ void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* 
 		for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 		{
 			for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
-				vec2[f->weight_index & env->mask] += alpha * f->x;
+				vec2[f->weight_index & env->thread_mask] += alpha * f->x;
 		}
 	}
 }
