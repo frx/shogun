@@ -115,6 +115,47 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 
 	if (write_cache)
 		cache_writer->cache_example(ae);
-	
+
+	return num_chars;
+}
+
+int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
+{
+	char *line=NULL;
+	int num_chars = buf->read_line(line);
+	if (num_chars == 0)
+		return num_chars;
+
+	/* Mark begin and end of example in the buffer */
+	substring example_string = {line, line + num_chars};
+
+
+	size_t mask = env->mask;
+	tokenize(' ', example_string, words);
+
+	ae->ld->label = float_of_substring(words[0]);
+	ae->ld->weight = 1.;
+	ae->ld->initial = 0.;
+	set_minmax(ae->ld->label);
+
+	substring* feature_start = &words[1];
+
+	size_t channel_hash = constant;
+	int index = 128;	// Constant namespace
+
+	ae->indices.push(index);
+	/* Now parse the individual features */
+	for (substring* i = feature_start; i != words.end; i++)
+	{
+		substring feat = *i;
+		float v;
+		feature_value(*i, feat, v);
+
+		size_t word_hash = (hasher(name[0], channel_hash)) & mask;
+		VwFeature f = {v,word_hash};
+		ae->sum_feat_sq[index] += v*v;
+		ae->atomics[index].push(f);
+	}
+
 	return num_chars;
 }
