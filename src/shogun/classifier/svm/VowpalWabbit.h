@@ -24,7 +24,7 @@ public:
 
 	virtual VwEnvironment* get_env() { return env; }
 
-	virtual float64_t apply(SGSparseVector<float64_t> vec);
+	//virtual float64_t apply(SGSparseVector<float64_t> vec);
 private:
 	/** 
 	 * Sets the train/update methods depending on parameters 

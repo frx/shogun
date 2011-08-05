@@ -215,8 +215,28 @@ public:
 	 */
 	virtual float dense_dot(VwExample* &ex, const float* vec2);
 
+	/** 
+	 * Dot product of current feature vector with a dense vector
+	 * which stores weights in hashed indices
+	 * 
+	 * @param vec2 dense weight vector
+	 * @param vec2_len length of weight vector (not used)
+	 * 
+	 * @return dot product
+	 */
 	virtual float dense_dot(const float* vec2, int32_t vec2_len);
 
+	/** 
+	 * Dot product between a dense weight vector and a sparse feature vector.
+	 * Assumes the features to belong to the constant namespace.
+	 * 
+	 * @param vec1 sparse feature vector
+	 * @param vec2 weight vector
+	 * 
+	 * @return dot product between dense weights and a sparse feature vector
+	 */
+	virtual float dense_dot(SGSparseVector<float64_t>* vec1, const float* vec2);
+		
 	/**
 	 * Dot product with another dense vector.
 	 *

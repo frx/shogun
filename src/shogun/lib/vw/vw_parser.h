@@ -29,7 +29,7 @@ namespace shogun
 				env = env_to_use;
 
 			hasher = hashstring;
-			
+
 			cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
 			write_cache = true;
 		}
@@ -45,7 +45,7 @@ namespace shogun
 			words.begin = words.end = words.end_array = NULL;
 			free(name.begin);
 			name.begin = name.end = name.end_array = NULL;
-			
+
 			delete env;
 			delete cache_writer;
 		}
@@ -80,9 +80,19 @@ namespace shogun
 		 */
 		int32_t read_features(CIOBuffer* buf, VwExample*& ex);
 
-		/** 
+		/**
+		 * Read an example from an SVMLight file
+		 *
+		 * @param buf IOBuffer which contains input
+		 * @param ae parsed example
+		 *
+		 * @return number of characters read for this example
+		 */
+		int32_t read_svmlight_features(CIOBuffer* buf, VwExample*& ae);
+
+		/**
 		 * Set whether to write cache file or not
-		 * 
+		 *
 		 * @param wr_cache write cache or not
 		 */
 		void set_write_cache(bool wr_cache)
@@ -90,16 +100,16 @@ namespace shogun
 			write_cache = wr_cache;
 		}
 
-		/** 
+		/**
 		 * Return whether cache will be written or not
-		 * 
+		 *
 		 * @return will cache be written?
 		 */
 		bool get_write_cache()
 		{
 			return write_cache;
 		}
-		
+
 		/**
 		 * Update min and max labels seen in the environment
 		 *
