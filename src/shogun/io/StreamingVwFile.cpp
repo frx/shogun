@@ -39,7 +39,7 @@ void CStreamingVwFile::get_vector(VwExample* &ex, int32_t &len)
 
 void CStreamingVwFile::get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label)
 {
-	len = p->read_features(buf, ex);
+	len = p->read_svmlight_features(buf, ex);
 	if (len == 0)
 		len = -1;	// indicates failure
 }
