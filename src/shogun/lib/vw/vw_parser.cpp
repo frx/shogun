@@ -140,16 +140,16 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 
 	substring* feature_start = &words[1];
 
-	size_t channel_hash = constant;
-	int index = 128;	// Constant namespace
 
+	size_t index = (unsigned char)' ';	// Any default namespace
+	size_t channel_hash = 0;
+	ae->sum_feat_sq[index] = 0;
 	ae->indices.push(index);
 	/* Now parse the individual features */
 	for (substring* i = feature_start; i != words.end; i++)
 	{
-		substring feat = *i;
 		float v;
-		feature_value(*i, feat, v);
+		feature_value(*i, name, v);
 
 		size_t word_hash = (hasher(name[0], channel_hash)) & mask;
 		VwFeature f = {v,word_hash};
