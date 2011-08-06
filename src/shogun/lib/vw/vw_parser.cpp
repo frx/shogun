@@ -10,7 +10,6 @@ VwParser::VwParser(VwEnvironment* env_to_use)
 	else
 		env = env_to_use;
 
-	set_parser_type(T_VW);
 	hasher = hashstring;
 
 	cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
@@ -28,27 +27,6 @@ VwParser::~VwParser()
 
 	delete env;
 	delete cache_writer;
-}
-
-void VwParser::set_parser_type(E_VW_PARSER_TYPE type)
-{
-	switch (type)
-	{
-	case T_VW:
-		parse_example = &VwParser::read_features;
-		parser_type = T_VW;
-		break;
-	case T_SVMLIGHT:
-		parse_example = &VwParser::read_svmlight_features;
-		parser_type = T_SVMLIGHT;
-		break;
-	case T_DENSE:
-		parse_example = &VwParser::read_dense_features;
-		parser_type = T_DENSE;
-		break;
-	default:
-		SG_SERROR("Unrecognized parser type!\n");
-	}
 }
 
 int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)

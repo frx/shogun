@@ -12,15 +12,6 @@
 namespace shogun
 {
 
-class VwParser;
-
-enum E_VW_PARSER_TYPE
-{
-	T_VW = 1,
-	T_SVMLIGHT = 2,
-	T_DENSE = 3
-};
-
 class VwParser
 {
 public:
@@ -36,14 +27,6 @@ public:
 	 * Destructor
 	 */
 	~VwParser();
-
-	/**
-	 * Set the type of parser,
-	 * i.e., T_VW, T_SVMLIGHT or T_DENSE
-	 *
-	 * @param type parser type as one in E_VW_PARSER_TYPE enum
-	 */
-	void set_parser_type(E_VW_PARSER_TYPE type);
 
 	/**
 	 * Get the environment
@@ -152,15 +135,9 @@ public:
 	/// Hash function to use, of type hash_func_t
 	hash_func_t hasher;
 
-	/// Which parser to use
-	int32_t (VwParser::*parse_example) (CIOBuffer*, VwExample*&);
-
 protected:
 	/// Environment of VW - used by parser
 	VwEnvironment* env;
-
-	/// Parser type
-	E_VW_PARSER_TYPE parser_type;
 
 	VwCacheWriter* cache_writer;
 

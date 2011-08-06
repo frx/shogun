@@ -32,7 +32,23 @@ CStreamingVwFile::~CStreamingVwFile()
 
 void CStreamingVwFile::set_parser_type(E_VW_PARSER_TYPE type)
 {
-	p->set_parser_type(type);
+	switch (type)
+	{
+	case T_VW:
+		parse_example = &VwParser::read_features;
+		parser_type = T_VW;
+		break;
+	case T_SVMLIGHT:
+		parse_example = &VwParser::read_svmlight_features;
+		parser_type = T_SVMLIGHT;
+		break;
+	case T_DENSE:
+		parse_example = &VwParser::read_dense_features;
+		parser_type = T_DENSE;
+		break;
+	default:
+		SG_SERROR("Unrecognized parser type!\n");
+	}
 }
 
 void CStreamingVwFile::get_vector(VwExample* &ex, int32_t &len)
@@ -54,5 +70,6 @@ void CStreamingVwFile::init()
 	p = new VwParser();
 	env = p->get_env();
 
+	set_parser_type(T_VW);
 	write_to_cache = true;
 }

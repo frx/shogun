@@ -16,6 +16,13 @@
 
 namespace shogun
 {
+enum E_VW_PARSER_TYPE
+{
+	T_VW = 1,
+	T_SVMLIGHT = 2,
+	T_DENSE = 3
+};
+
 /** @brief Class StreamingVwFile to read vector-by-vector from
  * Vowpal Wabbit data files.
  * It reads the example and label into one object of VwExample type.
@@ -122,6 +129,9 @@ public:
 		return "StreamingVwFile";
 	}
 
+public:
+	int32_t (VwParser::*parse_example)(CIOBuffer*, VwExample*&);
+
 private:
 	/**
 	 * Initialize members
@@ -131,6 +141,9 @@ private:
 protected:
 	/// Parser for vw format
 	VwParser* p;
+
+	/// Parser type
+	E_VW_PARSER_TYPE parser_type;
 
 	/// Environment used for vw - used by parser
 	VwEnvironment* env;
