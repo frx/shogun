@@ -12,154 +12,164 @@
 namespace shogun
 {
 
-	class VwParser
+class VwParser;
+
+enum E_VW_PARSER_TYPE
+{
+	T_VW = 1,
+	T_SVMLIGHT = 2,
+	T_DENSE = 3
+};
+
+class VwParser
+{
+public:
+	/**
+	 * Constructor taking environment as parameter (optional)
+	 * If not specified, a default environment is used.
+	 *
+	 * @param env_to_use VwEnvironment to use
+	 */
+	VwParser(VwEnvironment* env_to_use = NULL);
+
+	/**
+	 * Destructor
+	 */
+	~VwParser();
+
+	/**
+	 * Set the type of parser,
+	 * i.e., T_VW, T_SVMLIGHT or T_DENSE
+	 *
+	 * @param type parser type as one in E_VW_PARSER_TYPE enum
+	 */
+	void set_parser_type(E_VW_PARSER_TYPE type);
+
+	/**
+	 * Get the environment
+	 *
+	 * @return environment as VwEnvironment*
+	 */
+	VwEnvironment* get_env()
 	{
-	public:
-		/**
-		 * Constructor taking environment as parameter (optional)
-		 * If not specified, a default environment is used.
-		 *
-		 * @param env_to_use VwEnvironment to use
-		 */
-		VwParser(VwEnvironment* env_to_use = NULL)
-		{
-			if (env_to_use == NULL)
-				env = new VwEnvironment();
-			else
-				env = env_to_use;
+		return env;
+	}
 
-			hasher = hashstring;
+	/**
+	 * Set the environment
+	 *
+	 * @param env_to_use environment as VwEnvironment*
+	 */
+	void set_env(VwEnvironment* env_to_use)
+	{
+		env = env_to_use;
+	}
 
-			cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
-			write_cache = true;
-		}
+	/**
+	 * Reads input from the buffer and parses it into a VwExample
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ex parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_features(CIOBuffer* buf, VwExample*& ex);
 
-		/**
-		 * Destructor
-		 */
-		~VwParser()
-		{
-			free(channels.begin);
-			channels.begin = channels.end = channels.end_array = NULL;
-			free(words.begin);
-			words.begin = words.end = words.end_array = NULL;
-			free(name.begin);
-			name.begin = name.end = name.end_array = NULL;
+	/**
+	 * Read an example from an SVMLight file
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ae parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_svmlight_features(CIOBuffer* buf, VwExample*& ae);
 
-			delete env;
-			delete cache_writer;
-		}
+	/**
+	 * Read an example from a file with dense vectors
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ae parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_dense_features(CIOBuffer* buf, VwExample*& ae);
 
-		/**
-		 * Get the environment
-		 *
-		 * @return environment as VwEnvironment*
-		 */
-		VwEnvironment* get_env()
-		{
-			return env;
-		}
+	/**
+	 * Set whether to write cache file or not
+	 *
+	 * @param wr_cache write cache or not
+	 */
+	void set_write_cache(bool wr_cache)
+	{
+		write_cache = wr_cache;
+	}
 
-		/**
-		 * Set the environment
-		 *
-		 * @param env_to_use environment as VwEnvironment*
-		 */
-		void set_env(VwEnvironment* env_to_use)
-		{
-			env = env_to_use;
-		}
+	/**
+	 * Return whether cache will be written or not
+	 *
+	 * @return will cache be written?
+	 */
+	bool get_write_cache()
+	{
+		return write_cache;
+	}
 
-		/**
-		 * Reads input from the buffer and parses it into a VwExample
-		 *
-		 * @param buf IOBuffer which contains input
-		 * @param ex parsed example
-		 *
-		 * @return number of characters read for this example
-		 */
-		int32_t read_features(CIOBuffer* buf, VwExample*& ex);
+	/**
+	 * Update min and max labels seen in the environment
+	 *
+	 * @param label current label based on which to update
+	 */
+	void set_mm(float64_t label)
+	{
+		env->min_label = CMath::min(env->min_label, label);
+		if (label != FLT_MAX)
+			env->max_label = CMath::max(env->max_label, label);
+	}
 
-		/**
-		 * Read an example from an SVMLight file
-		 *
-		 * @param buf IOBuffer which contains input
-		 * @param ae parsed example
-		 *
-		 * @return number of characters read for this example
-		 */
-		int32_t read_svmlight_features(CIOBuffer* buf, VwExample*& ae);
+	/**
+	 * A dummy function performing no operation in case training
+	 * is not to be performed.
+	 *
+	 * @param label label
+	 */
+	void noop_mm(float64_t label)
+	{
+	}
 
-		/**
-		 * Set whether to write cache file or not
-		 *
-		 * @param wr_cache write cache or not
-		 */
-		void set_write_cache(bool wr_cache)
-		{
-			write_cache = wr_cache;
-		}
+	/**
+	 * Function which is actually called to update min and max labels
+	 * Should be set to one of the functions implemented for this.
+	 *
+	 * @param label label based on which to update
+	 */
+	void set_minmax(float64_t label)
+	{
+		set_mm(label);
+	}
 
-		/**
-		 * Return whether cache will be written or not
-		 *
-		 * @return will cache be written?
-		 */
-		bool get_write_cache()
-		{
-			return write_cache;
-		}
+public:
+	/// Hash function to use, of type hash_func_t
+	hash_func_t hasher;
 
-		/**
-		 * Update min and max labels seen in the environment
-		 *
-		 * @param label current label based on which to update
-		 */
-		void set_mm(float64_t label)
-		{
-			env->min_label = CMath::min(env->min_label, label);
-			if (label != FLT_MAX)
-				env->max_label = CMath::max(env->max_label, label);
-		}
+	/// Which parser to use
+	int32_t (VwParser::*parse_example) (CIOBuffer*, VwExample*&);
 
-		/**
-		 * A dummy function performing no operation in case training
-		 * is not to be performed.
-		 *
-		 * @param label label
-		 */
-		void noop_mm(float64_t label)
-		{
-		}
+protected:
+	/// Environment of VW - used by parser
+	VwEnvironment* env;
 
-		/**
-		 * Function which is actually called to update min and max labels
-		 * Should be set to one of the functions implemented for this.
-		 *
-		 * @param label label based on which to update
-		 */
-		void set_minmax(float64_t label)
-		{
-			set_mm(label);
-		}
+	/// Parser type
+	E_VW_PARSER_TYPE parser_type;
 
-	public:
-		/// Hash function to use, of type hash_func_t
-		hash_func_t hasher;
+	VwCacheWriter* cache_writer;
 
-	protected:
-		/// Environment of VW - used by parser
-		VwEnvironment* env;
+	bool write_cache;
 
-		VwCacheWriter* cache_writer;
-
-		bool write_cache;
-
-	private:
-		v_array<substring> channels;
-		v_array<substring> words;
-		v_array<substring> name;
-	};
-
+private:
+	v_array<substring> channels;
+	v_array<substring> words;
+	v_array<substring> name;
+};
 }
 #endif

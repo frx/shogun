@@ -3,6 +3,54 @@
 
 using namespace shogun;
 
+VwParser::VwParser(VwEnvironment* env_to_use)
+{
+	if (env_to_use == NULL)
+		env = new VwEnvironment();
+	else
+		env = env_to_use;
+
+	set_parser_type(T_VW);
+	hasher = hashstring;
+
+	cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
+	write_cache = true;
+}
+
+VwParser::~VwParser()
+{
+	free(channels.begin);
+	channels.begin = channels.end = channels.end_array = NULL;
+	free(words.begin);
+	words.begin = words.end = words.end_array = NULL;
+	free(name.begin);
+	name.begin = name.end = name.end_array = NULL;
+
+	delete env;
+	delete cache_writer;
+}
+
+void VwParser::set_parser_type(E_VW_PARSER_TYPE type)
+{
+	switch (type)
+	{
+	case T_VW:
+		parse_example = &VwParser::read_features;
+		parser_type = T_VW;
+		break;
+	case T_SVMLIGHT:
+		parse_example = &VwParser::read_svmlight_features;
+		parser_type = T_SVMLIGHT;
+		break;
+	case T_DENSE:
+		parse_example = &VwParser::read_dense_features;
+		parser_type = T_DENSE;
+		break;
+	default:
+		SG_SERROR("Unrecognized parser type!\n");
+	}
+}
+
 int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
@@ -157,3 +205,43 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 
 	return num_chars;
 }
+
+int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
+{
+	char *line=NULL;
+	int num_chars = buf->read_line(line);
+	if (num_chars == 0)
+		return num_chars;
+
+	// Mark begin and end of example in the buffer
+	substring example_string = {line, line + num_chars};
+
+	size_t mask = env->mask;
+	tokenize(' ', example_string, words);
+
+	ae->ld->label = float_of_substring(words[0]);
+	ae->ld->weight = 1.;
+	ae->ld->initial = 0.;
+	set_minmax(ae->ld->label);
+
+	substring* feature_start = &words[1];
+
+	size_t index = (unsigned char)' ';
+	size_t channel_hash = 0;
+	ae->sum_feat_sq[index] = 0;
+	ae->indices.push(index);
+	// Now parse individual features
+	int32_t j=0;
+	for (substring* i = feature_start; i != words.end; i++)
+	{
+		float v = float_of_substring(*i);
+		size_t word_hash = j & mask;
+		VwFeature f = {v,word_hash};
+		ae->sum_feat_sq[index] += v*v;
+		ae->atomics[index].push(f);
+		j++;
+	}
+
+	return num_chars;
+}
+
