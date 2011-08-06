@@ -90,20 +90,14 @@ public:
 	 *
 	 * @param env VwEnvironment* environment
 	 */
-	void set_env(VwEnvironment* env_to_use)
-	{
-		parser->set_env(env_to_use);
-	}
+	void set_env(VwEnvironment* env_to_use) { parser->set_env(env_to_use); }
 
 	/**
 	 * Return the environment
 	 *
 	 * @return environment as VwEnvironment*
 	 */
-	VwEnvironment* get_env()
-	{
-		return env;
-	}
+	VwEnvironment* get_env() { return env; }
 
 	/**
 	 * Set whether cache will be written
@@ -121,10 +115,7 @@ public:
 	 *
 	 * @return whether to write to cache
 	 */
-	bool get_write_to_cache()
-	{
-		return write_to_cache;
-	}
+	bool get_write_to_cache() { return write_to_cache; }
 
 	/** @return object name */
 	inline virtual const char* get_name() const
@@ -133,7 +124,7 @@ public:
 	}
 
 public:
-	/// Which function should be called for parsing
+	/// The function which will be called for parsing
 	parse_func parse_example;
 
 private:
