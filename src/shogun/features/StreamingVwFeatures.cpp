@@ -184,7 +184,7 @@ float CStreamingVwFeatures::dense_dot(SGSparseVector<float64_t>* vec1, const flo
 {
 	float64_t ret = 0.;
 	for (int32_t i = 0; i < vec1->num_feat_entries; i++)
-		ret += vec1->features[i].entry * vec2[(constant + vec1->features[i].feat_index) & env->mask];
+		ret += vec1->features[i].entry * vec2[vec1->features[i].feat_index & env->mask];
 	
 	return ret;
 }
