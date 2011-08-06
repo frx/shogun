@@ -1,9 +1,10 @@
 #ifndef _VOWPALWABBIT_H__
 #define _VOWPALWABBIT_H__
 
-#include <shogun/lib/vw/vw_common.h>
-#include <shogun/lib/vw/learners/adaptive.h>
-#include <shogun/lib/vw/learners/regular_machine.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/sparse_dense.h>
+#include <shogun/classifier/vw/learners/adaptive.h>
+#include <shogun/classifier/vw/learners/regular_machine.h>
 #include <shogun/features/StreamingVwFeatures.h>
 
 namespace shogun
