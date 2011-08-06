@@ -45,6 +45,14 @@ public:
 	virtual ~CStreamingVwFile();
 
 	/**
+	 * Set the type of parser, i.e.,
+	 * T_VW, T_SVMLIGHT or T_DENSE.
+	 *
+	 * @param type parser type as enum
+	 */
+	void set_parser_type(E_VW_PARSER_TYPE type = T_VW);
+
+	/**
 	 * Returns the parsed example.
 	 *
 	 * The example contains the label if available, and
