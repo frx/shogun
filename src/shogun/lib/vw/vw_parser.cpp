@@ -129,7 +129,6 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	/* Mark begin and end of example in the buffer */
 	substring example_string = {line, line + num_chars};
 
-
 	size_t mask = env->mask;
 	tokenize(' ', example_string, words);
 
@@ -139,7 +138,6 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	set_minmax(ae->ld->label);
 
 	substring* feature_start = &words[1];
-
 
 	size_t index = (unsigned char)' ';	// Any default namespace
 	size_t channel_hash = 0;
