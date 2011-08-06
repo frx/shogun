@@ -437,5 +437,67 @@ class SGIO
 	private:
 		int32_t refcount;
 };
+
+/**
+ * @brief struct Substring, specified by
+ * start position and end position.
+ *
+ * Used to mark strings in a buffer, where they
+ * need not be delimited by NUL characters.
+ */
+struct substring
+{
+	char *start;
+	char *end;
+};
+
+/**
+ * Return a C string from the substring
+ * @param s substring
+ * @return new C string representation
+ */
+char* c_string_of_substring(substring s);
+
+/**
+ * Print the substring
+ * @param s substring
+ */
+void print_substring(substring s);
+
+/**
+ * Get value of substring as float
+ * (if possible)
+ * @param s substring
+ * @return float32_t value of substring
+ */
+float32_t float_of_substring(substring s);
+
+/**
+ * Return value of substring as double
+ * @param s substring
+ * @return substring as double
+ */
+float64_t double_of_substring(substring s);
+
+/**
+ * Integer value of substring
+ * @param s substring
+ * @return int value of substring
+ */
+int32_t int_of_substring(substring s);
+
+/**
+ * Unsigned long value of substring
+ * @param s substring
+ * @return unsigned long value of substring
+ */
+uint32_t ulong_of_substring(substring s);
+
+/**
+ * Length of substring
+ * @param s substring
+ * @return length of substring
+ */
+uint32_t ss_length(substring s);
 }
 #endif // __SGIO_H__

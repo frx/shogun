@@ -1,4 +1,4 @@
-#include <shogun/classifier/vw/substring.h>
+#include <shogun/io/SGIO.h>
 #include <shogun/classifier/vw/parser/parse_primitives.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/parser/parse_example.h>

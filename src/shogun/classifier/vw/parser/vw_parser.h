@@ -1,7 +1,7 @@
 #ifndef _VW_PARSER_H__
 #define _VW_PARSER_H__
 
-#include <shogun/classifier/vw/substring.h>
+#include <shogun/io/SGIO.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/hash.h>
 #include <shogun/classifier/vw/parser/parse_primitives.h>
