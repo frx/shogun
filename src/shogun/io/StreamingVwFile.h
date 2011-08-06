@@ -11,8 +11,8 @@
 #define __STREAMING_VWFILE_H__
 
 #include <shogun/io/StreamingFile.h>
-#include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/vw_parser.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/parser/vw_parser.h>
 
 namespace shogun
 {

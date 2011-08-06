@@ -1,13 +1,13 @@
 #ifndef _VW_PARSER_H__
 #define _VW_PARSER_H__
 
-#include <shogun/lib/vw/substring.h>
-#include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/hash.h>
-#include <shogun/lib/vw/parse_primitives.h>
-#include <shogun/lib/vw/parse_example.h>
-#include <shogun/lib/vw/cache/protobuf_write.h>
-#include <shogun/lib/vw/cache/nativecache_write.h>
+#include <shogun/classifier/vw/substring.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/hash.h>
+#include <shogun/classifier/vw/parser/parse_primitives.h>
+#include <shogun/classifier/vw/parser/parse_example.h>
+#include <shogun/classifier/vw/cache/protobuf_write.h>
+#include <shogun/classifier/vw/cache/nativecache_write.h>
 
 namespace shogun
 {

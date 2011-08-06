@@ -1,7 +1,7 @@
 #ifndef _VW_PROTOBUF_READ_H__
 #define _VW_PROTOBUF_READ_H__
 
-#include <shogun/lib/vw/cache/cache_read.h>
+#include <shogun/classifier/vw/cache/cache_read.h>
 
 #include <iostream>
 #include <fstream>

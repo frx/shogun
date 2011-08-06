@@ -1,4 +1,4 @@
-#include <shogun/lib/vw/parse_primitives.h>
+#include <shogun/classifier/vw/parser/parse_primitives.h>
 
 namespace shogun
 {

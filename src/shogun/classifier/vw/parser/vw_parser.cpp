@@ -1,5 +1,5 @@
-#include <shogun/lib/vw/parse_example.h>
-#include <shogun/lib/vw/vw_parser.h>
+#include <shogun/classifier/vw/parser/parse_example.h>
+#include <shogun/classifier/vw/parser/vw_parser.h>
 
 using namespace shogun;
 

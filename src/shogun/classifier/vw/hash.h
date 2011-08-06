@@ -4,7 +4,7 @@
 #include <stdint.h>	/* defines uint32_t etc */
 #include <sys/types.h>	/* defines size_t */
 #include <iostream>
-#include <shogun/lib/vw/vw_types.h>
+#include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
 {

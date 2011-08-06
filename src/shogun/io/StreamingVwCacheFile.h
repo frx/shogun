@@ -11,10 +11,10 @@
 #define __STREAMING_VWCACHEFILE_H__
 
 #include <shogun/io/StreamingFile.h>
-#include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/cache/cache_read.h>
-#include <shogun/lib/vw/cache/protobuf_read.h>
-#include <shogun/lib/vw/cache/nativecache_read.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/cache/cache_read.h>
+#include <shogun/classifier/vw/cache/protobuf_read.h>
+#include <shogun/classifier/vw/cache/nativecache_read.h>
 
 namespace shogun
 {

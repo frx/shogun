@@ -2,7 +2,7 @@
 #define _VW_CACHEREAD_H__
 
 #include <shogun/lib/common.h>
-#include <shogun/lib/vw/vw_types.h>
+#include <shogun/classifier/vw/vw_common.h>
 #include <shogun/io/IOBuffer.h>
 
 namespace shogun

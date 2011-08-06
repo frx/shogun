@@ -9,7 +9,7 @@
  */
 
 #include <shogun/io/StreamingVwFile.h>
-#include <shogun/lib/vw/vw_parser.h>
+#include <shogun/classifier/vw/parser/vw_parser.h>
 
 using namespace shogun;
 

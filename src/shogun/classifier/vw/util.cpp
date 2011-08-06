@@ -1,4 +1,4 @@
-#include <shogun/lib/vw/util.h>
+#include <shogun/classifier/vw/util.h>
 
 namespace shogun
 {

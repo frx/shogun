@@ -1,9 +1,9 @@
 #ifndef _VW_PARSEEXAMPLE_H__
 #define _VW_PARSEEXAMPLE_H__
 
-#include <shogun/lib/vw/substring.h>
-#include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/vw_parser.h>
+#include <shogun/classifier/vw/substring.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/parser/vw_parser.h>
 
 namespace shogun
 {

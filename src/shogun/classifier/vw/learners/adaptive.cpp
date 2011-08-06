@@ -1,5 +1,5 @@
-#include <shogun/lib/vw/adaptive.h>
-#include <shogun/lib/vw/util.h>
+#include <shogun/classifier/vw/learners/adaptive.h>
+#include <shogun/classifier/vw/util.h>
 
 using namespace shogun;
 

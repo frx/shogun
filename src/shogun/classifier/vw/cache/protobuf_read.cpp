@@ -1,4 +1,4 @@
-#include <shogun/lib/vw/cache/protobuf_read.h>
+#include <shogun/classifier/vw/cache/protobuf_read.h>
 
 using namespace shogun;
 

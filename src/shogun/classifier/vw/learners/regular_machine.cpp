@@ -1,5 +1,5 @@
-#include <shogun/lib/vw/regular_machine.h>
-#include <shogun/lib/vw/util.h>
+#include <shogun/classifier/vw/learners/regular_machine.h>
+#include <shogun/classifier/vw/util.h>
 
 using namespace shogun;
 

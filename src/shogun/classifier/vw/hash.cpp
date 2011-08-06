@@ -16,7 +16,7 @@
 //     big-endian machines.
 //
 
-#include <shogun/lib/vw/hash.h>
+#include <shogun/classifier/vw/hash.h>
 
 #include <stdint.h>
 #include <sys/types.h>

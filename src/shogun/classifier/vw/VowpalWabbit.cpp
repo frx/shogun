@@ -1,4 +1,4 @@
-#include <shogun/classifier/svm/VowpalWabbit.h>
+#include <shogun/classifier/vw/VowpalWabbit.h>
 
 using namespace shogun;
 

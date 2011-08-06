@@ -1,4 +1,4 @@
-#include <shogun/lib/vw/cache/nativecache_write.h>
+#include <shogun/classifier/vw/cache/nativecache_write.h>
 
 using namespace shogun;
 

@@ -1,8 +1,8 @@
-#include <shogun/lib/vw/substring.h>
-#include <shogun/lib/vw/parse_primitives.h>
-#include <shogun/lib/vw/vw_types.h>
-#include <shogun/lib/vw/parse_example.h>
-#include <shogun/lib/vw/vw_parser.h>
+#include <shogun/classifier/vw/substring.h>
+#include <shogun/classifier/vw/parser/parse_primitives.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/parser/parse_example.h>
+#include <shogun/classifier/vw/parser/vw_parser.h>
 
 namespace shogun
 {

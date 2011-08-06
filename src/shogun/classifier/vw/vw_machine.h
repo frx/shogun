@@ -1,7 +1,7 @@
 #ifndef _VW_MACHINE_H__
 #define _VW_MACHINE_H__
 
-#include <shogun/lib/vw/vw_types.h>
+#include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
 {
