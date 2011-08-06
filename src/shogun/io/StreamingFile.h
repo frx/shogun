@@ -17,7 +17,7 @@
 #include <shogun/io/SGIO.h>
 #include <shogun/lib/DataType.h>
 #include <shogun/io/IOBuffer.h>
-#include <shogun/lib/vw/vw_types.h>
+#include <shogun/classifier/vw/vw_common.h>
 
 #include <ctype.h>
 #include <fcntl.h>

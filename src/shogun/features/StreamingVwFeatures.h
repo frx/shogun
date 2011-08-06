@@ -15,6 +15,7 @@
 #include <shogun/features/StreamingDotFeatures.h>
 #include <shogun/lib/DataType.h>
 #include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/sparse_dense.h>
 #include <shogun/classifier/vw/util.h>
 #include <shogun/io/StreamingVwFile.h>
 #include <shogun/io/InputParser.h>

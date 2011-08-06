@@ -2,6 +2,7 @@
 #define _VW_MACHINE_H__
 
 #include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/vw_regressor.h>
 
 namespace shogun
 {
