@@ -304,6 +304,9 @@ const char* SGIO::get_msg_intro(EMessageType prio) const
 	return NULL;
 }
 
+namespace shogun
+{
+
 inline char* c_string_of_substring(substring s)
 {
 	index_t len = s.end - s.start+1;
@@ -322,32 +325,34 @@ inline float32_t float_of_substring(substring s)
 	char* endptr = s.end;
 	float32_t f = strtof(s.start,&endptr);
 	if (endptr == s.start && s.start != s.end)
-		SG_SERROR("error: %s is not a float!\n", std::string(s.start, s.end-s.start).c_str());
+		SG_SERROR("error: %s is not a float!\n", c_string_of_substring(s));
 
 	return f;
 }
 
-inline float32_t double_of_substring(substring s)
+inline float64_t double_of_substring(substring s)
 {
 	char* endptr = s.end;
 	float32_t f = strtod(s.start,&endptr);
 	if (endptr == s.start && s.start != s.end)
-		SG_SERROR("Error!:%s is not a double!\n", std::string(s.start, s.end-s.start).c_str());
+		SG_SERROR("Error!:%s is not a double!\n", c_string_of_substring(s));
 
 	return f;
 }
 
 inline int32_t int_of_substring(substring s)
 {
-	return atoi(std::string(s.start, s.end-s.start).c_str());
+	return atoi(c_string_of_substring(s));
 }
 
 inline uint32_t ulong_of_substring(substring s)
 {
-	return strtoul(std::string(s.start, s.end-s.start).c_str(),NULL,10);
+	return strtoul(c_string_of_substring(s),NULL,10);
 }
 
 inline uint32_t ss_length(substring s)
 {
 	return (s.end - s.start);
+}
+
 }
