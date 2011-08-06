@@ -16,6 +16,8 @@
 
 namespace shogun
 {
+
+/// The type of input to parse
 enum E_VW_PARSER_TYPE
 {
 	T_VW = 1,
@@ -23,11 +25,12 @@ enum E_VW_PARSER_TYPE
 	T_DENSE = 3
 };
 
+typedef int32_t (VwParser::*parse_func)(CIOBuffer*, VwExample*&);
+
 /** @brief Class StreamingVwFile to read vector-by-vector from
  * Vowpal Wabbit data files.
  * It reads the example and label into one object of VwExample type.
 */
-
 class CStreamingVwFile: public CStreamingFile
 {
 public:
@@ -89,7 +92,7 @@ public:
 	 */
 	void set_env(VwEnvironment* env_to_use)
 	{
-		p->set_env(env_to_use);
+		parser->set_env(env_to_use);
 	}
 
 	/**
@@ -110,7 +113,7 @@ public:
 	void set_write_to_cache(bool write_cache)
 	{
 		write_to_cache = write_cache;
-		p->set_write_cache(write_cache);
+		parser->set_write_cache(write_cache);
 	}
 
 	/**
@@ -130,7 +133,8 @@ public:
 	}
 
 public:
-	int32_t (VwParser::*parse_example)(CIOBuffer*, VwExample*&);
+	/// Which function should be called for parsing
+	parse_func parse_example;
 
 private:
 	/**
@@ -140,7 +144,7 @@ private:
 
 protected:
 	/// Parser for vw format
-	VwParser* p;
+	VwParser* parser;
 
 	/// Parser type
 	E_VW_PARSER_TYPE parser_type;

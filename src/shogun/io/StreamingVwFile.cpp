@@ -27,7 +27,7 @@ CStreamingVwFile::CStreamingVwFile(char* fname, char rw)
 
 CStreamingVwFile::~CStreamingVwFile()
 {
-	delete p;
+	delete parser;
 }
 
 void CStreamingVwFile::set_parser_type(E_VW_PARSER_TYPE type)
@@ -53,22 +53,22 @@ void CStreamingVwFile::set_parser_type(E_VW_PARSER_TYPE type)
 
 void CStreamingVwFile::get_vector(VwExample* &ex, int32_t &len)
 {
-	len = p->read_features(buf, ex);
+	len = (parser->*parse_example)(buf, ex);
 	if (len == 0)
 		len = -1;	// indicates failure
 }
 
 void CStreamingVwFile::get_vector_and_label(VwExample* &ex, int32_t &len, float64_t &label)
 {
-	len = (p->*parse_example)(buf, ex);
+	len = (parser->*parse_example)(buf, ex);
 	if (len == 0)
 		len = -1;	// indicates failure
 }
 
 void CStreamingVwFile::init()
 {
-	p = new VwParser();
-	env = p->get_env();
+	parser = new VwParser();
+	env = parser->get_env();
 
 	set_parser_type(T_VW);
 	write_to_cache = true;
