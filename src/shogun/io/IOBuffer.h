@@ -166,12 +166,12 @@ namespace shogun
 	 */
 	void buf_write(char* &pointer, int n);
 
-	/** 
+	/**
 	 * Return a pointer to position in buffer after reading n bytes
-	 * 
+	 *
 	 * @param pointer returned pointer
 	 * @param n bytes to read
-	 * 
+	 *
 	 * @return bytes read
 	 */
 	unsigned int buf_read(char* &pointer, int n);

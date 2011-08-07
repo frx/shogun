@@ -64,7 +64,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 
 	/* Constant feature is already added by the constructor */
 	size_t constant_namespace = 128;
-	VwFeature temp = {1,constant & env->mask};
+	VwFeature temp = {1,constant_hash & env->mask};
 	ae->indices.push(constant_namespace);
 	ae->atomics[constant_namespace].push(temp);
 
