@@ -3,10 +3,6 @@
 
 #include <shogun/classifier/vw/cache/cache_write.h>
 
-#include <iostream>
-#include <fstream>
-#include <string>
-
 namespace shogun
 {
 /** @brief Class NativeCacheWriter writes a cache exactly as

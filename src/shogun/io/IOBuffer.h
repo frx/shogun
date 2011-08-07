@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 #include <fcntl.h>
-#include <iostream>
 
 #ifndef O_LARGEFILE //for OSX
 #define O_LARGEFILE 0

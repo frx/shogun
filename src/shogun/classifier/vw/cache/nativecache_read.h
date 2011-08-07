@@ -3,9 +3,6 @@
 
 #include <shogun/classifier/vw/cache/cache_read.h>
 
-#include <iostream>
-#include <fstream>
-
 namespace shogun
 {
 
