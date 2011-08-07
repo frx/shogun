@@ -7,7 +7,7 @@
 namespace shogun
 {
 	
-class VwMachine
+class VwLearner
 {
 public:
 	/** 
@@ -16,7 +16,7 @@ public:
 	 * @param regressor regressor
 	 * @param vw_env environment
 	 */
-	VwMachine(VwRegressor* regressor, VwEnvironment* vw_env)
+	VwLearner(VwRegressor* regressor, VwEnvironment* vw_env)
 	{
 		reg = regressor;
 		env = vw_env;
@@ -25,7 +25,7 @@ public:
 	/** 
 	 * Destructor
 	 */
-	virtual ~VwMachine()
+	virtual ~VwLearner()
 	{
 	}
 

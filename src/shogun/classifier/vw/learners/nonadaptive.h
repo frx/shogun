@@ -6,7 +6,7 @@
 
 namespace shogun
 {
-	class VwRegularMachine: public VwMachine
+	class VwNonAdaptiveLearner: public VwLearner
 	{
 
 	public:
@@ -16,7 +16,7 @@ namespace shogun
 		 * @param regressor regressor to use
 		 * @param vw_env environment to use
 		 */
-		VwRegularMachine(VwRegressor* regressor, VwEnvironment* vw_env);
+		VwNonAdaptiveLearner(VwRegressor* regressor, VwEnvironment* vw_env);
 		
 		void train(VwExample* &ex, float update);
 

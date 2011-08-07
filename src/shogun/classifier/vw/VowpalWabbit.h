@@ -50,7 +50,7 @@ protected:
 	/// Environment for VW, i.e., globals
 	VwEnvironment* env;
 
-	VwMachine* learner;
+	VwLearner* learner;
 	
 	VwRegressor* reg;
 };

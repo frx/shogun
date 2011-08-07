@@ -3,12 +3,12 @@
 
 using namespace shogun;
 
-VwAdaptiveMachine::VwAdaptiveMachine(VwRegressor* regressor, VwEnvironment* vw_env)
-	: VwMachine(regressor, vw_env)
+VwAdaptiveLearner::VwAdaptiveLearner(VwRegressor* regressor, VwEnvironment* vw_env)
+	: VwLearner(regressor, vw_env)
 {
 }
 
-void VwAdaptiveMachine::train(VwExample* &ex, float update)
+void VwAdaptiveLearner::train(VwExample* &ex, float update)
 {
 	if (fabs(update) == 0.)
 		return;
@@ -43,7 +43,7 @@ void VwAdaptiveMachine::train(VwExample* &ex, float update)
 	}
 }
 
-void VwAdaptiveMachine::perform_update(float* weights, VwFeature& page_feature,
+void VwAdaptiveLearner::perform_update(float* weights, VwFeature& page_feature,
 				       v_array<VwFeature> &offer_features, size_t mask,
 				       float update, float g, VwExample* ex, size_t& ctr)
 {

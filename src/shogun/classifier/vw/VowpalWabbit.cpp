@@ -27,9 +27,9 @@ void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 void CVowpalWabbit::set_learner()
 {
 	if (env->adaptive)
-		learner = new VwAdaptiveMachine(reg, env);
+		learner = new VwAdaptiveLearner(reg, env);
 	else
-		learner = new VwRegularMachine(reg, env);
+		learner = new VwNonAdaptiveLearner(reg, env);
 }
 
 float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
