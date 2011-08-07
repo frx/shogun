@@ -12,7 +12,7 @@ VwParser::VwParser(VwEnvironment* env_to_use)
 
 	hasher = hashstring;
 
-	cache_writer = new ProtobufCacheWriter("cache_protobuf.dat", env);
+	cache_writer = new NativeCacheWriter("cache_native.dat", env);
 	write_cache = true;
 }
 

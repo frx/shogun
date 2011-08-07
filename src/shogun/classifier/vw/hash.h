@@ -3,7 +3,7 @@
 
 #include <stdint.h>	/* defines uint32_t etc */
 #include <sys/types.h>	/* defines size_t */
-#include <iostream>
+#include <ctype.h>
 #include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
@@ -12,7 +12,7 @@ namespace shogun
 	const uint32_t hash_base = 97562527;
 	size_t hashstring (substring s, unsigned long h);
 	size_t hashall (substring s, unsigned long h);
-	hash_func_t getHasher(const std::string& s);
+	hash_func_t getHasher(char* s);
 	uint32_t uniform_hash(const void *key, size_t length, uint32_t initval);
 
 }

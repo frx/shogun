@@ -31,7 +31,7 @@ void NativeCacheReader::init()
 
 void NativeCacheReader::check_cache_metadata()
 {
-	string version = "5.1";
+	char version[4] = "5.1";
 	size_t numbits = env->num_bits;
 
 	size_t v_length;
@@ -41,7 +41,7 @@ void NativeCacheReader::check_cache_metadata()
 
 	char t[v_length];
 	buf.read_file(t,v_length);
-	if (strcmp(t,version.c_str()) != 0)
+	if (strcmp(t,version) != 0)
 		SG_SERROR("Cache has possibly incompatible version!\n");
 
 	int total = sizeof(size_t);

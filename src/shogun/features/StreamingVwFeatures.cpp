@@ -83,13 +83,15 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 		ae->total_sum_feat_sq += ae->sum_feat_sq[*i];
 	}
 
-	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end();i++)
+	for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
 	{
-		ae->num_features
-			+= (ae->atomics[(int)(*i)[0]].end - ae->atomics[(int)(*i)[0]].begin)
-			*(ae->atomics[(int)(*i)[1]].end - ae->atomics[(int)(*i)[1]].begin);
+		char* i = env->pairs.get_element(k);
 
-		ae->total_sum_feat_sq += ae->sum_feat_sq[(int)(*i)[0]]*ae->sum_feat_sq[(int)(*i)[1]];
+		ae->num_features
+			+= (ae->atomics[(int)(i[0])].end - ae->atomics[(int)(i[0])].begin)
+			*(ae->atomics[(int)(i[1])].end - ae->atomics[(int)(i[1])].begin);
+
+		ae->total_sum_feat_sq += ae->sum_feat_sq[(int)(i[0])]*ae->sum_feat_sq[(int)(i[1])];
 
 	}
 }

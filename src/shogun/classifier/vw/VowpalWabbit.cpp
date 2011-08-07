@@ -43,14 +43,16 @@ float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
 
 	prediction += features->dense_dot_truncated(weights, ex, env->l1_regularization * env->update_sum);
 
-	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
 	{
-		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
-		temp.begin = ex->atomics[(int)(*i)[0]].begin;
-		temp.end = ex->atomics[(int)(*i)[0]].end;
+		char* i = env->pairs.get_element(k);
+
+		v_array<VwFeature> temp = ex->atomics[(int)(i[0])];
+		temp.begin = ex->atomics[(int)(i[0])].begin;
+		temp.end = ex->atomics[(int)(i[0])].end;
 		for (; temp.begin != temp.end; temp.begin++)
 			prediction += one_pf_quad_predict_trunc(weights, *temp.begin,
-								ex->atomics[(int)(*i)[1]], thread_mask,
+								ex->atomics[(int)(i[1])], thread_mask,
 								env->l1_regularization * env->update_sum);
 	}
 
@@ -66,14 +68,16 @@ float CVowpalWabbit::inline_predict(VwExample* &ex)
 	size_t thread_mask = env->thread_mask;
 	prediction += features->dense_dot(weights, 0);
 
-	for (std::vector<string>::iterator i = env->pairs.begin(); i != env->pairs.end(); i++)
+	for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
 	{
-		v_array<VwFeature> temp = ex->atomics[(int)(*i)[0]];
-		temp.begin = ex->atomics[(int)(*i)[0]].begin;
-		temp.end = ex->atomics[(int)(*i)[0]].end;
+		char* i = env->pairs.get_element(k);
+
+		v_array<VwFeature> temp = ex->atomics[(int)(i[0])];
+		temp.begin = ex->atomics[(int)(i[0])].begin;
+		temp.end = ex->atomics[(int)(i[0])].end;
 		for (; temp.begin != temp.end; temp.begin++)
 			prediction += one_pf_quad_predict(weights, *temp.begin,
-							  ex->atomics[(int)(*i)[1]],
+							  ex->atomics[(int)(i[1])],
 							  thread_mask);
 	}
 

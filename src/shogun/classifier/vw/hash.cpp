@@ -49,11 +49,11 @@ namespace shogun
 		return uniform_hash((unsigned char *)s.start, s.end - s.start, h);
 	}
 
-	hash_func_t getHasher(const std::string& s)
+	hash_func_t getHasher(char*& s)
 	{
-		if (s=="strings")
+		if (strcmp(s,"strings") == 0)
 			return hashstring;
-		else if(s=="all")
+		else if(strcmp(s, "all") == 0)
 			return hashall;
 		else
 			SG_SERROR("Unknown hash function: %s\n");
