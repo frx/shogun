@@ -1,4 +1,4 @@
-#include <shogun/classifier/vw/learners/regular_machine.h>
+#include <shogun/classifier/vw/learners/nonadaptive.h>
 #include <shogun/classifier/vw/util.h>
 
 using namespace shogun;

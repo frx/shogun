@@ -4,7 +4,7 @@
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/sparse_dense.h>
 #include <shogun/classifier/vw/learners/adaptive.h>
-#include <shogun/classifier/vw/learners/regular_machine.h>
+#include <shogun/classifier/vw/learners/nonadaptive.h>
 #include <shogun/classifier/vw/vw_regressor.h>
 #include <shogun/features/StreamingVwFeatures.h>
 
