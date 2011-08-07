@@ -109,6 +109,13 @@ public:
 		return env;
 	}
 
+	/**
+	 * Reset cache file back to first example.
+	 *
+	 * Used when multiple passes are to be performed
+	 */
+	void reset_stream();
+
 private:
 	/**
 	 * Initialize members

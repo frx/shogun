@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adapted from Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/VowpalWabbit.h>
 
 using namespace shogun;
@@ -17,11 +32,111 @@ CVowpalWabbit::~CVowpalWabbit()
 		delete learner;
 }
 
+void CVowpalWabbit::set_adaptive(bool adaptive_learning)
+{
+	if (adaptive_learning)
+	{
+		env->adaptive = true;
+		env->stride = 2;
+		env->power_t = 0.;
+	}
+	else
+		env->adaptive = false;
+}
+
+void CVowpalWabbit::add_quadratic_pair(char* pair)
+{
+	env->pairs.push_back(pair);
+}
+
+void CVowpalWabbit::train(CStreamingVwFeatures* feat)
+{
+	ASSERT(features);
+
+	set_learner();
+
+	VwExample* example = NULL;
+	int32_t current_pass = 0;
+	float dump_interval = exp(1.);
+
+	const char * header_fmt = "%-10s %-10s %8s %8s %10s %8s %8s\n";
+	fprintf(stdout, header_fmt,
+		"average", "since", "example", "example",
+		"current", "current", "current");
+	fprintf(stdout, header_fmt,
+		"loss", "last", "counter", "weight", "label", "predict", "features");
+
+	int cnt = 0;
+	features->start_parser();
+	while (features->get_next_example())
+	{
+		example = features->get_example();
+
+		if (example->pass != current_pass)
+		{
+			env->eta *= env->eta_decay_rate;
+			current_pass = example->pass;
+		}
+
+		cnt++;
+
+		float out = predict(example);
+		//printf("eta round is: %f.\n", example->eta_round);
+		learner->train(example, example->eta_round);
+		//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
+		example->eta_round = 0.;
+
+		if (env->weighted_examples + example->ld->weight > dump_interval)
+		{
+			print_update(example);
+			dump_interval *= 2;
+		}
+
+		features->release_example();
+	}
+	features->end_parser();
+
+	if (env->l1_regularization > 0.)
+	{
+		uint32_t length = 1 << env->num_bits;
+		size_t stride = env->stride;
+		float gravity = env->l1_regularization * env->update_sum;
+		for (uint32_t i = 0; i < length; i++)
+			reg->weight_vectors[0][stride*i] = real_weight(reg->weight_vectors[0][stride*i], gravity);
+	}
+}
+
+float CVowpalWabbit::predict(VwExample* ex)
+{
+	float prediction;
+	if (env->l1_regularization != 0.)
+		prediction = inline_l1_predict(ex);
+	else
+		prediction = inline_predict(ex);
+
+	ex->final_prediction = 0;
+	ex->final_prediction += prediction;
+	ex->final_prediction = finalize_prediction(ex->final_prediction);
+	float t = ex->example_t;
+
+	if (ex->ld->label != FLT_MAX)
+	{
+		ex->loss = reg->get_loss(ex->final_prediction, ex->ld->label) * ex->ld->weight;
+		double update = 0.;
+		update = (env->eta)/pow(t, env->power_t) * ex->ld->weight;
+		ex->eta_round = reg->get_update(ex->final_prediction, ex->ld->label, update, ex->total_sum_feat_sq);
+		env->update_sum += update;
+	}
+
+	return prediction;
+}
+
 void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 {
 	env=feat->get_env();
 	features=feat;
 	reg=new VwRegressor(env);
+	w=reg->weight_vectors[0];
 }
 
 void CVowpalWabbit::set_learner()
@@ -94,104 +209,6 @@ float CVowpalWabbit::finalize_prediction(float ret)
 		return env->min_label;
 
 	return ret;
-}
-
-float CVowpalWabbit::predict(VwExample* ex)
-{
-	float prediction;
-	if (env->l1_regularization != 0.)
-		prediction = inline_l1_predict(ex);
-	else
-		prediction = inline_predict(ex);
-
-	ex->final_prediction = 0;
-	ex->final_prediction += prediction;
-	ex->final_prediction = finalize_prediction(ex->final_prediction);
-	float t = ex->example_t;
-
-	if (ex->ld->label != FLT_MAX)
-	{
-		ex->loss = reg->get_loss(ex->final_prediction, ex->ld->label) * ex->ld->weight;
-		double update = 0.;
-		update = (env->eta)/pow(t, env->power_t) * ex->ld->weight;
-		ex->eta_round = reg->get_update(ex->final_prediction, ex->ld->label, update, ex->total_sum_feat_sq);
-		env->update_sum += update;
-	}
-
-	return prediction;
-}
-
-void CVowpalWabbit::train(CStreamingVwFeatures* feat)
-{
-	ASSERT(features);
-
-	set_learner();
-
-	VwExample* example = NULL;
-	int32_t current_pass = 0;
-	float dump_interval = exp(1.);
-
-	const char * header_fmt = "%-10s %-10s %8s %8s %10s %8s %8s\n";
-	fprintf(stdout, header_fmt,
-		"average", "since", "example", "example",
-		"current", "current", "current");
-	fprintf(stdout, header_fmt,
-		"loss", "last", "counter", "weight", "label", "predict", "features");
-
-	int cnt = 0;
-	features->start_parser();
-	while (features->get_next_example())
-	{
-		example = features->get_example();
-
-		if (example->pass != current_pass)
-		{
-			env->eta *= env->eta_decay_rate;
-			current_pass = example->pass;
-		}
-
-		cnt++;
-		example->eta_round = 0.;
-		example->final_prediction = 0.;
-		
-		float out = predict(example);
-		//printf("eta round is: %f.\n", example->eta_round);
-		learner->train(example, example->eta_round);
-		//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
-		example->eta_round = 0.;
-
-		if (env->weighted_examples + example->ld->weight > dump_interval)
-		{
-			print_update(example);
-			dump_interval *= 2;
-		}
-
-		features->release_example();
-	}
-	features->end_parser();
-
-	if (env->l1_regularization > 0.)
-	{
-		uint32_t length = 1 << env->num_bits;
-		size_t stride = env->stride;
-		float gravity = env->l1_regularization * env->update_sum;
-		for (uint32_t i = 0; i < length; i++)
-			reg->weight_vectors[0][stride*i] = real_weight(reg->weight_vectors[0][stride*i], gravity);
-	}
-
-
-}
-
-void CVowpalWabbit::set_adaptive(bool adaptive_learning)
-{
-	if (adaptive_learning)
-	{
-		env->adaptive = true;
-		env->stride = 2;
-		env->power_t = 0.;
-	}
-	else
-		env->adaptive = false;
 }
 
 void CVowpalWabbit::print_update(VwExample* &ex)
