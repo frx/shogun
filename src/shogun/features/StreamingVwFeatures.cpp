@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/features/StreamingVwFeatures.h>
 
 using namespace shogun;
@@ -46,7 +61,7 @@ void CStreamingVwFeatures::init(CStreamingVwCacheFile* file, bool is_labelled, i
 	working_file = file;
 	parser.init(file, is_labelled, size);
 	parser.set_do_delete(false);
-	seekable=false;
+	seekable=true;
 
 	/* Get environment from the StreamingVwFile */
 	env = ((CStreamingVwCacheFile*) file)->get_env();
@@ -62,7 +77,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 	env->t += ae->global_weight;
 	ae->example_t = env->t;
 
-	/* If some namespaces should be ignored, remove them */
+	// If some namespaces should be ignored, remove them
 	if (env->ignore_some)
 	{
 		for (size_t* i = ae->indices.begin; i != ae->indices.end; i++)
@@ -75,7 +90,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 			}
 	}
 
-	/* Constant feature is already added by the constructor */
+	// Add constant feature
 	size_t constant_namespace = 128;
 	VwFeature temp = {1,constant_hash & env->mask};
 	ae->indices.push(constant_namespace);
@@ -96,6 +111,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 		ae->total_sum_feat_sq += ae->sum_feat_sq[*i];
 	}
 
+	// For quadratic updates
 	for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
 	{
 		char* i = env->pairs.get_element(k);

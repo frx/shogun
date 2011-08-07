@@ -9,7 +9,7 @@
  * (at your option) any later version.
  *
  * Written (W) 2011 Shashwat Lal Das
- * Adapted from Vowpal Wabbit v5.1.
+ * Adaptation of Vowpal Wabbit v5.1.
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
  */
 

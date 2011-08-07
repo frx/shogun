@@ -9,7 +9,7 @@
  * (at your option) any later version.
  *
  * Written (W) 2011 Shashwat Lal Das
- * Adapted from Vowpal Wabbit v5.1.
+ * Adaptation of Vowpal Wabbit v5.1.
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
  */
 
@@ -54,7 +54,10 @@ public:
 	 *
 	 * @param passes number of passes
 	 */
-	void set_num_passes(int32_t passes) { env->num_passes = passes; }
+	void set_num_passes(int32_t passes)
+	{
+		env->num_passes = passes;
+	}
 
 	/**
 	 * Add a pair of namespaces whose features should
