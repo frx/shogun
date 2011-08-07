@@ -1,19 +1,42 @@
-#include <shogun/classifier/vw/learners/adaptive.h>
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
+#include <shogun/classifier/vw/learners/VwAdaptiveLearner.h>
 #include <shogun/classifier/vw/util.h>
 
 using namespace shogun;
 
-VwAdaptiveLearner::VwAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env)
-	: VwLearner(regressor, vw_env)
+CVwAdaptiveLearner::CVwAdaptiveLearner()
+	: CVwLearner()
 {
 }
 
-void VwAdaptiveLearner::train(VwExample* &ex, float update)
+CVwAdaptiveLearner::CVwAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env)
+	: CVwLearner(regressor, vw_env)
+{
+}
+
+CVwAdaptiveLearner::~CVwAdaptiveLearner()
+{
+}
+
+void CVwAdaptiveLearner::train(VwExample* &ex, float update)
 {
 	if (fabs(update) == 0.)
 		return;
 
-	// Hack
 	size_t thread_num = 0;
 
 	size_t thread_mask = env->thread_mask;
@@ -43,7 +66,7 @@ void VwAdaptiveLearner::train(VwExample* &ex, float update)
 	}
 }
 
-void VwAdaptiveLearner::quad_update(float* weights, VwFeature& page_feature,
+void CVwAdaptiveLearner::quad_update(float* weights, VwFeature& page_feature,
 				    v_array<VwFeature> &offer_features, size_t mask,
 				    float update, float g, VwExample* ex, size_t& ctr)
 {

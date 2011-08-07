@@ -27,8 +27,7 @@ CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
 CVowpalWabbit::~CVowpalWabbit()
 {
 	SG_UNREF(reg);
-	if (learner)
-		delete learner;
+	SG_UNREF(learner);
 }
 
 void CVowpalWabbit::set_adaptive(bool adaptive_learning)
@@ -147,9 +146,10 @@ void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 void CVowpalWabbit::set_learner()
 {
 	if (env->adaptive)
-		learner = new VwAdaptiveLearner(reg, env);
+		learner = new CVwAdaptiveLearner(reg, env);
 	else
-		learner = new VwNonAdaptiveLearner(reg, env);
+		learner = new CVwNonAdaptiveLearner(reg, env);
+	SG_REF(learner);
 }
 
 float CVowpalWabbit::inline_l1_predict(VwExample* &ex)
