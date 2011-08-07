@@ -154,7 +154,7 @@ void CStreamingVwFeatures::release_example()
 	parser.finalize_example();
 }
 
-int32_t CStreamingVwFeatures::get_dim_feature_space()
+int32_t CStreamingVwFeatures::get_dim_feature_space() const
 {
 	return current_length;
 }

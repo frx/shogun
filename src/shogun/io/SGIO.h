@@ -456,13 +456,24 @@ struct substring
  * @param s substring
  * @return new C string representation
  */
-char* c_string_of_substring(substring s);
+inline char* c_string_of_substring(substring s)
+{
+	uint32_t len = s.end - s.start+1;
+	char* ret = SG_CALLOC(char, len);
+	memcpy(ret,s.start,len-1);
+	return ret;
+}
 
 /**
  * Print the substring
  * @param s substring
  */
-void print_substring(substring s);
+inline void print_substring(substring s)
+{
+	char* c_string = c_string_of_substring(s);
+	SG_SPRINT("%s\n", c_string);
+	SG_FREE(c_string);
+}
 
 /**
  * Get value of substring as float
@@ -470,34 +481,64 @@ void print_substring(substring s);
  * @param s substring
  * @return float32_t value of substring
  */
-float32_t float_of_substring(substring s);
+inline float32_t float_of_substring(substring s)
+{
+	char* endptr = s.end;
+	float32_t f = strtof(s.start,&endptr);
+	if (endptr == s.start && s.start != s.end)
+		SG_SERROR("error: %s is not a float!\n", c_string_of_substring(s));
+
+	return f;
+}
 
 /**
  * Return value of substring as double
  * @param s substring
  * @return substring as double
  */
-float64_t double_of_substring(substring s);
+inline float64_t double_of_substring(substring s)
+{
+	char* endptr = s.end;
+	float64_t f = strtod(s.start,&endptr);
+	if (endptr == s.start && s.start != s.end)
+		SG_SERROR("Error!:%s is not a double!\n", c_string_of_substring(s));
+
+	return f;
+}
 
 /**
  * Integer value of substring
  * @param s substring
  * @return int value of substring
  */
-int32_t int_of_substring(substring s);
+inline int32_t int_of_substring(substring s)
+{
+	char* c_string = c_string_of_substring(s);
+	int32_t int_val = atoi(c_string);
+	SG_FREE(c_string);
+
+	return int_val;
+}
 
 /**
  * Unsigned long value of substring
  * @param s substring
  * @return unsigned long value of substring
  */
-uint32_t ulong_of_substring(substring s);
+inline uint32_t ulong_of_substring(substring s)
+{
+	return strtoul(s.start,NULL,10);
+}
 
 /**
  * Length of substring
  * @param s substring
  * @return length of substring
  */
-uint32_t ss_length(substring s);
+inline uint32_t ss_length(substring s)
+{
+	return (s.end - s.start);
+}
+
 }
 #endif // __SGIO_H__
