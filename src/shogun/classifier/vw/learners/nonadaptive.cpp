@@ -3,7 +3,7 @@
 
 using namespace shogun;
 
-VwNonAdaptiveLearner::VwNonAdaptiveLearner(VwRegressor* regressor, VwEnvironment* vw_env)
+VwNonAdaptiveLearner::VwNonAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env)
 	: VwLearner(regressor, vw_env)
 {
 }

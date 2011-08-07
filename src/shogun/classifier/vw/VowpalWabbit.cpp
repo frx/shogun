@@ -26,8 +26,7 @@ CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
 
 CVowpalWabbit::~CVowpalWabbit()
 {
-	if (reg)
-		delete reg;
+	SG_UNREF(reg);
 	if (learner)
 		delete learner;
 }
@@ -139,9 +138,10 @@ float CVowpalWabbit::predict(VwExample* ex)
 
 void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 {
-	env=feat->get_env();
 	features=feat;
-	reg=new VwRegressor(env);
+	env=feat->get_env();
+	reg=new CVwRegressor(env);
+	SG_REF(reg);
 }
 
 void CVowpalWabbit::set_learner()

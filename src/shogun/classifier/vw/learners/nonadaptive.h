@@ -16,7 +16,7 @@ namespace shogun
 		 * @param regressor regressor to use
 		 * @param vw_env environment to use
 		 */
-		VwNonAdaptiveLearner(VwRegressor* regressor, VwEnvironment* vw_env);
+		VwNonAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env);
 
 		void train(VwExample* &ex, float update);
 

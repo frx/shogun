@@ -2,7 +2,7 @@
 #define _VW_LEARNER_H__
 
 #include <shogun/classifier/vw/vw_common.h>
-#include <shogun/classifier/vw/vw_regressor.h>
+#include <shogun/classifier/vw/VwRegressor.h>
 
 namespace shogun
 {
@@ -16,12 +16,18 @@ public:
 	 * @param regressor regressor
 	 * @param vw_env environment
 	 */
-	VwLearner(VwRegressor* regressor, VwEnvironment* vw_env): reg(regressor), env(vw_env) { }
+	VwLearner(CVwRegressor* regressor, VwEnvironment* vw_env): reg(regressor), env(vw_env)
+	{
+		SG_REF(reg);
+	}
 
 	/** 
 	 * Destructor
 	 */
-	virtual ~VwLearner() { }
+	virtual ~VwLearner()
+	{
+		SG_UNREF(reg);
+	}
 
 	/** 
 	 * Train on the example
@@ -33,7 +39,7 @@ public:
 
 protected:
 
-	VwRegressor *reg;
+	CVwRegressor *reg;
 
 	VwEnvironment *env;
 };

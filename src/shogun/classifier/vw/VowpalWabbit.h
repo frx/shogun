@@ -20,7 +20,7 @@
 #include <shogun/classifier/vw/sparse_dense.h>
 #include <shogun/classifier/vw/learners/adaptive.h>
 #include <shogun/classifier/vw/learners/nonadaptive.h>
-#include <shogun/classifier/vw/vw_regressor.h>
+#include <shogun/classifier/vw/VwRegressor.h>
 #include <shogun/features/StreamingVwFeatures.h>
 
 namespace shogun
@@ -150,7 +150,7 @@ protected:
 	VwLearner* learner;
 
 	/// Regressor
-	VwRegressor* reg;
+	CVwRegressor* reg;
 };
 
 }
