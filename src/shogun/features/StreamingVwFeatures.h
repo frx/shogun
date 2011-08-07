@@ -18,6 +18,7 @@
 #include <shogun/classifier/vw/sparse_dense.h>
 #include <shogun/classifier/vw/util.h>
 #include <shogun/io/StreamingVwFile.h>
+#include <shogun/io/StreamingVwCacheFile.h>
 #include <shogun/io/InputParser.h>
 
 namespace shogun
@@ -50,7 +51,16 @@ public:
 	 * @param is_labelled Whether examples are labelled or not.
 	 * @param size Number of example objects to be stored in the parser at a time.
 	 */
-	CStreamingVwFeatures(CStreamingFile* file,
+	CStreamingVwFeatures(CStreamingVwFile* file,
+			     bool is_labelled,
+			     int32_t size)
+		: CStreamingDotFeatures()
+	{
+		init(file, is_labelled, size);
+		set_read_functions();
+	}
+
+	CStreamingVwFeatures(CStreamingVwCacheFile* file,
 			     bool is_labelled,
 			     int32_t size)
 		: CStreamingDotFeatures()
@@ -110,9 +120,22 @@ public:
 	 */
 	virtual void end_parser();
 
+	/**
+	 * Reset the file back to the first example.
+	 * Only works for cache files.
+	 */
 	virtual void reset_stream()
 	{
-		SG_NOTIMPLEMENTED;
+		if (working_file->is_seekable())
+		{
+			working_file->reset_stream();
+			parser.exit_parser();
+			parser.init(working_file, has_labels, 1024);
+			parser.set_do_delete(false);
+			parser.start_parser();
+		}
+		else
+			SG_ERROR("The input cannot be reset! Please use 1 pass.\n");
 	}
 
 	/**
@@ -215,28 +238,28 @@ public:
 	 */
 	virtual float dense_dot(VwExample* &ex, const float* vec2);
 
-	/** 
+	/**
 	 * Dot product of current feature vector with a dense vector
 	 * which stores weights in hashed indices
-	 * 
+	 *
 	 * @param vec2 dense weight vector
 	 * @param vec2_len length of weight vector (not used)
-	 * 
+	 *
 	 * @return dot product
 	 */
 	virtual float dense_dot(const float* vec2, int32_t vec2_len);
 
-	/** 
+	/**
 	 * Dot product between a dense weight vector and a sparse feature vector.
 	 * Assumes the features to belong to the constant namespace.
-	 * 
+	 *
 	 * @param vec1 sparse feature vector
 	 * @param vec2 weight vector
-	 * 
+	 *
 	 * @return dot product between dense weights and a sparse feature vector
 	 */
 	virtual float dense_dot(SGSparseVector<float64_t>* vec1, const float* vec2);
-		
+
 	/**
 	 * Dot product with another dense vector.
 	 *
@@ -347,7 +370,9 @@ private:
 	 * @param is_labelled whether labelled or not
 	 * @param size number of examples in the parser's ring
 	 */
-	virtual void init(CStreamingFile *file, bool is_labelled, int32_t size);
+	virtual void init(CStreamingVwFile *file, bool is_labelled, int32_t size);
+
+	virtual void init(CStreamingVwCacheFile *file, bool is_labelled, int32_t size);
 
 	virtual void setup_example(VwExample* ae);
 

@@ -26,7 +26,7 @@ void CStreamingVwFeatures::init()
 	example_count = 0;
 }
 
-void CStreamingVwFeatures::init(CStreamingFile* file, bool is_labelled, int32_t size)
+void CStreamingVwFeatures::init(CStreamingVwFile* file, bool is_labelled, int32_t size)
 {
 	init();
 	has_labels = is_labelled;
@@ -37,6 +37,19 @@ void CStreamingVwFeatures::init(CStreamingFile* file, bool is_labelled, int32_t 
 
 	/* Get environment from the StreamingVwFile */
 	env = ((CStreamingVwFile*) file)->get_env();
+}
+
+void CStreamingVwFeatures::init(CStreamingVwCacheFile* file, bool is_labelled, int32_t size)
+{
+	init();
+	has_labels = is_labelled;
+	working_file = file;
+	parser.init(file, is_labelled, size);
+	parser.set_do_delete(false);
+	seekable=false;
+
+	/* Get environment from the StreamingVwFile */
+	env = ((CStreamingVwCacheFile*) file)->get_env();
 }
 
 void CStreamingVwFeatures::setup_example(VwExample* ae)
@@ -187,7 +200,7 @@ float CStreamingVwFeatures::dense_dot(SGSparseVector<float64_t>* vec1, const flo
 	float64_t ret = 0.;
 	for (int32_t i = 0; i < vec1->num_feat_entries; i++)
 		ret += vec1->features[i].entry * vec2[vec1->features[i].feat_index & env->mask];
-	
+
 	return ret;
 }
 

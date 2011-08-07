@@ -61,6 +61,18 @@ namespace shogun
 			buf->close_file();
 		}
 
+		/**
+		 * Whether the stream is seekable/resettable
+		 *
+		 * @return false by default, unless overloaded
+		 */
+		inline virtual bool is_seekable() { return false; }
+
+		/** 
+		 * Reset the stream, should be overloaded if possible
+		 */
+		virtual void reset_stream() { SG_ERROR("Unable to reset the input stream!\n"); }
+
 		/** @name Dense Vector Access Functions
 		 *
 		 * Functions to access dense vectors of one of several

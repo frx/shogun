@@ -44,7 +44,10 @@ public:
 	 */
 	virtual bool read_cached_example(VwExample* const ae);
 
-	virtual bool read_org(VwExample* const ae);
+	/**
+	 * Check whether cache is readable
+	 */
+	void check_cache_metadata();
 
 private:
 
@@ -52,11 +55,6 @@ private:
 	 * Initialize members
 	 */
 	void init();
-
-	/**
-	 * Check whether cache is readable
-	 */
-	void check_cache_metadata();
 
 	/**
 	 * Decode an int from RLE-encoded data

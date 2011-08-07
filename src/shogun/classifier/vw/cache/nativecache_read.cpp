@@ -106,11 +106,6 @@ size_t NativeCacheReader::read_cached_tag(VwExample* const ae)
 	return tag_size+sizeof(tag_size);
 }
 
-bool NativeCacheReader::read_org(VwExample* const ae)
-{
-	return true;
-}
-
 bool NativeCacheReader::read_cached_example(VwExample* const ae)
 {
 	size_t mask =  env->mask;

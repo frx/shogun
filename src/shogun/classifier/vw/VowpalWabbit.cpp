@@ -68,31 +68,37 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 
 	int cnt = 0;
 	features->start_parser();
-	while (features->get_next_example())
+	while (env->passes_complete < env->num_passes)
 	{
-		example = features->get_example();
-
-		if (example->pass != current_pass)
+		while (features->get_next_example())
 		{
-			env->eta *= env->eta_decay_rate;
-			current_pass = example->pass;
+			example = features->get_example();
+
+			if (example->pass != current_pass)
+			{
+				env->eta *= env->eta_decay_rate;
+				current_pass = example->pass;
+			}
+
+			cnt++;
+
+			float out = predict(example);
+			//printf("eta round is: %f.\n", example->eta_round);
+			learner->train(example, example->eta_round);
+			//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
+			example->eta_round = 0.;
+
+			if (env->weighted_examples + example->ld->weight > dump_interval)
+			{
+				print_update(example);
+				dump_interval *= 2;
+			}
+
+			features->release_example();
 		}
-
-		cnt++;
-
-		float out = predict(example);
-		//printf("eta round is: %f.\n", example->eta_round);
-		learner->train(example, example->eta_round);
-		//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
-		example->eta_round = 0.;
-
-		if (env->weighted_examples + example->ld->weight > dump_interval)
-		{
-			print_update(example);
-			dump_interval *= 2;
-		}
-
-		features->release_example();
+		env->passes_complete++;
+		if (env->passes_complete < env->num_passes)
+			features->reset_stream();
 	}
 	features->end_parser();
 
@@ -136,7 +142,6 @@ void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 	env=feat->get_env();
 	features=feat;
 	reg=new VwRegressor(env);
-	w=reg->weight_vectors[0];
 }
 
 void CVowpalWabbit::set_learner()

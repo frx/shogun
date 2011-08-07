@@ -110,6 +110,13 @@ public:
 	}
 
 	/**
+	 * Whether this stream is seekable
+	 *
+	 * @return true, since caches can be reset
+	 */
+	bool is_seekable() { return true; }
+
+	/**
 	 * Reset cache file back to first example.
 	 *
 	 * Used when multiple passes are to be performed

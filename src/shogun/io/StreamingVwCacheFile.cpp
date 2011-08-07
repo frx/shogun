@@ -48,12 +48,9 @@ void CStreamingVwCacheFile::get_vector_and_label(VwExample* &ex, int32_t &len, f
 void CStreamingVwCacheFile::reset_stream()
 {
 	buf->reset_file();
-	delete cache_reader;
 
-	if (cache_type == C_NATIVE)
-		cache_reader = new NativeCacheReader(buf->working_file, env);
-	else if (cache_type == C_PROTOBUF)
-		cache_reader = new ProtobufCacheReader(buf->working_file, env);
+	if (cache_format == C_NATIVE)
+		((NativeCacheReader*) cache_reader)->check_cache_metadata();
 }
 
 void CStreamingVwCacheFile::init(EVwCacheType cache_type)

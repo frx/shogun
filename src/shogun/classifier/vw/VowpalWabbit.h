@@ -50,6 +50,13 @@ public:
 	void set_adaptive(bool adaptive_learning);
 
 	/**
+	 * Set number of passes (only works for cached input)
+	 *
+	 * @param passes number of passes
+	 */
+	void set_num_passes(int32_t passes) { env->num_passes = passes; }
+
+	/**
 	 * Add a pair of namespaces whose features should
 	 * be crossed for quadratic updates
 	 *
