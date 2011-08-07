@@ -1,7 +1,7 @@
-#ifndef _VW_REGULARMACHINE_H__
-#define _VW_REGULARMACHINE_H__
+#ifndef _VW_NONADAPTIVE_H__
+#define _VW_NONADAPTIVE_H__
 
-#include <shogun/classifier/vw/vw_machine.h>
+#include <shogun/classifier/vw/vw_learner.h>
 #include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
@@ -10,20 +10,21 @@ namespace shogun
 	{
 
 	public:
-		/** 
+		/**
 		 * Constructor, initializes regressor and environment
-		 * 
+		 *
 		 * @param regressor regressor to use
 		 * @param vw_env environment to use
 		 */
 		VwNonAdaptiveLearner(VwRegressor* regressor, VwEnvironment* vw_env);
-		
+
 		void train(VwExample* &ex, float update);
 
-		void perform_update(float* weights, VwFeature& page_feature,
-				    v_array<VwFeature> &offer_features, size_t mask,
-				    float update);
+	private:
+		void quad_update(float* weights, VwFeature& page_feature,
+				 v_array<VwFeature> &offer_features, size_t mask,
+				 float update);
 	};
 }
 
-#endif
+#endif // _VW_NONADAPTIVE_H__

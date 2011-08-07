@@ -15,7 +15,7 @@ void VwAdaptiveLearner::train(VwExample* &ex, float update)
 
 	// Hack
 	size_t thread_num = 0;
-	
+
 	size_t thread_mask = env->thread_mask;
 	float* weights = reg->weight_vectors[thread_num];
 
@@ -39,13 +39,13 @@ void VwAdaptiveLearner::train(VwExample* &ex, float update)
 		temp.begin = ex->atomics[(int)(i[0])].begin;
 		temp.end = ex->atomics[(int)(i[0])].end;
 		for (; temp.begin != temp.end; temp.begin++)
-			perform_update(weights, *temp.begin, ex->atomics[(int)(i[1])], thread_mask, update, g, ex, ctr);
+			quad_update(weights, *temp.begin, ex->atomics[(int)(i[1])], thread_mask, update, g, ex, ctr);
 	}
 }
 
-void VwAdaptiveLearner::perform_update(float* weights, VwFeature& page_feature,
-				       v_array<VwFeature> &offer_features, size_t mask,
-				       float update, float g, VwExample* ex, size_t& ctr)
+void VwAdaptiveLearner::quad_update(float* weights, VwFeature& page_feature,
+				    v_array<VwFeature> &offer_features, size_t mask,
+				    float update, float g, VwExample* ex, size_t& ctr)
 {
 	size_t halfhash = quadratic_constant * page_feature.weight_index;
 	update *= page_feature.x;

@@ -1,5 +1,5 @@
-#ifndef _VW_MACHINE_H__
-#define _VW_MACHINE_H__
+#ifndef _VW_LEARNER_H__
+#define _VW_LEARNER_H__
 
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/vw_regressor.h>
@@ -16,18 +16,12 @@ public:
 	 * @param regressor regressor
 	 * @param vw_env environment
 	 */
-	VwLearner(VwRegressor* regressor, VwEnvironment* vw_env)
-	{
-		reg = regressor;
-		env = vw_env;
-	}
+	VwLearner(VwRegressor* regressor, VwEnvironment* vw_env): reg(regressor), env(vw_env) { }
 
 	/** 
 	 * Destructor
 	 */
-	virtual ~VwLearner()
-	{
-	}
+	virtual ~VwLearner() { }
 
 	/** 
 	 * Train on the example
@@ -45,4 +39,4 @@ protected:
 };
 
 }
-#endif
+#endif // _VW_LEARNER_H__
