@@ -27,25 +27,25 @@
 namespace shogun
 {
 
-class CVwParser
+class VwParser
 {
 public:
 	/**
 	 * Default constructor
 	 */
-	CVwParser();
+	VwParser();
 
 	/**
 	 * Constructor taking environment as parameter.
 	 *
 	 * @param env_to_use CVwEnvironment to use
 	 */
-	CVwParser(CVwEnvironment* env_to_use);
+	VwParser(CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	~CVwParser();
+	~VwParser();
 
 	/**
 	 * Get the environment

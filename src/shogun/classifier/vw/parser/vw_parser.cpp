@@ -18,7 +18,7 @@
 
 using namespace shogun;
 
-CVwParser::CVwParser()
+VwParser::VwParser()
 {
 	env = new CVwEnvironment();
 
@@ -28,7 +28,7 @@ CVwParser::CVwParser()
 	write_cache = true;
 }
 
-CVwParser::CVwParser(CVwEnvironment* env_to_use)
+VwParser::VwParser(CVwEnvironment* env_to_use)
 {
 	ASSERT(env_to_use);
 	env = env_to_use;
@@ -40,7 +40,7 @@ CVwParser::CVwParser(CVwEnvironment* env_to_use)
 	write_cache = true;
 }
 
-CVwParser::~CVwParser()
+VwParser::~VwParser()
 {
 	free(channels.begin);
 	channels.begin = channels.end = channels.end_array = NULL;
@@ -53,7 +53,7 @@ CVwParser::~CVwParser()
 	delete cache_writer;
 }
 
-int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
+int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -169,7 +169,7 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
+int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -208,7 +208,7 @@ int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
+int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
