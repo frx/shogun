@@ -14,6 +14,8 @@
  */
 
 #include <shogun/classifier/vw/VwParser.h>
+#include <shogun/classifier/vw/cache/VwProtobufCacheWriter.h>
+#include <shogun/classifier/vw/cache/VwNativeCacheWriter.h>
 
 using namespace shogun;
 
@@ -109,7 +111,7 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		/* Set default scale value for channel */
 		float channel_v = 1.;
 		size_t channel_hash;
-		char* base=NULL;
+
 		/* Index by which to refer to the namespace */
 		size_t index = 0;
 		bool new_index = false;
@@ -144,11 +146,11 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			channel_hash = 0;
 		}
 
-		for (substring* i = words.begin+feature_offset; i != words.end; i++)
+		for (substring* j = words.begin+feature_offset; j != words.end; j++)
 		{
 			/* Get individual features and multiply by scale value */
 			float v;
-			feature_value(*i, name, v);
+			feature_value(*j, name, v);
 			v *= channel_v;
 
 			/* Hash feature */
@@ -233,7 +235,7 @@ int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 	substring* feature_start = &words[1];
 
 	size_t index = (unsigned char)' ';
-	size_t channel_hash = 0;
+
 	ae->sum_feat_sq[index] = 0;
 	ae->indices.push(index);
 	// Now parse individual features
@@ -254,23 +256,23 @@ int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-void CVwParser::feature_value(substring &s, v_array<substring>& name, float &v)
+void CVwParser::feature_value(substring &s, v_array<substring>& feat_name, float &v)
 {
 	// Get the value of the feature in the substring
-	tokenize(':', s, name);
+	tokenize(':', s, feat_name);
 
-	switch (name.index())
+	switch (feat_name.index())
 	{
-		// If feature value is not specified, assume 1.0
+	// If feature value is not specified, assume 1.0
 	case 0:
 	case 1:
 		v = 1.;
 		break;
 	case 2:
-		v = float_of_substring(name[1]);
+		v = float_of_substring(feat_name[1]);
 		if (isnan(v))
 			SG_SERROR("error NaN value for feature %s! Terminating!\n",
-				  c_string_of_substring(name[0]));
+				  c_string_of_substring(feat_name[0]));
 		break;
 	default:
 		SG_SERROR("Examples with a weird name, i.e., '%s'\n",

@@ -21,7 +21,7 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
 
-#include "proto/example.pb.pb.h"
+#include "proto/example.pb.h"
 
 using namespace google::protobuf::io;
 
@@ -30,7 +30,7 @@ namespace shogun
 
 /** @brief CVwProtobufCacheWriter implements a cache writing
  * class which uses the Protocol Buffers serialization
- * library with the specification detailed in a .proto
+ * library with the specification detailed in a .pb
  * file.
  *
  * The cache generated should be read by the CVwProtobufCacheReader

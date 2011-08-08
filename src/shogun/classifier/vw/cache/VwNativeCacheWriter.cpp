@@ -61,13 +61,13 @@ void CVwNativeCacheWriter::init()
 
 void CVwNativeCacheWriter::write_header()
 {
-	char version[4] = "5.1";
+	char vw_version[4] = "5.1";
 	size_t numbits = env->num_bits;
 	size_t v_length = 4;
 
 	// Version and numbits info
 	buf.write_file(&v_length, sizeof(size_t));
-	buf.write_file(version,v_length);
+	buf.write_file(vw_version,v_length);
 	buf.write_file(&numbits, sizeof(size_t));
 }
 

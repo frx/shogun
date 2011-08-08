@@ -62,7 +62,7 @@ void CVwNativeCacheReader::init()
 
 void CVwNativeCacheReader::check_cache_metadata()
 {
-	char version[4] = "5.1";
+	char vw_version[4] = "5.1";
 	size_t numbits = env->num_bits;
 
 	size_t v_length;
@@ -72,7 +72,7 @@ void CVwNativeCacheReader::check_cache_metadata()
 
 	char t[v_length];
 	buf.read_file(t,v_length);
-	if (strcmp(t,version) != 0)
+	if (strcmp(t,vw_version) != 0)
 		SG_SERROR("Cache has possibly incompatible version!\n");
 
 	int total = sizeof(size_t);

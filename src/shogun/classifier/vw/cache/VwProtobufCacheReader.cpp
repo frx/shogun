@@ -94,7 +94,7 @@ bool CVwProtobufCacheReader::read_cached_example(VwExample* const ex)
 	// Read namespaces
 	for (int i = 0; i < ex_cached.channels_size(); i++)
 	{
-		google::protobuf::uint32 index = ex_cached.channels(i).index();
+		google::protobuf::uint32 index = ex_cached.channels(i).namespace_index();
 		ex->indices.push(index);
 		v_array<VwFeature>* ours = ex->atomics+index;
 		float64_t* our_sum_feat_sq = ex->sum_feat_sq+index;

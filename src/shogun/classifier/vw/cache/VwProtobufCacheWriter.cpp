@@ -79,7 +79,7 @@ void CVwProtobufCacheWriter::cache_example(VwExample*& ex)
 	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
 		vwcache::Channel* channel = ex_cached.add_channels();
-		channel->set_index(*i);
+		channel->set_namespace_index(*i);
 		// Loop over features
 		for (VwFeature* f = ex->atomics[*i].begin; f != ex->atomics[*i].end; f++)
 		{

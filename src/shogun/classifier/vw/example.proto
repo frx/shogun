@@ -9,7 +9,7 @@ message LabelData
 
 message Channel
 {
-	optional uint32 index = 1;
+	optional uint32 namespace_index = 1;
 	repeated int32 diff_index = 2 [packed = true];
 	repeated float x = 3 [packed = true];	
 }

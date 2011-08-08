@@ -20,8 +20,7 @@
 #include <shogun/io/SGIO.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/hash.h>
-#include <shogun/classifier/vw/cache/VwProtobufCacheWriter.h>
-#include <shogun/classifier/vw/cache/VwNativeCacheWriter.h>
+#include <shogun/classifier/vw/cache/VwCacheWriter.h>
 
 namespace shogun
 {
