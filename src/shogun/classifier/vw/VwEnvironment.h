@@ -35,7 +35,7 @@ namespace shogun
  * CStreamingVwCacheFile, and the pointer to it propagated upwards
  * to CStreamingVwFeatures and finally to CVowpalWabbit.
  */
-class CVwEnvironment
+class CVwEnvironment: public CSGObject
 {
 public:
 	/**

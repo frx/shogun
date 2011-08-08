@@ -17,6 +17,7 @@
 using namespace shogun;
 
 CVwEnvironment::CVwEnvironment()
+	: CSGObject()
 {
 	init();
 }
