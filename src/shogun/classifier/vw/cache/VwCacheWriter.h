@@ -20,6 +20,7 @@
 #include <shogun/lib/common.h>
 #include <shogun/io/IOBuffer.h>
 #include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/cache/VwCacheReader.h>
 
 namespace shogun
 {

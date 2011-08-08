@@ -24,6 +24,13 @@
 
 namespace shogun
 {
+/// The type of input to parse
+enum E_VW_PARSER_TYPE
+{
+	T_VW = 1,
+	T_SVMLIGHT = 2,
+	T_DENSE = 3
+};
 
 /** @brief CVwParser is the object which provides the
  * functions to parse examples from buffered input.
@@ -79,34 +86,25 @@ public:
 	}
 
 	/**
-	 * Reads input from the buffer and parses it into a VwExample
+	 * Set the cache parameters
 	 *
-	 * @param buf IOBuffer which contains input
-	 * @param ex parsed example
-	 *
-	 * @return number of characters read for this example
+	 * @param fname name of the cache file 
+	 * @param type type of cache as one in EVwCacheType
 	 */
-	int32_t read_features(CIOBuffer* buf, VwExample*& ex);
+	void set_cache_parameters(const char* fname, EVwCacheType type = C_NATIVE)
+	{
+		init_cache(fname, type);
+	}
 
 	/**
-	 * Read an example from an SVMLight file
+	 * Return the type of cache
 	 *
-	 * @param buf IOBuffer which contains input
-	 * @param ae parsed example
-	 *
-	 * @return number of characters read for this example
+	 * @return cache type as EVwCacheType
 	 */
-	int32_t read_svmlight_features(CIOBuffer* buf, VwExample*& ae);
-
-	/**
-	 * Read an example from a file with dense vectors
-	 *
-	 * @param buf IOBuffer which contains input
-	 * @param ae parsed example
-	 *
-	 * @return number of characters read for this example
-	 */
-	int32_t read_dense_features(CIOBuffer* buf, VwExample*& ae);
+	EVwCacheType get_cache_type()
+	{
+		return cache_type;
+	}
 
 	/**
 	 * Set whether to write cache file or not
@@ -116,6 +114,11 @@ public:
 	void set_write_cache(bool wr_cache)
 	{
 		write_cache = wr_cache;
+		if (wr_cache)
+			init_cache(NULL);
+		else
+			if (cache_writer)
+				SG_UNREF(cache_writer);
 	}
 
 	/**
@@ -160,6 +163,37 @@ public:
 	}
 
 	/**
+	 * Reads input from the buffer and parses it into a VwExample
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ex parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_features(CIOBuffer* buf, VwExample*& ex);
+
+	/**
+	 * Read an example from an SVMLight file
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ae parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_svmlight_features(CIOBuffer* buf, VwExample*& ae);
+
+	/**
+	 * Read an example from a file with dense vectors
+	 *
+	 * @param buf IOBuffer which contains input
+	 * @param ae parsed example
+	 *
+	 * @return number of characters read for this example
+	 */
+	int32_t read_dense_features(CIOBuffer* buf, VwExample*& ae);
+
+
+	/**
 	 * Return the name of the object
 	 *
 	 * @return VwParser
@@ -167,6 +201,12 @@ public:
 	virtual const char* get_name() const { return "VwParser"; }
 
 protected:
+	/**
+	 * Initialize the cache writer
+	 *
+	 * @param fname cache file name
+	 */
+	void init_cache(const char* fname, EVwCacheType type = C_NATIVE);
 
 	/**
 	 * Get value of feature from a given substring.
@@ -214,6 +254,8 @@ protected:
 	CVwEnvironment* env;
 	/// Object which will be used for writing cache
 	CVwCacheWriter* cache_writer;
+	/// Type of cache
+	EVwCacheType cache_type;
 	/// Whether to write cache or not
 	bool write_cache;
 

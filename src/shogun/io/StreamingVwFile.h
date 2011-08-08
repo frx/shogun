@@ -17,14 +17,6 @@
 namespace shogun
 {
 
-/// The type of input to parse
-enum E_VW_PARSER_TYPE
-{
-	T_VW = 1,
-	T_SVMLIGHT = 2,
-	T_DENSE = 3
-};
-
 typedef int32_t (CVwParser::*parse_func)(CIOBuffer*, VwExample*&);
 
 /** @brief Class StreamingVwFile to read vector-by-vector from

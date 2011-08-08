@@ -23,24 +23,21 @@ CVwParser::CVwParser()
 	: CSGObject()
 {
 	env = new CVwEnvironment();
-
 	hasher = hashstring;
-
-	cache_writer = new CVwNativeCacheWriter("cache_native.dat", env);
-	write_cache = true;
+	write_cache = false;
+	cache_writer = NULL;
 }
 
 CVwParser::CVwParser(CVwEnvironment* env_to_use)
 	: CSGObject()
 {
 	ASSERT(env_to_use);
+
 	env = env_to_use;
-	SG_REF(env);
-
 	hasher = hashstring;
-
-	cache_writer = new CVwNativeCacheWriter("cache_native.dat", env);
-	write_cache = true;
+	write_cache = false;
+	cache_writer = NULL;
+	SG_REF(env);
 }
 
 CVwParser::~CVwParser()
@@ -254,6 +251,31 @@ int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 		cache_writer->cache_example(ae);
 
 	return num_chars;
+}
+
+void CVwParser::init_cache(const char* fname, EVwCacheType type = C_NATIVE)
+{
+	char* file_name = fname;
+	char default_cache_name[] = "vw_cache.dat.cache";
+
+	if (!fname)
+		file_name = default_cache_name;
+
+	switch type
+	{
+	case C_NATIVE:
+		cache_writer = new CVwNativeCacheWriter(file_name, env);
+		break;
+
+	case C_PROTOBUF:
+		cache_writer = new CVwProtobufCacheWriter(file_name, env);
+		break;
+	default:
+		SG_ERROR("Unexpected cache type specified!\n");
+	}
+
+	write_cache = true;
+	cache_type = type;
 }
 
 void CVwParser::feature_value(substring &s, v_array<substring>& feat_name, float &v)

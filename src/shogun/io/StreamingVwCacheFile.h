@@ -18,12 +18,6 @@
 
 namespace shogun
 {
-enum EVwCacheType
-{
-	C_NATIVE = 0,
-	C_PROTOBUF = 1
-};
-
 /** @brief Class StreamingVwCacheFile to read vector-by-vector from VW
  * cache files.
  * It reads the example and label into one object of

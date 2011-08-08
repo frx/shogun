@@ -18,11 +18,17 @@
 
 #include <shogun/base/SGObject.h>
 #include <shogun/lib/common.h>
-#include <shogun/classifier/vw/vw_common.h>
 #include <shogun/io/IOBuffer.h>
+#include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
 {
+
+enum EVwCacheType
+{
+	C_NATIVE = 0,
+	C_PROTOBUF = 1
+};
 
 /** @brief Base class from which all cache readers for VW
  * should be derived.
