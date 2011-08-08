@@ -26,7 +26,7 @@ CStreamingVwCacheFile::CStreamingVwCacheFile(const char* fname, char rw, EVwCach
 
 CStreamingVwCacheFile::~CStreamingVwCacheFile()
 {
-	delete cache_reader;
+	SG_UNREF(cache_reader);
 }
 
 void CStreamingVwCacheFile::get_vector(VwExample* &ex, int32_t& len)

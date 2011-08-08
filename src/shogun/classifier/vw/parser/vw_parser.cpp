@@ -50,7 +50,7 @@ VwParser::~VwParser()
 	name.begin = name.end = name.end_array = NULL;
 
 	SG_UNREF(env);
-	delete cache_writer;
+	SG_UNREF(cache_writer);
 }
 
 int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
@@ -189,7 +189,7 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 
 	substring* feature_start = &words[1];
 
-	size_t index = (unsigned char)' ';	// Any default namespace
+	size_t index = (unsigned char)' ';	// Any default namespace is ok
 	size_t channel_hash = 0;
 	ae->sum_feat_sq[index] = 0;
 	ae->indices.push(index);

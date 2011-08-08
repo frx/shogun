@@ -91,7 +91,7 @@ public:
 	{
 		if (env)
 			SG_UNREF(env);
-		delete cache_reader;
+		SG_UNREF(cache_reader);
 		env = env_to_use;
 		SG_REF(env);
 
