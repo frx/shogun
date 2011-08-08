@@ -16,7 +16,7 @@
 #ifndef _VW_PROTOBUF_WRITE_H__
 #define _VW_PROTOBUF_WRITE_H__
 
-#include <shogun/classifier/vw/cache/cache_write.h>
+#include <shogun/classifier/vw/cache/VwCacheWriter.h>
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
@@ -78,6 +78,14 @@ public:
 	 * @return VwProtobufCacheWriter
 	 */
 	virtual const char* get_name() const { return "VwProtobufCacheWriter"; }
+
+private:
+	/**
+	 * Initialize members
+	 *
+	 * @param f file descriptor
+	 */
+	virtual void init(int f);
 
 protected:
 	/// FileOutputStream from the opened file

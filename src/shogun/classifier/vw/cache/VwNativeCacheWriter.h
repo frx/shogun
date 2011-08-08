@@ -16,14 +16,14 @@
 #ifndef _VW_NATIVECACHE_WRITE_H__
 #define _VW_NATIVECACHE_WRITE_H__
 
-#include <shogun/classifier/vw/cache/cache_write.h>
+#include <shogun/classifier/vw/cache/VwCacheWriter.h>
 
 namespace shogun
 {
 /** @brief Class CVwNativeCacheWriter writes a cache exactly as
  * that which would be produced by VW's default cache format.
  */
-class CVwNativeCacheWriter: public VwCacheWriter
+class CVwNativeCacheWriter: public CVwCacheWriter
 {
 public:
 	/**

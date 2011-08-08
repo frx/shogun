@@ -167,7 +167,7 @@ protected:
 	/// Environment of VW - used by parser
 	CVwEnvironment* env;
 
-	VwCacheWriter* cache_writer;
+	CVwCacheWriter* cache_writer;
 
 	bool write_cache;
 

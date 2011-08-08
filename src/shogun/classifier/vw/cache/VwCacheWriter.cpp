@@ -13,7 +13,7 @@
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
  */
 
-#include <shogun/classifier/vw/cache_write.h>
+#include <shogun/classifier/vw/cache/VwCacheWriter.h>
 
 using namespace shogun;
 
@@ -50,7 +50,7 @@ CVwCacheWriter::~CVwCacheWriter()
 		SG_UNREF(env);
 }
 
-void CVwCacheReader::set_file(int f)
+void CVwCacheWriter::set_file(int f)
 {
 	fd = f;
 }

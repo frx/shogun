@@ -18,7 +18,7 @@
 using namespace shogun;
 
 CVwProtobufCacheWriter::CVwProtobufCacheWriter()
-	: CVwProtobufCacheWriter()
+	: CVwCacheWriter()
 {
 	file_stream = NULL;
 	coded_stream = NULL;

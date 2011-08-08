@@ -13,7 +13,7 @@
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
  */
 
-#include <shogun/classifier/vw/cache/cache_read.h>
+#include <shogun/classifier/vw/cache/VwCacheReader.h>
 
 using namespace shogun;
 

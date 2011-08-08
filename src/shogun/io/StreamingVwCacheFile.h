@@ -12,9 +12,9 @@
 
 #include <shogun/io/StreamingFile.h>
 #include <shogun/classifier/vw/vw_common.h>
-#include <shogun/classifier/vw/cache/cache_read.h>
-#include <shogun/classifier/vw/cache/protobuf_read.h>
-#include <shogun/classifier/vw/cache/nativecache_read.h>
+#include <shogun/classifier/vw/cache/VwCacheReader.h>
+#include <shogun/classifier/vw/cache/VwProtobufCacheReader.h>
+#include <shogun/classifier/vw/cache/VwNativeCacheReader.h>
 
 namespace shogun
 {
@@ -96,9 +96,9 @@ public:
 		SG_REF(env);
 
 		if (cache_format == C_NATIVE)
-			cache_reader = new NativeCacheReader(buf->working_file, env);
+			cache_reader = new CVwNativeCacheReader(buf->working_file, env);
 		else if (cache_format == C_PROTOBUF)
-			cache_reader = new ProtobufCacheReader(buf->working_file, env);
+			cache_reader = new CVwProtobufCacheReader(buf->working_file, env);
 	}
 
 	/**
@@ -133,7 +133,7 @@ private:
 
 protected:
 	/// Cache reader
-	VwCacheReader* cache_reader;
+	CVwCacheReader* cache_reader;
 
 	/// Environment used for vw
 	CVwEnvironment* env;

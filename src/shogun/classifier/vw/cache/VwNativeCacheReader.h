@@ -16,7 +16,7 @@
 #ifndef _VW_NATIVECACHE_READ_H__
 #define _VW_NATIVECACHE_READ_H__
 
-#include <shogun/classifier/vw/cache/cache_read.h>
+#include <shogun/classifier/vw/cache/VwCacheReader.h>
 
 namespace shogun
 {
@@ -32,7 +32,7 @@ struct one_float
  *
  * It is compatible with VW version 5.1.
  */
-class CVwNativeCacheReader: public VwCacheReader
+class CVwNativeCacheReader: public CVwCacheReader
 {
 public:
 	/**

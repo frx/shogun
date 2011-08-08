@@ -44,8 +44,17 @@ public:
 	 * Constructor, opens file specified by filename
 	 *
 	 * @param fname name of file to open
+	 * @param env_to_use environment
 	 */
 	CVwCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+
+	/**
+	 * Constructor, uses file specified by descriptor
+	 *
+	 * @param f descriptor of opened cache file
+	 * @param env_to_use environment
+	 */
+	CVwCacheWriter(int f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

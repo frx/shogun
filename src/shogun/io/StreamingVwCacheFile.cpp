@@ -50,7 +50,7 @@ void CStreamingVwCacheFile::reset_stream()
 	buf->reset_file();
 
 	if (cache_format == C_NATIVE)
-		((NativeCacheReader*) cache_reader)->check_cache_metadata();
+		((CVwNativeCacheReader*) cache_reader)->check_cache_metadata();
 }
 
 void CStreamingVwCacheFile::init(EVwCacheType cache_type)
@@ -58,7 +58,7 @@ void CStreamingVwCacheFile::init(EVwCacheType cache_type)
 	cache_format = cache_type;
 	env = new CVwEnvironment();
 	if (cache_type == C_NATIVE)
-		cache_reader = new NativeCacheReader(buf->working_file, env);
+		cache_reader = new CVwNativeCacheReader(buf->working_file, env);
 	else if (cache_type == C_PROTOBUF)
-		cache_reader = new ProtobufCacheReader(buf->working_file, env);
+		cache_reader = new CVwProtobufCacheReader(buf->working_file, env);
 }

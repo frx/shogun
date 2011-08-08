@@ -16,7 +16,7 @@
 #ifndef _VW_PROTOBUF_READ_H__
 #define _VW_PROTOBUF_READ_H__
 
-#include <shogun/classifier/vw/cache/cache_read.h>
+#include <shogun/classifier/vw/cache/VwCacheReader.h>
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
@@ -41,7 +41,7 @@ public:
 	/**
 	 * Default constructor
 	 */
-	CVwProtobufCacheWriter();
+	CVwProtobufCacheReader();
 
 	/**
 	 * Constructor taking file name and environment
