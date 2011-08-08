@@ -18,8 +18,8 @@
 
 #include <shogun/base/SGObject.h>
 #include <shogun/io/SGIO.h>
+#include <shogun/lib/Hash.h>
 #include <shogun/classifier/vw/vw_common.h>
-#include <shogun/classifier/vw/hash.h>
 #include <shogun/classifier/vw/cache/VwCacheWriter.h>
 
 namespace shogun

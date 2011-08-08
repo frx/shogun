@@ -23,7 +23,7 @@ CVwParser::CVwParser()
 	: CSGObject()
 {
 	env = new CVwEnvironment();
-	hasher = hashstring;
+	hasher = CHash::MurmurHashString;
 	write_cache = false;
 	cache_writer = NULL;
 }
@@ -34,7 +34,7 @@ CVwParser::CVwParser(CVwEnvironment* env_to_use)
 	ASSERT(env_to_use);
 
 	env = env_to_use;
-	hasher = hashstring;
+	hasher = CHash::MurmurHashString;
 	write_cache = false;
 	cache_writer = NULL;
 	SG_REF(env);
