@@ -78,6 +78,13 @@ public:
 	 */
 	void check_cache_metadata();
 
+	/**
+	 * Return the name of the object.
+	 *
+	 * @return VwNativeCacheReader
+	 */
+	virtual const char* get_name() const { return "VwNativeCacheReader"; }
+
 private:
 	/**
 	 * Initialize members

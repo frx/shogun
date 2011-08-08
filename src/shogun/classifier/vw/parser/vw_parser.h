@@ -21,8 +21,8 @@
 #include <shogun/classifier/vw/hash.h>
 #include <shogun/classifier/vw/parser/parse_primitives.h>
 #include <shogun/classifier/vw/parser/parse_example.h>
-#include <shogun/classifier/vw/cache/protobuf_write.h>
-#include <shogun/classifier/vw/cache/nativecache_write.h>
+#include <shogun/classifier/vw/cache/VwProtobufCacheWriter.h>
+#include <shogun/classifier/vw/cache/VwNativeCacheWriter.h>
 
 namespace shogun
 {

@@ -16,8 +16,9 @@
 #ifndef _VW_CACHEWRITE_H__
 #define _VW_CACHEWRITE_H__
 
-#include <shogun/io/IOBuffer.h>
+#include <shogun/base/SGObject.h>
 #include <shogun/lib/common.h>
+#include <shogun/io/IOBuffer.h>
 #include <shogun/classifier/vw/vw_common.h>
 
 namespace shogun
@@ -30,7 +31,7 @@ namespace shogun
  * writes that example into the cache file.
  * The class is provided with the file and the environment.
  */
-class CVwCacheWriter
+class CVwCacheWriter: public CSGObject
 {
 public:
 

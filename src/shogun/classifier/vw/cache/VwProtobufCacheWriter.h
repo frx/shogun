@@ -72,6 +72,13 @@ public:
 	 */
 	virtual void cache_example(VwExample* &ex);
 
+	/**
+	 * Return the name of the object.
+	 *
+	 * @return VwProtobufCacheWriter
+	 */
+	virtual const char* get_name() const { return "VwProtobufCacheWriter"; }
+
 protected:
 	/// FileOutputStream from the opened file
 	FileOutputStream* file_stream;

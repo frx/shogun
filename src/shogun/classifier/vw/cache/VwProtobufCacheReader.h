@@ -83,6 +83,13 @@ public:
 	 */
 	virtual bool read_cached_example(VwExample* const ae);
 
+	/**
+	 * Return the name of the object.
+	 *
+	 * @return VwProtobufCacheReader
+	 */
+	virtual const char* get_name() const { return "VwProtobufCacheReader"; }
+
 private:
 	/**
 	 * Initialize members

@@ -18,12 +18,14 @@
 using namespace shogun;
 
 CVwCacheReader::CVwCacheReader()
+	: CSGObject()
 {
 	fd = -1;
 	env = NULL;
 }
 
 CVwCacheReader::CVwCacheReader(const char* fname, CVwEnvironment* env_to_use)
+	: CSGObject()
 {
 	fd = open(fname, O_RDONLY);
 
@@ -35,6 +37,7 @@ CVwCacheReader::CVwCacheReader(const char* fname, CVwEnvironment* env_to_use)
 }
 
 CVwCacheReader::CVwCacheReader(int f, CVwEnvironment* env_to_use)
+	: CSGObject()
 {
 	fd = f;
 	env = env_to_use;

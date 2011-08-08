@@ -57,6 +57,13 @@ public:
 	 */
 	virtual void cache_example(VwExample* &ex);
 
+	/**
+	 * Return the name of the object.
+	 *
+	 * @return VwNativeCacheWriter
+	 */
+	virtual const char* get_name() const { return "VwNativeCacheWriter"; }
+
 private:
 	/**
 	 * Initialize members

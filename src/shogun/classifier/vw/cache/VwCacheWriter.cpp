@@ -18,12 +18,14 @@
 using namespace shogun;
 
 CVwCacheWriter::CVwCacheWriter()
+	: CSGObject()
 {
 	fd = -1;
 	env = NULL;
 }
 
 CVwCacheWriter::CVwCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+	: CSGObject()
 {
 	fd = open(fname, O_CREAT | O_TRUNC | O_RDWR, 0666);
 
@@ -35,6 +37,7 @@ CVwCacheWriter::CVwCacheWriter(const char* fname, CVwEnvironment* env_to_use)
 }
 
 CVwCacheWriter::CVwCacheWriter(int f, CVwEnvironment* env_to_use)
+	: CSGObject()
 {
 	fd = f;
 	env = env_to_use;

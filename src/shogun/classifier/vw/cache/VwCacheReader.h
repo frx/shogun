@@ -16,6 +16,7 @@
 #ifndef _VW_CACHEREAD_H__
 #define _VW_CACHEREAD_H__
 
+#include <shogun/base/SGObject.h>
 #include <shogun/lib/common.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/io/IOBuffer.h>
@@ -31,7 +32,7 @@ namespace shogun
  * implement a read_cached_example() function which returns
  * a parsed example by reference.
  */
-class CVwCacheReader
+class CVwCacheReader: public CSGObject
 {
 public:
 	/**
