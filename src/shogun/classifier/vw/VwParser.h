@@ -16,36 +16,46 @@
 #ifndef _VW_PARSER_H__
 #define _VW_PARSER_H__
 
+#include <shogun/base/SGObject.h>
 #include <shogun/io/SGIO.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/hash.h>
-#include <shogun/classifier/vw/parser/parse_primitives.h>
-#include <shogun/classifier/vw/parser/parse_example.h>
 #include <shogun/classifier/vw/cache/VwProtobufCacheWriter.h>
 #include <shogun/classifier/vw/cache/VwNativeCacheWriter.h>
 
 namespace shogun
 {
 
-class VwParser
+/** @brief CVwParser is the object which provides the
+ * functions to parse examples from buffered input.
+ *
+ * An instance of this class can be created in
+ * CStreamingVwFile and the appropriate read_*_features
+ * function called to parse examples from different formats.
+ *
+ * It also encapsulates a CVwCacheWriter object which may
+ * be used in case a cache file is to be generated simultaneously
+ * with parsing.
+ */
+class CVwParser: public CSGObject()
 {
 public:
 	/**
 	 * Default constructor
 	 */
-	VwParser();
+	CVwParser();
 
 	/**
 	 * Constructor taking environment as parameter.
 	 *
 	 * @param env_to_use CVwEnvironment to use
 	 */
-	VwParser(CVwEnvironment* env_to_use);
+	CVwParser(CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	~VwParser();
+	~CVwParser();
 
 	/**
 	 * Get the environment
@@ -137,9 +147,7 @@ public:
 	 *
 	 * @param label label
 	 */
-	void noop_mm(float64_t label)
-	{
-	}
+	void noop_mm(float64_t label) { }
 
 	/**
 	 * Function which is actually called to update min and max labels
@@ -159,6 +167,45 @@ public:
 	 */
 	virtual const char* get_name() const { return "VwParser"; }
 
+protected:
+
+	/**
+	 * Get value of feature from a given substring.
+	 * A default of 1 is assumed if no explicit value is specified.
+	 *
+	 * @param s substring, usually a feature:value string
+	 * @param name returned array of substrings, split into name and value
+	 * @param v value of feature, set by reference
+	 */
+	void feature_value(substring &s, v_array<substring>& name, float &v);
+
+	/**
+	 * Split a given substring into an array of substrings
+	 * based on a specified delimiter
+	 *
+	 * @param delim delimiter to use
+	 * @param s substring to tokenize
+	 * @param ret array of substrings, returned
+	 */
+	void tokenize(char delim, substring s, v_array<substring> &ret);
+
+	/**
+	 * Get the index of a character in a memory location
+	 * taking care not to go beyond the max pointer.
+	 *
+	 * @param start start memory location, char*
+	 * @param v character to search for
+	 * @param max last location to look in
+	 *
+	 * @return index of found location as char*
+	 */
+	inline char* safe_index(char *start, char v, char *max)
+	{
+		while (start != max && *start != v)
+			start++;
+		return start;
+	}
+
 public:
 	/// Hash function to use, of type hash_func_t
 	hash_func_t hasher;
@@ -166,9 +213,9 @@ public:
 protected:
 	/// Environment of VW - used by parser
 	CVwEnvironment* env;
-
+	/// Object which will be used for writing cache
 	CVwCacheWriter* cache_writer;
-
+	/// Whether to write cache or not
 	bool write_cache;
 
 private:
@@ -177,5 +224,6 @@ private:
 	v_array<substring> words;
 	v_array<substring> name;
 };
+
 }
-#endif
+#endif // _VW_PARSER_H__

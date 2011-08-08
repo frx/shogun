@@ -12,7 +12,7 @@
 
 #include <shogun/io/StreamingFile.h>
 #include <shogun/classifier/vw/vw_common.h>
-#include <shogun/classifier/vw/parser/vw_parser.h>
+#include <shogun/classifier/vw/VwParser.h>
 
 namespace shogun
 {
@@ -25,7 +25,7 @@ enum E_VW_PARSER_TYPE
 	T_DENSE = 3
 };
 
-typedef int32_t (VwParser::*parse_func)(CIOBuffer*, VwExample*&);
+typedef int32_t (CVwParser::*parse_func)(CIOBuffer*, VwExample*&);
 
 /** @brief Class StreamingVwFile to read vector-by-vector from
  * Vowpal Wabbit data files.
@@ -144,7 +144,7 @@ private:
 
 protected:
 	/// Parser for vw format
-	VwParser* parser;
+	CVwParser* parser;
 
 	/// Parser type
 	E_VW_PARSER_TYPE parser_type;

@@ -13,12 +13,12 @@
  * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
  */
 
-#include <shogun/classifier/vw/parser/parse_example.h>
-#include <shogun/classifier/vw/parser/vw_parser.h>
+#include <shogun/classifier/vw/VwParser.h>
 
 using namespace shogun;
 
-VwParser::VwParser()
+CVwParser::CVwParser()
+	: CSGObject()
 {
 	env = new CVwEnvironment();
 
@@ -28,7 +28,8 @@ VwParser::VwParser()
 	write_cache = true;
 }
 
-VwParser::VwParser(CVwEnvironment* env_to_use)
+CVwParser::CVwParser(CVwEnvironment* env_to_use)
+	: CSGObject()
 {
 	ASSERT(env_to_use);
 	env = env_to_use;
@@ -40,7 +41,7 @@ VwParser::VwParser(CVwEnvironment* env_to_use)
 	write_cache = true;
 }
 
-VwParser::~VwParser()
+CVwParser::~CVwParser()
 {
 	free(channels.begin);
 	channels.begin = channels.end = channels.end_array = NULL;
@@ -53,7 +54,7 @@ VwParser::~VwParser()
 	SG_UNREF(cache_writer);
 }
 
-int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -169,7 +170,7 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -204,6 +205,9 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 		ae->sum_feat_sq[index] += v*v;
 		ae->atomics[index].push(f);
 	}
+
+	if (write_cache)
+		cache_writer->cache_example(ae);
 
 	return num_chars;
 }
@@ -244,6 +248,55 @@ int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 		j++;
 	}
 
+	if (write_cache)
+		cache_writer->cache_example(ae);
+
 	return num_chars;
 }
 
+void feature_value(substring &s, v_array<substring>& name, float &v)
+{
+	// Get the value of the feature in the substring
+	tokenize(':', s, name);
+
+	switch (name.index())
+	{
+		// If feature value is not specified, assume 1.0
+	case 0:
+	case 1:
+		v = 1.;
+		break;
+	case 2:
+		v = float_of_substring(name[1]);
+		if (isnan(v))
+			SG_SERROR("error NaN value for feature %s! Terminating!\n",
+				  c_string_of_substring(name[0]));
+		break;
+	default:
+		SG_SERROR("Examples with a weird name, i.e., '%s'\n",
+			  c_string_of_substring(s));
+	}
+}
+
+void tokenize(char delim, substring s, v_array<substring>& ret)
+{
+	ret.erase();
+	char *last = s.start;
+	for (; s.start != s.end; s.start++)
+	{
+		if (*s.start == delim)
+		{
+			if (s.start != last)
+			{
+				substring temp = {last,s.start};
+				ret.push(temp);
+			}
+			last = s.start+1;
+		}
+	}
+	if (s.start != last)
+	{
+		substring final = {last, s.start};
+		ret.push(final);
+	}
+}

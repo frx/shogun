@@ -9,7 +9,6 @@
  */
 
 #include <shogun/io/StreamingVwFile.h>
-#include <shogun/classifier/vw/parser/vw_parser.h>
 
 using namespace shogun;
 
@@ -27,7 +26,7 @@ CStreamingVwFile::CStreamingVwFile(char* fname, char rw)
 
 CStreamingVwFile::~CStreamingVwFile()
 {
-	delete parser;
+	SG_UNREF(parser);
 }
 
 void CStreamingVwFile::set_parser_type(E_VW_PARSER_TYPE type)
@@ -35,15 +34,15 @@ void CStreamingVwFile::set_parser_type(E_VW_PARSER_TYPE type)
 	switch (type)
 	{
 	case T_VW:
-		parse_example = &VwParser::read_features;
+		parse_example = &CVwParser::read_features;
 		parser_type = T_VW;
 		break;
 	case T_SVMLIGHT:
-		parse_example = &VwParser::read_svmlight_features;
+		parse_example = &CVwParser::read_svmlight_features;
 		parser_type = T_SVMLIGHT;
 		break;
 	case T_DENSE:
-		parse_example = &VwParser::read_dense_features;
+		parse_example = &CVwParser::read_dense_features;
 		parser_type = T_DENSE;
 		break;
 	default:
@@ -67,7 +66,7 @@ void CStreamingVwFile::get_vector_and_label(VwExample* &ex, int32_t &len, float6
 
 void CStreamingVwFile::init()
 {
-	parser = new VwParser();
+	parser = new CVwParser();
 	env = parser->get_env();
 
 	set_parser_type(T_VW);
