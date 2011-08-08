@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #ifndef _VW_CACHEREAD_H__
 #define _VW_CACHEREAD_H__
 
@@ -8,24 +23,28 @@
 namespace shogun
 {
 
-class VwCacheReader
+/** @brief Base class from which all cache readers for VW
+ * should be derived.
+ *
+ * The object is given cache file information and the
+ * environment which will be used during parsing, and must
+ * implement a read_cached_example() function which returns
+ * a parsed example by reference.
+ */
+class CVwCacheReader
 {
 public:
+	/**
+	 * Default constructor
+	 */
+	CVwCacheReader();
 
 	/**
 	 * Constructor, opens file specified by filename
 	 *
 	 * @param fname name of file to open
 	 */
-	VwCacheReader(const char* fname, CVwEnvironment* env_to_use)
-	{
-		fd = open(fname, O_RDONLY);
-
-		if (fd < 0)
-			SG_SERROR("Error opening the file %s for reading from cache!\n");
-		env = env_to_use;
-		SG_REF(env);
-	}
+	CVwCacheReader(const char* fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor which takes an already opened file descriptor
@@ -33,31 +52,33 @@ public:
 	 *
 	 * @param f file descriptor
 	 */
-	VwCacheReader(int f, CVwEnvironment* env_to_use)
-	{
-		fd = f;
-		env = env_to_use;
-		SG_REF(env);
-	}
+	CVwCacheReader(int f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	virtual ~VwCacheReader() { SG_UNREF(env); }
+	virtual ~CVwCacheReader();
+
+	/**
+	 * Set the file descriptor to use
+	 *
+	 * @param f descriptor of cache file
+	 */
+	virtual void set_file(int f);
 
 	/**
 	 * Set the environment
 	 *
 	 * @param env_to_use environment
 	 */
-	virtual void set_env(CVwEnvironment* env_to_use) { env = env_to_use; }
+	virtual void set_env(CVwEnvironment* env_to_use);
 
 	/**
 	 * Get the environment
 	 *
 	 * @return environment
 	 */
-	virtual CVwEnvironment* get_env() { SG_REF(env); return env; }
+	virtual CVwEnvironment* get_env();
 
 	/**
 	 * Function to read one example from the cache
@@ -66,8 +87,14 @@ public:
 	 */
 	virtual bool read_cached_example(VwExample* const ae) = 0;
 
-protected:
+	/**
+	 * Return the name of the object
+	 *
+	 * @return VwCacheReader
+	 */
+	virtual const char* get_name() const { return "VwCacheReader"; }
 
+protected:
 	/// File descriptor
 	int fd;
 
@@ -76,4 +103,4 @@ protected:
 };
 
 }
-#endif
+#endif // _VW_CACHEREAD_H__

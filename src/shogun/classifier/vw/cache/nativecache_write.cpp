@@ -1,13 +1,66 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/cache/nativecache_write.h>
 
 using namespace shogun;
 
-NativeCacheWriter::NativeCacheWriter(const char* fname, CVwEnvironment* env_to_use)
-	: VwCacheWriter(fname, env_to_use)
+CVwNativeCacheWriter::CVwNativeCacheWriter()
+	: CVwCacheWriter()
+{
+	init();
+}
+
+CVwNativeCacheWriter::CVwNativeCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+	: CVwCacheWriter(fname, env_to_use)
 {
 	init();
 	buf.use_file(fd);
 
+	write_header();
+}
+
+CVwNativeCacheWriter::~CVwNativeCacheWriter()
+{
+	buf.flush();
+	buf.close_file();
+}
+
+void CVwNativeCacheWriter::set_file(int f)
+{
+	if (fd > 0)
+	{
+		buf.flush();
+		buf.close_file();
+	}
+
+	fd = f;
+	buf.use_file(fd);
+
+	write_header();
+}
+
+void CVwNativeCacheWriter::init()
+{
+	neg_1 = 1;
+	general = 2;
+	int_size = 6;
+}
+
+void CVwNativeCacheWriter::write_header()
+{
 	char version[4] = "5.1";
 	size_t numbits = env->num_bits;
 	size_t v_length = 4;
@@ -18,20 +71,7 @@ NativeCacheWriter::NativeCacheWriter(const char* fname, CVwEnvironment* env_to_u
 	buf.write_file(&numbits, sizeof(size_t));
 }
 
-NativeCacheWriter::~NativeCacheWriter()
-{
-	buf.flush();
-	buf.close_file();
-}
-
-void NativeCacheWriter::init()
-{
-	neg_1 = 1;
-	general = 2;
-	int_size = 6;
-}
-
-char* NativeCacheWriter::run_len_encode(char *p, size_t i)
+char* CVwNativeCacheWriter::run_len_encode(char *p, size_t i)
 {
 	while (i >= 128)
 	{
@@ -43,8 +83,7 @@ char* NativeCacheWriter::run_len_encode(char *p, size_t i)
 	return p;
 }
 
-
-char* NativeCacheWriter::bufcache_label(VwLabel* ld, char* c)
+char* CVwNativeCacheWriter::bufcache_label(VwLabel* ld, char* c)
 {
 	*(float *)c = ld->label;
 	c += sizeof(ld->label);
@@ -55,14 +94,14 @@ char* NativeCacheWriter::bufcache_label(VwLabel* ld, char* c)
 	return c;
 }
 
-void NativeCacheWriter::cache_label(VwLabel* ld)
+void CVwNativeCacheWriter::cache_label(VwLabel* ld)
 {
 	char *c;
 	buf.buf_write(c, sizeof(ld->label)+sizeof(ld->weight)+sizeof(ld->initial));
 	c = bufcache_label(ld,c);
 }
 
-void NativeCacheWriter::cache_tag(v_array<char> tag)
+void CVwNativeCacheWriter::cache_tag(v_array<char> tag)
 {
 	// Store the size of the tag and the tag itself
 	char *c;
@@ -76,7 +115,7 @@ void NativeCacheWriter::cache_tag(v_array<char> tag)
 	buf.set(c);
 }
 
-void NativeCacheWriter::output_byte(unsigned char s)
+void CVwNativeCacheWriter::output_byte(unsigned char s)
 {
 	char *c;
 
@@ -85,7 +124,7 @@ void NativeCacheWriter::output_byte(unsigned char s)
 	buf.set(c);
 }
 
-void NativeCacheWriter::output_features(unsigned char index, VwFeature* begin, VwFeature* end)
+void CVwNativeCacheWriter::output_features(unsigned char index, VwFeature* begin, VwFeature* end)
 {
 	char* c;
 	size_t storage = (end-begin) * int_size;
@@ -124,7 +163,7 @@ void NativeCacheWriter::output_features(unsigned char index, VwFeature* begin, V
 	*(size_t*)storage_size_loc = c - storage_size_loc - sizeof(size_t);
 }
 
-void NativeCacheWriter::cache_example(VwExample* &ex)
+void CVwNativeCacheWriter::cache_example(VwExample* &ex)
 {
 	cache_label(ex->ld);
 	cache_tag(ex->tag);

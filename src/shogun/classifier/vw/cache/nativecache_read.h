@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #ifndef _VW_NATIVECACHE_READ_H__
 #define _VW_NATIVECACHE_READ_H__
 
@@ -6,36 +21,50 @@
 namespace shogun
 {
 
-/// Packed structure for speed
+/// Packed structure for efficient storage
 struct one_float
 {
 	float f;
 } __attribute__((packed));
 
-/** @brief Class NativeCacheReader reads from a cache exactly as
+/** @brief Class CVwNativeCacheReader reads from a cache exactly as
  * that which has been produced by VW's default cache format.
+ *
+ * It is compatible with VW version 5.1.
  */
-class NativeCacheReader: public VwCacheReader
+class CVwNativeCacheReader: public VwCacheReader
 {
 public:
+	/**
+	 * Default constructor
+	 */
+	CVwNativeCacheReader();
+
 	/**
 	 * Constructor, opens a file whose name is specified
 	 *
 	 * @param fname file name
 	 */
-	NativeCacheReader(const char* fname, CVwEnvironment* env_to_use);
+	CVwNativeCacheReader(const char* fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor, passed a file descriptor
 	 *
 	 * @param f descriptor of opened file
 	 */
-	NativeCacheReader(int f, CVwEnvironment* env_to_use);
+	CVwNativeCacheReader(int f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	virtual ~NativeCacheReader();
+	virtual ~CVwNativeCacheReader();
+
+	/**
+	 * Set the file descriptor to use
+	 *
+	 * @param f descriptor of cache file
+	 */
+	virtual void set_file(int f);
 
 	/**
 	 * Read one cached example
@@ -50,7 +79,6 @@ public:
 	void check_cache_metadata();
 
 private:
-
 	/**
 	 * Initialize members
 	 */
@@ -102,15 +130,17 @@ private:
 	 *
 	 * @param ae
 	 *
-	 * @return
+	 * @return number of bytes read
 	 */
 	size_t read_cached_tag(VwExample* const ae);
 
 
 protected:
+	/// Buffer to read from
 	CIOBuffer buf;
 
 private:
+	// Used while parsing
 	const size_t int_size;
 	const size_t char_size;
 	size_t neg_1;
@@ -119,5 +149,3 @@ private:
 
 }
 #endif // _VW_NATIVECACHE_READ_H__
-
-

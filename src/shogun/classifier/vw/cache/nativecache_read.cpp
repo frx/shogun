@@ -1,35 +1,66 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/cache/nativecache_read.h>
 
 using namespace shogun;
 
-NativeCacheReader::NativeCacheReader(const char* fname, CVwEnvironment* env_to_use)
-	: VwCacheReader(fname, env_to_use), int_size(6), char_size(2)
+CVwNativeCacheReader::CVwNativeCacheReader()
+	: CVwCacheReader(), int_size(6), char_size(2)
+{
+	init();
+}
+
+CVwNativeCacheReader::CVwNativeCacheReader(const char* fname, CVwEnvironment* env_to_use)
+	: CVwCacheReader(fname, env_to_use), int_size(6), char_size(2)
 {
 	init();
 	buf.use_file(fd);
 	check_cache_metadata();
 }
 
-NativeCacheReader::NativeCacheReader(int f, CVwEnvironment* env_to_use)
-	: VwCacheReader(f, env_to_use), int_size(6), char_size(2)
+CVwNativeCacheReader::CVwNativeCacheReader(int f, CVwEnvironment* env_to_use)
+	: CVwCacheReader(f, env_to_use), int_size(6), char_size(2)
 {
 	init();
 	buf.use_file(fd);
 	check_cache_metadata();
 }
 
-NativeCacheReader::~NativeCacheReader()
+CVwNativeCacheReader::~CVwNativeCacheReader()
 {
 	buf.close_file();
 }
 
-void NativeCacheReader::init()
+void CVwNativeCacheReader::set_file(int f)
+{
+	if (fd > 0)
+		buf.close_file();
+
+	fd = f;
+	buf.use_file(fd);
+	check_cache_metadata();
+}
+
+void CVwNativeCacheReader::init()
 {
 	neg_1 = 1;
 	general = 2;
 }
 
-void NativeCacheReader::check_cache_metadata()
+void CVwNativeCacheReader::check_cache_metadata()
 {
 	char version[4] = "5.1";
 	size_t numbits = env->num_bits;
@@ -54,7 +85,7 @@ void NativeCacheReader::check_cache_metadata()
 		SG_SERROR("Bug encountered in caching! Bits used for weight in cache: %d.\n", cache_numbits);
 }
 
-char* NativeCacheReader::run_len_decode(char *p, size_t& i)
+char* CVwNativeCacheReader::run_len_decode(char *p, size_t& i)
 {
 	// Read an int 7 bits at a time.
 	size_t count = 0;
@@ -64,7 +95,7 @@ char* NativeCacheReader::run_len_decode(char *p, size_t& i)
 	return p;
 }
 
-char* NativeCacheReader::bufread_label(VwLabel* const ld, char* c)
+char* CVwNativeCacheReader::bufread_label(VwLabel* const ld, char* c)
 {
 	ld->label = *(float *)c;
 	c += sizeof(ld->label);
@@ -76,9 +107,8 @@ char* NativeCacheReader::bufread_label(VwLabel* const ld, char* c)
 	return c;
 }
 
-size_t NativeCacheReader::read_cached_label(VwLabel* const ld)
+size_t CVwNativeCacheReader::read_cached_label(VwLabel* const ld)
 {
-	//printf("RD: label addr: %p.\n", ld);
 	char *c;
 	size_t total = sizeof(ld->label)+sizeof(ld->weight)+sizeof(ld->initial);
 	if (buf.buf_read(c, total) < total)
@@ -88,7 +118,7 @@ size_t NativeCacheReader::read_cached_label(VwLabel* const ld)
 	return total;
 }
 
-size_t NativeCacheReader::read_cached_tag(VwExample* const ae)
+size_t CVwNativeCacheReader::read_cached_tag(VwExample* const ae)
 {
 	char* c;
 	size_t tag_size;
@@ -106,7 +136,7 @@ size_t NativeCacheReader::read_cached_tag(VwExample* const ae)
 	return tag_size+sizeof(tag_size);
 }
 
-bool NativeCacheReader::read_cached_example(VwExample* const ae)
+bool CVwNativeCacheReader::read_cached_example(VwExample* const ae)
 {
 	size_t mask =  env->mask;
 	size_t total = read_cached_label(ae->ld);

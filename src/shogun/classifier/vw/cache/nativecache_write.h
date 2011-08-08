@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #ifndef _VW_NATIVECACHE_WRITE_H__
 #define _VW_NATIVECACHE_WRITE_H__
 
@@ -5,23 +20,35 @@
 
 namespace shogun
 {
-/** @brief Class NativeCacheWriter writes a cache exactly as
+/** @brief Class CVwNativeCacheWriter writes a cache exactly as
  * that which would be produced by VW's default cache format.
  */
-class NativeCacheWriter: public VwCacheWriter
+class CVwNativeCacheWriter: public VwCacheWriter
 {
 public:
+	/**
+	 * Default constructor
+	 */
+	CVwNativeCacheWriter();
+
 	/**
 	 * Constructor, opens a file whose name is specified
 	 *
 	 * @param fname file name
 	 */
-	NativeCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+	CVwNativeCacheWriter(const char* fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	virtual ~NativeCacheWriter();
+	virtual ~CVwNativeCacheWriter();
+
+	/**
+	 * Set the file descriptor to use
+	 *
+	 * @param f descriptor of cache file
+	 */
+	virtual void set_file(int f);
 
 	/**
 	 * Cache one example
@@ -35,6 +62,12 @@ private:
 	 * Initialize members
 	 */
 	void init();
+
+	/**
+	 * Write the header of the cache.
+	 * Includes version and weight bits information.
+	 */
+	void write_header();
 
 	/**
 	 * Use run-length encoding on an int
@@ -104,10 +137,9 @@ protected:
 	CIOBuffer buf;
 
 private:
+	// Used for encoding data
 	size_t neg_1;
-
 	size_t general;
-
 	size_t int_size;
 };
 

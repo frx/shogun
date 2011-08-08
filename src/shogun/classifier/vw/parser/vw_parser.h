@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #ifndef _VW_PARSER_H__
 #define _VW_PARSER_H__
 
@@ -12,21 +27,25 @@
 namespace shogun
 {
 
-class VwParser
+class CVwParser
 {
 public:
 	/**
-	 * Constructor taking environment as parameter (optional)
-	 * If not specified, a default environment is used.
+	 * Default constructor
+	 */
+	CVwParser();
+
+	/**
+	 * Constructor taking environment as parameter.
 	 *
 	 * @param env_to_use CVwEnvironment to use
 	 */
-	VwParser(CVwEnvironment* env_to_use = NULL);
+	CVwParser(CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
 	 */
-	~VwParser();
+	~CVwParser();
 
 	/**
 	 * Get the environment
@@ -133,6 +152,13 @@ public:
 		set_mm(label);
 	}
 
+	/**
+	 * Return the name of the object
+	 *
+	 * @return VwParser
+	 */
+	virtual const char* get_name() const { return "VwParser"; }
+
 public:
 	/// Hash function to use, of type hash_func_t
 	hash_func_t hasher;
@@ -146,6 +172,7 @@ protected:
 	bool write_cache;
 
 private:
+	/// Used during parsing
 	v_array<substring> channels;
 	v_array<substring> words;
 	v_array<substring> name;

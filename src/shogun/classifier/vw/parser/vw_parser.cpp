@@ -1,17 +1,26 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/parser/parse_example.h>
 #include <shogun/classifier/vw/parser/vw_parser.h>
 
 using namespace shogun;
 
-VwParser::VwParser(CVwEnvironment* env_to_use)
+CVwParser::CVwParser()
 {
-	if (env_to_use == NULL)
-		env = new CVwEnvironment();
-	else
-	{
-		env = env_to_use;
-		SG_REF(env);
-	}
+	env = new CVwEnvironment();
 
 	hasher = hashstring;
 
@@ -19,7 +28,19 @@ VwParser::VwParser(CVwEnvironment* env_to_use)
 	write_cache = true;
 }
 
-VwParser::~VwParser()
+CVwParser::CVwParser(CVwEnvironment* env_to_use)
+{
+	ASSERT(env_to_use);
+	env = env_to_use;
+	SG_REF(env);
+
+	hasher = hashstring;
+
+	cache_writer = new NativeCacheWriter("cache_native.dat", env);
+	write_cache = true;
+}
+
+CVwParser::~CVwParser()
 {
 	free(channels.begin);
 	channels.begin = channels.end = channels.end_array = NULL;
@@ -32,7 +53,7 @@ VwParser::~VwParser()
 	delete cache_writer;
 }
 
-int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -148,7 +169,7 @@ int32_t VwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -187,7 +208,7 @@ int32_t VwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);

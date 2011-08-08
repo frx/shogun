@@ -1,48 +1,86 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/cache/protobuf_read.h>
 
 using namespace shogun;
 
-ProtobufCacheReader::ProtobufCacheReader(const char* fname, CVwEnvironment* env_to_use)
-	: VwCacheReader(fname, env_to_use)
+CVwProtobufCacheReader::CVwProtobufCacheReader()
+	: CVwCacheReader()
 {
-	file_stream = new FileInputStream(fd);
-	coded_stream = new CodedInputStream(file_stream);
-	coded_stream->SetTotalBytesLimit(INT_MAX, -1);
+	file_stream = NULL;
+	coded_stream = NULL;
 }
 
-ProtobufCacheReader::ProtobufCacheReader(int f, CVwEnvironment* env_to_use)
-	: VwCacheReader(f, env_to_use)
+CVwProtobufCacheReader::CVwProtobufCacheReader(const char* fname, CVwEnvironment* env_to_use)
+	: CVwCacheReader(fname, env_to_use)
 {
-	file_stream = new FileInputStream(fd);
-	coded_stream = new CodedInputStream(file_stream);
-	coded_stream->SetTotalBytesLimit(INT_MAX, -1);	
+	init(fd);
 }
 
-ProtobufCacheReader::~ProtobufCacheReader()
+CVwProtobufCacheReader::CVwProtobufCacheReader(int f, CVwEnvironment* env_to_use)
+	: CVwCacheReader(f, env_to_use)
+{
+	init(fd);
+}
+
+CVwProtobufCacheReader::~CVwProtobufCacheReader()
 {
 	delete coded_stream;
 	delete file_stream;
 	close(fd);
 }
 
-bool ProtobufCacheReader::read_cached_example(VwExample* const ex)
+void CVwProtobufCacheReader::init(int f)
+{
+	file_stream = new FileInputStream(f);
+	coded_stream = new CodedInputStream(file_stream);
+	coded_stream->SetTotalBytesLimit(INT_MAX, -1);
+}
+
+void CVwProtobufCacheReader::set_file(int f)
+{
+	if (coded_stream)
+		delete coded_stream;
+	if (file_stream)
+		delete file_stream;
+	if (fd > 0)
+		close(fd);
+
+	fd = f;
+	init(fd);
+}
+
+bool CVwProtobufCacheReader::read_cached_example(VwExample* const ex)
 {
 	vwcache::Example ex_cached;
-	
+
 	google::protobuf::uint32 read_size;
 	if (!coded_stream->ReadVarint32(&read_size))
 	{
 		SG_SINFO("Failed to read object size from cached input!\n");
 		return NULL;
 	}
-	
+
 	CodedInputStream::Limit lim = coded_stream->PushLimit(read_size);
 	if (!ex_cached.ParseFromCodedStream(coded_stream))
 	{
 		SG_SINFO("Failed to parse from cached input!\n");
 		return NULL;
 	}
-	
+
 	coded_stream->PopLimit(lim);
 
 	// Read label

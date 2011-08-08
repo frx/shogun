@@ -1,22 +1,61 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #include <shogun/classifier/vw/cache/protobuf_write.h>
 
 using namespace shogun;
 
-ProtobufCacheWriter::ProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use):
-	VwCacheWriter(fname, env_to_use)
+CVwProtobufCacheWriter::CVwProtobufCacheWriter()
+	: CVwProtobufCacheWriter()
 {
-	file_stream = new FileOutputStream(fd);
-	coded_stream = new CodedOutputStream(file_stream);
+	file_stream = NULL;
+	coded_stream = NULL;
 }
 
-ProtobufCacheWriter::~ProtobufCacheWriter()
+CVwProtobufCacheWriter::CVwProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+	: CVwCacheWriter(fname, env_to_use)
+{
+	init(fd);
+}
+
+CVwProtobufCacheWriter::~CVwProtobufCacheWriter()
 {
 	delete coded_stream;
 	delete file_stream;
 	close(fd);
 }
 
-void ProtobufCacheWriter::cache_example(VwExample*& ex)
+void CVwProtobufCacheWriter::init(int f)
+{
+	file_stream = new FileOutputStream(f);
+	coded_stream = new CodedOutputStream(file_stream);
+}
+
+void CVwProtobufCacheWriter::set_file(int f)
+{
+	if (coded_stream)
+		delete coded_stream;
+	if (file_stream)
+		delete file_stream;
+	if (fd > 0)
+		close(fd);
+
+	init(f);
+}
+
+void CVwProtobufCacheWriter::cache_example(VwExample*& ex)
 {
 	vwcache::Example ex_cached;
 
@@ -54,5 +93,4 @@ void ProtobufCacheWriter::cache_example(VwExample*& ex)
 
 	if (!ex_cached.SerializeToCodedStream(coded_stream))
 		SG_SERROR("Error serializing to coded output stream!\n");
-
 }

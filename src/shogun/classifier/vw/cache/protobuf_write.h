@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
+ * embodied in the content of this file are licensed under the BSD
+ * (revised) open source license.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Written (W) 2011 Shashwat Lal Das
+ * Adaptation of Vowpal Wabbit v5.1.
+ * Copyright (C) 2011 Berlin Institute of Technology and Max-Planck-Society.
+ */
+
 #ifndef _VW_PROTOBUF_WRITE_H__
 #define _VW_PROTOBUF_WRITE_H__
 
@@ -13,13 +28,48 @@ using namespace google::protobuf::io;
 namespace shogun
 {
 
-class ProtobufCacheWriter: public VwCacheWriter
+/** @brief CVwProtobufCacheWriter implements a cache writing
+ * class which uses the Protocol Buffers serialization
+ * library with the specification detailed in a .proto
+ * file.
+ *
+ * The cache generated should be read by the CVwProtobufCacheReader
+ * class.
+ */
+class CVwProtobufCacheWriter: public CVwCacheWriter
 {
 public:
-	ProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+	/**
+	 * Default constructor
+	 */
+	CVwProtobufCacheWriter();
 
-	virtual ~ProtobufCacheWriter();
+	/**
+	 * Constructor taking file name and environment
+	 * as arguments.
+	 *
+	 * @param fname file name
+	 * @param env_to_use environment
+	 */
+	CVwProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use);
 
+	/**
+	 * Destructor
+	 */
+	virtual ~CVwProtobufCacheWriter();
+
+	/**
+	 * Set file descriptor to use
+	 *
+	 * @param f file descriptor
+	 */
+	virtual void set_file(int f);
+
+	/**
+	 * Write one example into the cache
+	 *
+	 * @param ex example
+	 */
 	virtual void cache_example(VwExample* &ex);
 
 protected:
@@ -32,4 +82,4 @@ protected:
 
 }
 
-#endif
+#endif // _VW_PROTOBUF_WRITE_H__
