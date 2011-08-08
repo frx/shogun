@@ -37,7 +37,7 @@ namespace shogun
  * be used in case a cache file is to be generated simultaneously
  * with parsing.
  */
-class CVwParser: public CSGObject()
+class CVwParser: public CSGObject
 {
 public:
 	/**

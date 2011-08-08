@@ -212,7 +212,7 @@ int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
+int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
 	int num_chars = buf->read_line(line);
@@ -254,7 +254,7 @@ int32_t VwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-void feature_value(substring &s, v_array<substring>& name, float &v)
+void CVwParser::feature_value(substring &s, v_array<substring>& name, float &v)
 {
 	// Get the value of the feature in the substring
 	tokenize(':', s, name);
@@ -278,7 +278,7 @@ void feature_value(substring &s, v_array<substring>& name, float &v)
 	}
 }
 
-void tokenize(char delim, substring s, v_array<substring>& ret)
+void CVwParser::tokenize(char delim, substring s, v_array<substring>& ret)
 {
 	ret.erase();
 	char *last = s.start;
