@@ -86,9 +86,13 @@ public:
 	/**
 	 * Get the environment
 	 *
-	 * @return environment as VwEnvironment*
+	 * @return environment as CVwEnvironment*
 	 */
-	virtual VwEnvironment* get_env() { return env; }
+	virtual CVwEnvironment* get_env()
+	{
+		SG_REF(env);
+		return env;
+	}
 
 	//virtual float64_t apply(SGSparseVector<float64_t> vec);
 private:
@@ -144,7 +148,7 @@ protected:
 	CStreamingVwFeatures* features;
 
 	/// Environment for VW, i.e., globals
-	VwEnvironment* env;
+	CVwEnvironment* env;
 
 	/// Learner to use
 	CVwLearner* learner;

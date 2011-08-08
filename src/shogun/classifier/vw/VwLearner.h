@@ -43,9 +43,10 @@ public:
 	 * @param regressor regressor
 	 * @param vw_env environment
 	 */
-	CVwLearner(CVwRegressor* regressor, VwEnvironment* vw_env): reg(regressor), env(vw_env)
+	CVwLearner(CVwRegressor* regressor, CVwEnvironment* vw_env): reg(regressor), env(vw_env)
 	{
 		SG_REF(reg);
+		SG_REF(env);
 	}
 
 	/**
@@ -53,7 +54,10 @@ public:
 	 */
 	virtual ~CVwLearner()
 	{
-		SG_UNREF(reg);
+		if (reg)
+			SG_UNREF(reg);
+		if (env)
+			SG_UNREF(env);
 	}
 
 	/**
@@ -75,7 +79,7 @@ protected:
 	/// Regressor object that will be used for getting updates
 	CVwRegressor *reg;
 	/// Environment
-	VwEnvironment *env;
+	CVwEnvironment *env;
 };
 }
 #endif // _VW_LEARNER_H__

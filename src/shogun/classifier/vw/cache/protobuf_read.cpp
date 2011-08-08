@@ -2,7 +2,7 @@
 
 using namespace shogun;
 
-ProtobufCacheReader::ProtobufCacheReader(const char* fname, VwEnvironment* env_to_use)
+ProtobufCacheReader::ProtobufCacheReader(const char* fname, CVwEnvironment* env_to_use)
 	: VwCacheReader(fname, env_to_use)
 {
 	file_stream = new FileInputStream(fd);
@@ -10,7 +10,7 @@ ProtobufCacheReader::ProtobufCacheReader(const char* fname, VwEnvironment* env_t
 	coded_stream->SetTotalBytesLimit(INT_MAX, -1);
 }
 
-ProtobufCacheReader::ProtobufCacheReader(int f, VwEnvironment* env_to_use)
+ProtobufCacheReader::ProtobufCacheReader(int f, CVwEnvironment* env_to_use)
 	: VwCacheReader(f, env_to_use)
 {
 	file_stream = new FileInputStream(fd);

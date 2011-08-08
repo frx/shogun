@@ -23,14 +23,14 @@ public:
 	 *
 	 * @param fname file name
 	 */
-	NativeCacheReader(const char* fname, VwEnvironment* env_to_use);
+	NativeCacheReader(const char* fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor, passed a file descriptor
 	 *
 	 * @param f descriptor of opened file
 	 */
-	NativeCacheReader(int f, VwEnvironment* env_to_use);
+	NativeCacheReader(int f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

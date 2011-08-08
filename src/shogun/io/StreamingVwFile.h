@@ -88,16 +88,23 @@ public:
 	/**
 	 * Set environment for vw
 	 *
-	 * @param env VwEnvironment* environment
+	 * @param env CVwEnvironment* environment
 	 */
-	void set_env(VwEnvironment* env_to_use) { parser->set_env(env_to_use); }
+	void set_env(CVwEnvironment* env_to_use)
+	{
+		parser->set_env(env_to_use);
+	}
 
 	/**
 	 * Return the environment
 	 *
-	 * @return environment as VwEnvironment*
+	 * @return environment as CVwEnvironment*
 	 */
-	VwEnvironment* get_env() { return env; }
+	CVwEnvironment* get_env()
+	{
+		SG_REF(env);
+		return env;
+	}
 
 	/**
 	 * Set whether cache will be written
@@ -143,7 +150,7 @@ protected:
 	E_VW_PARSER_TYPE parser_type;
 
 	/// Environment used for vw - used by parser
-	VwEnvironment* env;
+	CVwEnvironment* env;
 
 	/// Write data to a binary cache file
 	bool write_to_cache;

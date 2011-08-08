@@ -85,14 +85,16 @@ public:
 	/**
 	 * Set environment for vw
 	 *
-	 * @param env VwEnvironment* environment
+	 * @param env CVwEnvironment* environment
 	 */
-	void set_env(VwEnvironment* env_to_use)
+	void set_env(CVwEnvironment* env_to_use)
 	{
 		if (env)
-			delete env;
+			SG_UNREF(env);
 		delete cache_reader;
 		env = env_to_use;
+		SG_REF(env);
+
 		if (cache_format == C_NATIVE)
 			cache_reader = new NativeCacheReader(buf->working_file, env);
 		else if (cache_format == C_PROTOBUF)
@@ -102,9 +104,9 @@ public:
 	/**
 	 * Return the environment
 	 *
-	 * @return environment as VwEnvironment*
+	 * @return environment as CVwEnvironment*
 	 */
-	VwEnvironment* get_env()
+	CVwEnvironment* get_env()
 	{
 		return env;
 	}
@@ -134,7 +136,7 @@ protected:
 	VwCacheReader* cache_reader;
 
 	/// Environment used for vw
-	VwEnvironment* env;
+	CVwEnvironment* env;
 
 	/// Cache type
 	EVwCacheType cache_format;

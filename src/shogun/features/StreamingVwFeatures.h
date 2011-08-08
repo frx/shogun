@@ -148,8 +148,9 @@ public:
 	 * Get the environment
 	 * @return environment
 	 */
-	virtual VwEnvironment* get_env()
+	virtual CVwEnvironment* get_env()
 	{
+		SG_REF(env);
 		return env;
 	}
 
@@ -158,9 +159,10 @@ public:
 	 *
 	 * @param vw_env environment
 	 */
-	virtual void set_env(VwEnvironment* vw_env)
+	virtual void set_env(CVwEnvironment* vw_env)
 	{
-		env=vw_env;
+		env = vw_env;
+		SG_REF(env);
 	}
 
 	/**
@@ -395,7 +397,7 @@ protected:
 	/// Number of features in current example.
 	int32_t current_length;
 
-	VwEnvironment* env;
+	CVwEnvironment* env;
 
 	VwExample* current_example;
 };

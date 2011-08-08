@@ -2,7 +2,7 @@
 
 using namespace shogun;
 
-NativeCacheWriter::NativeCacheWriter(const char* fname, VwEnvironment* env_to_use)
+NativeCacheWriter::NativeCacheWriter(const char* fname, CVwEnvironment* env_to_use)
 	: VwCacheWriter(fname, env_to_use)
 {
 	init();

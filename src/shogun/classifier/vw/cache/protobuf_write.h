@@ -16,7 +16,7 @@ namespace shogun
 class ProtobufCacheWriter: public VwCacheWriter
 {
 public:
-	ProtobufCacheWriter(const char* fname, VwEnvironment* env_to_use);
+	ProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use);
 
 	virtual ~ProtobufCacheWriter();
 

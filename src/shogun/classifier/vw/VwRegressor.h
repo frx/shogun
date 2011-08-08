@@ -18,7 +18,7 @@
 
 #include <shogun/base/SGObject.h>
 #include <shogun/lib/DataType.h>
-#include <shogun/classifier/vw/vw_environment.h>
+#include <shogun/classifier/vw/VwEnvironment.h>
 #include <shogun/loss/LossFunction.h>
 
 namespace shogun
@@ -36,11 +36,16 @@ class CVwRegressor: public CSGObject
 {
 public:
 	/**
-	 * Default constructor, optionally taking an environment object
-	 *
-	 * @param env vw environment
+	 * Default constructor
 	 */
-	CVwRegressor(VwEnvironment* env = NULL);
+	CVwRegressor();
+
+	/** 
+	 * Constructor taking an environment object
+	 * 
+	 * @param env environment
+	 */
+	CVwRegressor(CVwEnvironment* env);
 
 	/**
 	 * Destructor
@@ -88,7 +93,7 @@ private:
 	 *
 	 * @param env environment object
 	 */
-	virtual void init(VwEnvironment* env = NULL);
+	virtual void init(CVwEnvironment* env = NULL);
 
 public:
 	/// Weight vectors, one array for each thread

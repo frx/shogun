@@ -16,7 +16,7 @@ public:
 	 *
 	 * @param fname file name
 	 */
-	NativeCacheWriter(const char* fname, VwEnvironment* env_to_use);
+	NativeCacheWriter(const char* fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

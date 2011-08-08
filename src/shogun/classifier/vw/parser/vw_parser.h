@@ -19,9 +19,9 @@ public:
 	 * Constructor taking environment as parameter (optional)
 	 * If not specified, a default environment is used.
 	 *
-	 * @param env_to_use VwEnvironment to use
+	 * @param env_to_use CVwEnvironment to use
 	 */
-	VwParser(VwEnvironment* env_to_use = NULL);
+	VwParser(CVwEnvironment* env_to_use = NULL);
 
 	/**
 	 * Destructor
@@ -31,21 +31,23 @@ public:
 	/**
 	 * Get the environment
 	 *
-	 * @return environment as VwEnvironment*
+	 * @return environment as CVwEnvironment*
 	 */
-	VwEnvironment* get_env()
+	CVwEnvironment* get_env()
 	{
+		SG_REF(env);
 		return env;
 	}
 
 	/**
 	 * Set the environment
 	 *
-	 * @param env_to_use environment as VwEnvironment*
+	 * @param env_to_use environment as CVwEnvironment*
 	 */
-	void set_env(VwEnvironment* env_to_use)
+	void set_env(CVwEnvironment* env_to_use)
 	{
 		env = env_to_use;
+		SG_REF(env);
 	}
 
 	/**
@@ -137,7 +139,7 @@ public:
 
 protected:
 	/// Environment of VW - used by parser
-	VwEnvironment* env;
+	CVwEnvironment* env;
 
 	VwCacheWriter* cache_writer;
 

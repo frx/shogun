@@ -2,7 +2,7 @@
 
 using namespace shogun;
 
-ProtobufCacheWriter::ProtobufCacheWriter(const char* fname, VwEnvironment* env_to_use):
+ProtobufCacheWriter::ProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use):
 	VwCacheWriter(fname, env_to_use)
 {
 	file_stream = new FileOutputStream(fd);

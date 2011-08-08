@@ -2,7 +2,7 @@
 
 using namespace shogun;
 
-NativeCacheReader::NativeCacheReader(const char* fname, VwEnvironment* env_to_use)
+NativeCacheReader::NativeCacheReader(const char* fname, CVwEnvironment* env_to_use)
 	: VwCacheReader(fname, env_to_use), int_size(6), char_size(2)
 {
 	init();
@@ -10,7 +10,7 @@ NativeCacheReader::NativeCacheReader(const char* fname, VwEnvironment* env_to_us
 	check_cache_metadata();
 }
 
-NativeCacheReader::NativeCacheReader(int f, VwEnvironment* env_to_use)
+NativeCacheReader::NativeCacheReader(int f, CVwEnvironment* env_to_use)
 	: VwCacheReader(f, env_to_use), int_size(6), char_size(2)
 {
 	init();

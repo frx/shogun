@@ -3,12 +3,15 @@
 
 using namespace shogun;
 
-VwParser::VwParser(VwEnvironment* env_to_use)
+VwParser::VwParser(CVwEnvironment* env_to_use)
 {
 	if (env_to_use == NULL)
-		env = new VwEnvironment();
+		env = new CVwEnvironment();
 	else
+	{
 		env = env_to_use;
+		SG_REF(env);
+	}
 
 	hasher = hashstring;
 
@@ -25,7 +28,7 @@ VwParser::~VwParser()
 	free(name.begin);
 	name.begin = name.end = name.end_array = NULL;
 
-	delete env;
+	SG_UNREF(env);
 	delete cache_writer;
 }
 

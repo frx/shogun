@@ -41,7 +41,7 @@ public:
 	 * @param regressor regressor to use
 	 * @param vw_env environment to use
 	 */
-	CVwNonAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env);
+	CVwNonAdaptiveLearner(CVwRegressor* regressor, CVwEnvironment* vw_env);
 
 	/**
 	 * Destructor

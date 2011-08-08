@@ -26,6 +26,7 @@ CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
 
 CVowpalWabbit::~CVowpalWabbit()
 {
+	SG_UNREF(env);
 	SG_UNREF(reg);
 	SG_UNREF(learner);
 }
@@ -140,6 +141,7 @@ void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 	features=feat;
 	env=feat->get_env();
 	reg=new CVwRegressor(env);
+	SG_REF(env);
 	SG_REF(reg);
 }
 

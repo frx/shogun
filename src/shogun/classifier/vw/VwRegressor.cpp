@@ -17,7 +17,14 @@
 
 using namespace shogun;
 
-CVwRegressor::CVwRegressor(VwEnvironment* env)
+CVwRegressor::CVwRegressor()
+{
+	weight_vectors = NULL;
+	loss = new CSquaredLoss();
+	init(NULL);
+}
+
+CVwRegressor::CVwRegressor(CVwEnvironment* env)
 {
 	weight_vectors = NULL;
 	loss = new CSquaredLoss();
@@ -30,7 +37,7 @@ CVwRegressor::~CVwRegressor()
 	SG_UNREF(loss);
 }
 
-void CVwRegressor::init(VwEnvironment* env)
+void CVwRegressor::init(CVwEnvironment* env)
 {
 	// For each feature, there should be 'stride' number of
 	// elements in the weight vector

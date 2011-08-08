@@ -56,7 +56,7 @@ void CStreamingVwCacheFile::reset_stream()
 void CStreamingVwCacheFile::init(EVwCacheType cache_type)
 {
 	cache_format = cache_type;
-	env = new VwEnvironment();
+	env = new CVwEnvironment();
 	if (cache_type == C_NATIVE)
 		cache_reader = new NativeCacheReader(buf->working_file, env);
 	else if (cache_type == C_PROTOBUF)

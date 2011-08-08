@@ -23,7 +23,7 @@ CVwNonAdaptiveLearner::CVwNonAdaptiveLearner()
 {
 }
 
-CVwNonAdaptiveLearner::CVwNonAdaptiveLearner(CVwRegressor* regressor, VwEnvironment* vw_env)
+CVwNonAdaptiveLearner::CVwNonAdaptiveLearner(CVwRegressor* regressor, CVwEnvironment* vw_env)
 	: CVwLearner(regressor, vw_env)
 {
 }
