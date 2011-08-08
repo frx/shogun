@@ -24,7 +24,7 @@ CVwProtobufCacheReader::CVwProtobufCacheReader()
 	coded_stream = NULL;
 }
 
-CVwProtobufCacheReader::CVwProtobufCacheReader(const char* fname, CVwEnvironment* env_to_use)
+CVwProtobufCacheReader::CVwProtobufCacheReader(char * fname, CVwEnvironment* env_to_use)
 	: CVwCacheReader(fname, env_to_use)
 {
 	init(fd);

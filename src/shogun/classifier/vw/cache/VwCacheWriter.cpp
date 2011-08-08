@@ -24,7 +24,7 @@ CVwCacheWriter::CVwCacheWriter()
 	env = NULL;
 }
 
-CVwCacheWriter::CVwCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+CVwCacheWriter::CVwCacheWriter(char * fname, CVwEnvironment* env_to_use)
 	: CSGObject()
 {
 	fd = open(fname, O_CREAT | O_TRUNC | O_RDWR, 0666);

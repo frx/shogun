@@ -47,7 +47,7 @@ public:
 	 * @param fname name of file to open
 	 * @param env_to_use environment
 	 */
-	CVwCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+	CVwCacheWriter(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor, uses file specified by descriptor

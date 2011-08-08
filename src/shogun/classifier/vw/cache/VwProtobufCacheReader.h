@@ -50,7 +50,7 @@ public:
 	 * @param fname file name
 	 * @param env_to_use environment
 	 */
-	CVwProtobufCacheReader(const char* fname, CVwEnvironment* env_to_use);
+	CVwProtobufCacheReader(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor taking file descriptor and

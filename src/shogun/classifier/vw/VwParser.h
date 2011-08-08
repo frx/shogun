@@ -91,7 +91,7 @@ public:
 	 * @param fname name of the cache file 
 	 * @param type type of cache as one in EVwCacheType
 	 */
-	void set_cache_parameters(const char* fname, EVwCacheType type = C_NATIVE)
+	void set_cache_parameters(char * fname, EVwCacheType type = C_NATIVE)
 	{
 		init_cache(fname, type);
 	}
@@ -206,7 +206,7 @@ protected:
 	 *
 	 * @param fname cache file name
 	 */
-	void init_cache(const char* fname, EVwCacheType type = C_NATIVE);
+	void init_cache(char * fname, EVwCacheType type = C_NATIVE);
 
 	/**
 	 * Get value of feature from a given substring.

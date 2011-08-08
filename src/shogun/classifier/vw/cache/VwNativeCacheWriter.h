@@ -36,7 +36,7 @@ public:
 	 *
 	 * @param fname file name
 	 */
-	CVwNativeCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+	CVwNativeCacheWriter(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

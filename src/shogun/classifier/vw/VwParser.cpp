@@ -253,7 +253,7 @@ int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 	return num_chars;
 }
 
-void CVwParser::init_cache(const char* fname, EVwCacheType type = C_NATIVE)
+void CVwParser::init_cache(char * fname, EVwCacheType type)
 {
 	char* file_name = fname;
 	char default_cache_name[] = "vw_cache.dat.cache";
@@ -261,7 +261,7 @@ void CVwParser::init_cache(const char* fname, EVwCacheType type = C_NATIVE)
 	if (!fname)
 		file_name = default_cache_name;
 
-	switch type
+	switch (type)
 	{
 	case C_NATIVE:
 		cache_writer = new CVwNativeCacheWriter(file_name, env);

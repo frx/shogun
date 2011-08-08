@@ -45,7 +45,7 @@ public:
 	 *
 	 * @param fname file name
 	 */
-	CVwNativeCacheReader(const char* fname, CVwEnvironment* env_to_use);
+	CVwNativeCacheReader(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor, passed a file descriptor

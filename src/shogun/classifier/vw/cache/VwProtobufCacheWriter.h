@@ -51,7 +51,7 @@ public:
 	 * @param fname file name
 	 * @param env_to_use environment
 	 */
-	CVwProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use);
+	CVwProtobufCacheWriter(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor

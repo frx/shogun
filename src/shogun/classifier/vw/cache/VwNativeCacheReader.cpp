@@ -23,7 +23,7 @@ CVwNativeCacheReader::CVwNativeCacheReader()
 	init();
 }
 
-CVwNativeCacheReader::CVwNativeCacheReader(const char* fname, CVwEnvironment* env_to_use)
+CVwNativeCacheReader::CVwNativeCacheReader(char * fname, CVwEnvironment* env_to_use)
 	: CVwCacheReader(fname, env_to_use), int_size(6), char_size(2)
 {
 	init();

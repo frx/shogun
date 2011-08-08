@@ -23,7 +23,7 @@ CVwNativeCacheWriter::CVwNativeCacheWriter()
 	init();
 }
 
-CVwNativeCacheWriter::CVwNativeCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+CVwNativeCacheWriter::CVwNativeCacheWriter(char * fname, CVwEnvironment* env_to_use)
 	: CVwCacheWriter(fname, env_to_use)
 {
 	init();

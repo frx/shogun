@@ -198,7 +198,7 @@ CStreamingFile::CStreamingFile() : CSGObject()
 	filename=NULL;
 }
 
-CStreamingFile::CStreamingFile(const char* fname, char rw) : CSGObject()
+CStreamingFile::CStreamingFile(char* fname, char rw) : CSGObject()
 {
 	task=rw;
 	filename=strdup(fname);

@@ -51,7 +51,7 @@ public:
 	 *
 	 * @param fname name of file to open
 	 */
-	CVwCacheReader(const char* fname, CVwEnvironment* env_to_use);
+	CVwCacheReader(char * fname, CVwEnvironment* env_to_use);
 
 	/**
 	 * Constructor which takes an already opened file descriptor

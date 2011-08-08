@@ -24,7 +24,7 @@ CVwCacheReader::CVwCacheReader()
 	env = NULL;
 }
 
-CVwCacheReader::CVwCacheReader(const char* fname, CVwEnvironment* env_to_use)
+CVwCacheReader::CVwCacheReader(char * fname, CVwEnvironment* env_to_use)
 	: CSGObject()
 {
 	fd = open(fname, O_RDONLY);

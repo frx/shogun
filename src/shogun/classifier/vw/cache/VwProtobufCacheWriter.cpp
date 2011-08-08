@@ -24,7 +24,7 @@ CVwProtobufCacheWriter::CVwProtobufCacheWriter()
 	coded_stream = NULL;
 }
 
-CVwProtobufCacheWriter::CVwProtobufCacheWriter(const char* fname, CVwEnvironment* env_to_use)
+CVwProtobufCacheWriter::CVwProtobufCacheWriter(char * fname, CVwEnvironment* env_to_use)
 	: CVwCacheWriter(fname, env_to_use)
 {
 	init(fd);
