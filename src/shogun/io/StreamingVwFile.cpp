@@ -26,6 +26,7 @@ CStreamingVwFile::CStreamingVwFile(char* fname, char rw)
 
 CStreamingVwFile::~CStreamingVwFile()
 {
+	SG_UNREF(env);
 	SG_UNREF(parser);
 }
 

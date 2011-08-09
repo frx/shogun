@@ -121,7 +121,6 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 			*(ae->atomics[(int)(i[1])].end - ae->atomics[(int)(i[1])].begin);
 
 		ae->total_sum_feat_sq += ae->sum_feat_sq[(int)(i[0])]*ae->sum_feat_sq[(int)(i[1])];
-
 	}
 }
 
@@ -264,7 +263,6 @@ int32_t CStreamingVwFeatures::get_num_features()
 {
 	return current_length;
 }
-
 
 EFeatureClass CStreamingVwFeatures::get_feature_class()
 {

@@ -22,7 +22,6 @@
 #include <shogun/lib/DataType.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/sparse_dense.h>
-#include <shogun/classifier/vw/util.h>
 #include <shogun/io/StreamingVwFile.h>
 #include <shogun/io/StreamingVwCacheFile.h>
 #include <shogun/io/InputParser.h>
@@ -30,6 +29,11 @@
 namespace shogun
 {
 /** @brief This class implements streaming features for use with VW.
+ *
+ * Each example is stored in a VwExample object, which also
+ * contains label and other information.
+ * Features are hashed and are supposed to be used with a weight
+ * vector of preallocated dimensions.
  */
 class CStreamingVwFeatures : public CStreamingDotFeatures
 {

@@ -88,7 +88,7 @@ public:
 	/**
 	 * Set the cache parameters
 	 *
-	 * @param fname name of the cache file 
+	 * @param fname name of the cache file
 	 * @param type type of cache as one in EVwCacheType
 	 */
 	void set_cache_parameters(char * fname, EVwCacheType type = C_NATIVE)
@@ -191,7 +191,6 @@ public:
 	 * @return number of characters read for this example
 	 */
 	int32_t read_dense_features(CIOBuffer* buf, VwExample*& ae);
-
 
 	/**
 	 * Return the name of the object
