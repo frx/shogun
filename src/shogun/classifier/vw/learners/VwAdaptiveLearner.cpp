@@ -14,7 +14,6 @@
  */
 
 #include <shogun/classifier/vw/learners/VwAdaptiveLearner.h>
-#include <shogun/classifier/vw/util.h>
 
 using namespace shogun;
 
@@ -50,7 +49,7 @@ void CVwAdaptiveLearner::train(VwExample* &ex, float update)
 		{
 			float* w = &weights[f->weight_index & thread_mask];
 			w[1] += g * f->x * f->x;
-			float t = f->x*InvSqrt(w[1]);
+			float t = f->x * CMath::invsqrt(w[1]);
 			w[0] += update * t;
 		}
 	}
@@ -78,7 +77,7 @@ void CVwAdaptiveLearner::quad_update(float* weights, VwFeature& page_feature,
 	{
 		float* w = &weights[(halfhash + elem->weight_index) & mask];
 		w[1] += update2 * elem->x * elem->x;
-		float t = elem->x * InvSqrt(w[1]);
+		float t = elem->x * CMath::invsqrt(w[1]);
 		w[0] += update * t;
 	}
 }

@@ -14,7 +14,6 @@
  */
 
 #include <shogun/classifier/vw/learners/VwNonAdaptiveLearner.h>
-#include <shogun/classifier/vw/util.h>
 
 using namespace shogun;
 

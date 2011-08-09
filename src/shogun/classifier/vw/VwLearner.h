@@ -35,7 +35,8 @@ public:
 	/**
 	 * Default constructor
 	 */
-	CVwLearner(): reg(NULL), env(NULL) { }
+	CVwLearner()
+		: CSGObject(), reg(NULL), env(NULL) { }
 
 	/**
 	 * Constructor, initializes regressor and environment
@@ -43,7 +44,8 @@ public:
 	 * @param regressor regressor
 	 * @param vw_env environment
 	 */
-	CVwLearner(CVwRegressor* regressor, CVwEnvironment* vw_env): reg(regressor), env(vw_env)
+	CVwLearner(CVwRegressor* regressor, CVwEnvironment* vw_env)
+		: CSGObject(), reg(regressor), env(vw_env)
 	{
 		SG_REF(reg);
 		SG_REF(env);
