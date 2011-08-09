@@ -54,7 +54,7 @@ public:
 	 * @param ex example
 	 * @param update the update
 	 */
-	virtual void train(VwExample* &ex, float update);
+	virtual void train(VwExample* &ex, float32_t update);
 
 	/**
 	 * Return the name of the object
@@ -73,9 +73,9 @@ private:
 	 * @param mask mask
 	 * @param update update
 	 */
-	void quad_update(float* weights, VwFeature& page_feature,
+	void quad_update(float32_t* weights, VwFeature& page_feature,
 			 v_array<VwFeature> &offer_features, size_t mask,
-			 float update);
+			 float32_t update);
 };
 }
 #endif // _VW_NONADAPTIVE_H__
