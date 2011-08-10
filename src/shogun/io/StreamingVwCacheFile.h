@@ -17,26 +17,39 @@
 
 namespace shogun
 {
-/** @brief Class StreamingVwCacheFile to read vector-by-vector from VW
- * cache files.
- * It reads the example and label into one object of
+/** @brief Class StreamingVwCacheFile to read vector-by-vector
+ * from VW cache files.
+ *
+ * The cache file is usually generated either by VW
+ * or by enabling the cache writing option in a CStreamingVwFile
+ * object.
+ *
+ * This class reads the example and label into one object of
  * VwExample type.
  */
 class CStreamingVwCacheFile: public CStreamingFile
 {
 public:
 	/**
-	 * Default constructor
-	 *
+	 * Default constructor.
+	 * Assumes cache file is of type C_NATIVE
 	 */
-	CStreamingVwCacheFile(EVwCacheType cache_type = C_NATIVE);
+	CStreamingVwCacheFile();
 
 	/**
-	 * Constructor taking file name argument
+	 * Constructor taking cache type
+	 * as an argument.
+	 *
+	 * @param cache_type cache type - C_NATIVE or C_PROTOBUF
+	 */
+	CStreamingVwCacheFile(EVwCacheType cache_type);
+
+	/**
+	 * Constructor taking file name and cache type as arguments
 	 *
 	 * @param fname file name
 	 * @param rw read/write mode
-	 * @param name name
+	 * @param cache_type type of cache - C_NATIVE or C_PROTOBUF
 	 */
 	CStreamingVwCacheFile(char* fname, char rw='r', EVwCacheType cache_type = C_NATIVE);
 
@@ -72,7 +85,6 @@ public:
 	inline virtual const char* get_name() const
 	{
 		return "StreamingVwCacheFile";
-
 	}
 
 	/**
@@ -80,19 +92,7 @@ public:
 	 *
 	 * @param env CVwEnvironment* environment
 	 */
-	void set_env(CVwEnvironment* env_to_use)
-	{
-		if (env)
-			SG_UNREF(env);
-		SG_UNREF(cache_reader);
-		env = env_to_use;
-		SG_REF(env);
-
-		if (cache_format == C_NATIVE)
-			cache_reader = new CVwNativeCacheReader(buf->working_file, env);
-		else if (cache_format == C_PROTOBUF)
-			SG_ERROR("Protocol buffers cache support is not implemented yet!\n");
-	}
+	void set_env(CVwEnvironment* env_to_use);
 
 	/**
 	 * Return the environment
@@ -101,6 +101,7 @@ public:
 	 */
 	CVwEnvironment* get_env()
 	{
+		SG_REF(env);
 		return env;
 	}
 
@@ -121,6 +122,8 @@ public:
 private:
 	/**
 	 * Initialize members
+	 *
+	 * @param cache_type type of cache
 	 */
 	virtual void init(EVwCacheType cache_type);
 
