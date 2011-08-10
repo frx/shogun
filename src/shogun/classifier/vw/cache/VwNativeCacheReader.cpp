@@ -31,7 +31,7 @@ CVwNativeCacheReader::CVwNativeCacheReader(char * fname, CVwEnvironment* env_to_
 	check_cache_metadata();
 }
 
-CVwNativeCacheReader::CVwNativeCacheReader(int f, CVwEnvironment* env_to_use)
+CVwNativeCacheReader::CVwNativeCacheReader(int32_t f, CVwEnvironment* env_to_use)
 	: CVwCacheReader(f, env_to_use), int_size(6), char_size(2)
 {
 	init();
@@ -44,7 +44,7 @@ CVwNativeCacheReader::~CVwNativeCacheReader()
 	buf.close_file();
 }
 
-void CVwNativeCacheReader::set_file(int f)
+void CVwNativeCacheReader::set_file(int32_t f)
 {
 	if (fd > 0)
 		buf.close_file();
@@ -75,7 +75,7 @@ void CVwNativeCacheReader::check_cache_metadata()
 	if (strcmp(t,vw_version) != 0)
 		SG_SERROR("Cache has possibly incompatible version!\n");
 
-	int total = sizeof(size_t);
+	int32_t total = sizeof(size_t);
 	char* p[total];
 	if (buf.read_file(p, total) < total)
 		return;
@@ -87,7 +87,7 @@ void CVwNativeCacheReader::check_cache_metadata()
 
 char* CVwNativeCacheReader::run_len_decode(char *p, size_t& i)
 {
-	// Read an int 7 bits at a time.
+	// Read an int32_t 7 bits at a time.
 	size_t count = 0;
 	while(*p & 128)\
 		i = i | ((*(p++) & 127) << 7*count++);
@@ -97,11 +97,11 @@ char* CVwNativeCacheReader::run_len_decode(char *p, size_t& i)
 
 char* CVwNativeCacheReader::bufread_label(VwLabel* const ld, char* c)
 {
-	ld->label = *(float *)c;
+	ld->label = *(float32_t*)c;
 	c += sizeof(ld->label);
-	ld->weight = *(float *)c;
+	ld->weight = *(float32_t*)c;
 	c += sizeof(ld->weight);
-	ld->initial = *(float *)c;
+	ld->initial = *(float32_t*)c;
 	c += sizeof(ld->initial);
 
 	return c;
@@ -193,8 +193,8 @@ bool CVwNativeCacheReader::read_cached_example(VwExample* const ae)
 				f.x = -1.;
 			else if (f.weight_index & general)
 			{
-				f.x = ((one_float *)c)->f;
-				c += sizeof(float);
+				f.x = ((one_float*)c)->f;
+				c += sizeof(float32_t);
 			}
 
 			*our_sum_feat_sq += f.x*f.x;

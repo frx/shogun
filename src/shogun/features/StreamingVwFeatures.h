@@ -220,9 +220,9 @@ public:
 	 *
 	 * @return truncated value
 	 */
-	inline virtual float real_weight(float w, float gravity)
+	inline virtual float32_t real_weight(float32_t w, float32_t gravity)
 	{
-		float wprime = 0;
+		float32_t wprime = 0;
 		if (gravity < fabsf(w))
 			wprime = sign(w)*(fabsf(w) - gravity);
 		return wprime;
@@ -248,7 +248,7 @@ public:
 	 *
 	 * @return dot product
 	 */
-	virtual float dense_dot(VwExample* &ex, const float* vec2);
+	virtual float32_t dense_dot(VwExample* &ex, const float32_t* vec2);
 
 	/**
 	 * Dot product of current feature vector with a dense vector
@@ -259,7 +259,7 @@ public:
 	 *
 	 * @return dot product
 	 */
-	virtual float dense_dot(const float* vec2, int32_t vec2_len);
+	virtual float32_t dense_dot(const float32_t* vec2, int32_t vec2_len);
 
 	/**
 	 * Dot product between a dense weight vector and a sparse feature vector.
@@ -270,7 +270,7 @@ public:
 	 *
 	 * @return dot product between dense weights and a sparse feature vector
 	 */
-	virtual float dense_dot(SGSparseVector<float64_t>* vec1, const float* vec2);
+	virtual float32_t dense_dot(SGSparseVector<float64_t>* vec1, const float32_t* vec2);
 
 	/**
 	 * Dot product with another dense vector.
@@ -294,11 +294,11 @@ public:
 	 *
 	 * @return dot product
 	 */
-	virtual float dense_dot_truncated(const float* vec2, VwExample* &ex, float gravity);
+	virtual float32_t dense_dot_truncated(const float32_t* vec2, VwExample* &ex, float32_t gravity);
 
-	virtual void add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val = false);
+	virtual void add_to_dense_vec(float32_t alpha, VwExample* &ex, float32_t* vec2, int32_t vec2_len, bool abs_val = false);
 
-	virtual void add_to_dense_vec(float alpha, float* vec2, int32_t vec2_len, bool abs_val = false);
+	virtual void add_to_dense_vec(float32_t alpha, float32_t* vec2, int32_t vec2_len, bool abs_val = false);
 
 	/**
 	 * Add alpha*current_vector to another dense vector.

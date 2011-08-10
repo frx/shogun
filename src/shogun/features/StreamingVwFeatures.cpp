@@ -117,10 +117,10 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 		char* i = env->pairs.get_element(k);
 
 		ae->num_features
-			+= (ae->atomics[(int)(i[0])].end - ae->atomics[(int)(i[0])].begin)
-			*(ae->atomics[(int)(i[1])].end - ae->atomics[(int)(i[1])].begin);
+			+= (ae->atomics[(int32_t)(i[0])].end - ae->atomics[(int32_t)(i[0])].begin)
+			*(ae->atomics[(int32_t)(i[1])].end - ae->atomics[(int32_t)(i[1])].begin);
 
-		ae->total_sum_feat_sq += ae->sum_feat_sq[(int)(i[0])]*ae->sum_feat_sq[(int)(i[1])];
+		ae->total_sum_feat_sq += ae->sum_feat_sq[(int32_t)(i[0])]*ae->sum_feat_sq[(int32_t)(i[1])];
 	}
 }
 
@@ -194,7 +194,7 @@ float64_t CStreamingVwFeatures::dot(CStreamingDotFeatures* df)
 	SG_NOTIMPLEMENTED;
 }
 
-float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
+float32_t CStreamingVwFeatures::dense_dot(VwExample* &ex, const float32_t* vec2)
 {
 	float64_t ret = 0.;
 	for (size_t* i = ex->indices.begin; i!= ex->indices.end; i++)
@@ -205,12 +205,12 @@ float CStreamingVwFeatures::dense_dot(VwExample* &ex, const float* vec2)
 	return ret;
 }
 
-float CStreamingVwFeatures::dense_dot(const float* vec2, int32_t vec2_len)
+float32_t CStreamingVwFeatures::dense_dot(const float32_t* vec2, int32_t vec2_len)
 {
 	return dense_dot(current_example, vec2);
 }
 
-float CStreamingVwFeatures::dense_dot(SGSparseVector<float64_t>* vec1, const float* vec2)
+float32_t CStreamingVwFeatures::dense_dot(SGSparseVector<float64_t>* vec1, const float32_t* vec2)
 {
 	float64_t ret = 0.;
 	for (int32_t i = 0; i < vec1->num_feat_entries; i++)
@@ -219,22 +219,22 @@ float CStreamingVwFeatures::dense_dot(SGSparseVector<float64_t>* vec1, const flo
 	return ret;
 }
 
-float CStreamingVwFeatures::dense_dot_truncated(const float* vec2, VwExample* &ex, float gravity)
+float32_t CStreamingVwFeatures::dense_dot_truncated(const float32_t* vec2, VwExample* &ex, float32_t gravity)
 {
-	float ret = 0.;
+	float32_t ret = 0.;
 	for (size_t* i = ex->indices.begin; i != ex->indices.end; i++)
 	{
 		for (VwFeature* f = ex->atomics[*i].begin; f!= ex->atomics[*i].end; f++)
 		{
-			float w = vec2[f->weight_index & env->thread_mask];
-			float wprime = real_weight(w,gravity);
+			float32_t w = vec2[f->weight_index & env->thread_mask];
+			float32_t wprime = real_weight(w,gravity);
 			ret += wprime*f->x;
 		}
 	}
 	return ret;
 }
 
-void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* vec2, int32_t vec2_len, bool abs_val)
+void CStreamingVwFeatures::add_to_dense_vec(float32_t alpha, VwExample* &ex, float32_t* vec2, int32_t vec2_len, bool abs_val)
 {
 	if (abs_val)
 	{
@@ -254,7 +254,7 @@ void CStreamingVwFeatures::add_to_dense_vec(float alpha, VwExample* &ex, float* 
 	}
 }
 
-void CStreamingVwFeatures::add_to_dense_vec(float alpha, float* vec2, int32_t vec2_len, bool abs_val)
+void CStreamingVwFeatures::add_to_dense_vec(float32_t alpha, float32_t* vec2, int32_t vec2_len, bool abs_val)
 {
 	add_to_dense_vec(alpha, current_example, vec2, vec2_len, abs_val);
 }

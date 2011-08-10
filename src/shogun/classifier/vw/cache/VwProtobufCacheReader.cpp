@@ -30,7 +30,7 @@ CVwProtobufCacheReader::CVwProtobufCacheReader(char * fname, CVwEnvironment* env
 	init(fd);
 }
 
-CVwProtobufCacheReader::CVwProtobufCacheReader(int f, CVwEnvironment* env_to_use)
+CVwProtobufCacheReader::CVwProtobufCacheReader(int32_t f, CVwEnvironment* env_to_use)
 	: CVwCacheReader(f, env_to_use)
 {
 	init(fd);
@@ -43,14 +43,14 @@ CVwProtobufCacheReader::~CVwProtobufCacheReader()
 	close(fd);
 }
 
-void CVwProtobufCacheReader::init(int f)
+void CVwProtobufCacheReader::init(int32_t f)
 {
 	file_stream = new FileInputStream(f);
 	coded_stream = new CodedInputStream(file_stream);
 	coded_stream->SetTotalBytesLimit(INT_MAX, -1);
 }
 
-void CVwProtobufCacheReader::set_file(int f)
+void CVwProtobufCacheReader::set_file(int32_t f)
 {
 	if (coded_stream)
 		delete coded_stream;
@@ -92,7 +92,7 @@ bool CVwProtobufCacheReader::read_cached_example(VwExample* const ex)
 	ex->tag.push_many(ex_cached.mutable_tag()->c_str(), ex_cached.mutable_tag()->length());
 
 	// Read namespaces
-	for (int i = 0; i < ex_cached.channels_size(); i++)
+	for (int32_t i = 0; i < ex_cached.channels_size(); i++)
 	{
 		google::protobuf::uint32 index = ex_cached.channels(i).namespace_index();
 		ex->indices.push(index);
@@ -100,7 +100,7 @@ bool CVwProtobufCacheReader::read_cached_example(VwExample* const ex)
 		float64_t* our_sum_feat_sq = ex->sum_feat_sq+index;
 
 		// Read feature object
-		for (int j = 0; j < ex_cached.channels(i).x_size(); j++)
+		for (int32_t j = 0; j < ex_cached.channels(i).x_size(); j++)
 		{
 			VwFeature f = {ex_cached.channels(i).x(j), ex_cached.channels(i).diff_index(j)};
 			*our_sum_feat_sq += f.x*f.x;

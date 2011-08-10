@@ -215,7 +215,7 @@ protected:
 	 * @param name returned array of substrings, split into name and value
 	 * @param v value of feature, set by reference
 	 */
-	void feature_value(substring &s, v_array<substring>& name, float &v);
+	void feature_value(substring &s, v_array<substring>& name, float32_t &v);
 
 	/**
 	 * Split a given substring into an array of substrings

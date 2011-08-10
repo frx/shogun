@@ -37,13 +37,13 @@ CVwProtobufCacheWriter::~CVwProtobufCacheWriter()
 	close(fd);
 }
 
-void CVwProtobufCacheWriter::init(int f)
+void CVwProtobufCacheWriter::init(int32_t f)
 {
 	file_stream = new FileOutputStream(f);
 	coded_stream = new CodedOutputStream(file_stream);
 }
 
-void CVwProtobufCacheWriter::set_file(int f)
+void CVwProtobufCacheWriter::set_file(int32_t f)
 {
 	if (coded_stream)
 		delete coded_stream;

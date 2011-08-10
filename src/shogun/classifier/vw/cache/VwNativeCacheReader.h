@@ -24,7 +24,7 @@ namespace shogun
 /// Packed structure for efficient storage
 struct one_float
 {
-	float f;
+	float32_t f;
 } __attribute__((packed));
 
 /** @brief Class CVwNativeCacheReader reads from a cache exactly as
@@ -52,7 +52,7 @@ public:
 	 *
 	 * @param f descriptor of opened file
 	 */
-	CVwNativeCacheReader(int f, CVwEnvironment* env_to_use);
+	CVwNativeCacheReader(int32_t f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
@@ -64,7 +64,7 @@ public:
 	 *
 	 * @param f descriptor of cache file
 	 */
-	virtual void set_file(int f);
+	virtual void set_file(int32_t f);
 
 	/**
 	 * Read one cached example
@@ -92,7 +92,7 @@ private:
 	void init();
 
 	/**
-	 * Decode an int from RLE-encoded data
+	 * Decode an int32_t from RLE-encoded data
 	 *
 	 * @param p pointer to data
 	 * @param i decoded int
@@ -102,7 +102,7 @@ private:
 	char* run_len_decode(char *p, size_t& i);
 
 	/**
-	 * Decode a signed int from an encoded unsigned form
+	 * Decode a signed int32_t from an encoded unsigned form
 	 *
 	 * @param n encoded unsigned int
 	 *

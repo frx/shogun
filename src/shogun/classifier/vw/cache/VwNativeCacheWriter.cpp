@@ -38,7 +38,7 @@ CVwNativeCacheWriter::~CVwNativeCacheWriter()
 	buf.close_file();
 }
 
-void CVwNativeCacheWriter::set_file(int f)
+void CVwNativeCacheWriter::set_file(int32_t f)
 {
 	if (fd > 0)
 	{
@@ -85,11 +85,11 @@ char* CVwNativeCacheWriter::run_len_encode(char *p, size_t i)
 
 char* CVwNativeCacheWriter::bufcache_label(VwLabel* ld, char* c)
 {
-	*(float *)c = ld->label;
+	*(float32_t*)c = ld->label;
 	c += sizeof(ld->label);
-	*(float *)c = ld->weight;
+	*(float32_t*)c = ld->weight;
 	c += sizeof(ld->weight);
-	*(float *)c = ld->initial;
+	*(float32_t*)c = ld->initial;
 	c += sizeof(ld->initial);
 	return c;
 }
@@ -130,7 +130,7 @@ void CVwNativeCacheWriter::output_features(unsigned char index, VwFeature* begin
 	size_t storage = (end-begin) * int_size;
 	for (VwFeature* i = begin; i != end; i++)
 		if (i->x != 1. && i->x != -1.)
-			storage+=sizeof(float);
+			storage+=sizeof(float32_t);
 
 	buf.buf_write(c, sizeof(index) + storage + sizeof(size_t));
 	*(unsigned char*)c = index;
@@ -155,8 +155,8 @@ void CVwNativeCacheWriter::output_features(unsigned char index, VwFeature* begin
 		else
 		{
 			c = run_len_encode(c, diff | general);
-			*(float *)c = i->x;
-			c += sizeof(float);
+			*(float32_t*)c = i->x;
+			c += sizeof(float32_t);
 		}
 	}
 	buf.set(c);

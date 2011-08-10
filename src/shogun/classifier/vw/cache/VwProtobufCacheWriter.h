@@ -63,7 +63,7 @@ public:
 	 *
 	 * @param f file descriptor
 	 */
-	virtual void set_file(int f);
+	virtual void set_file(int32_t f);
 
 	/**
 	 * Write one example into the cache
@@ -85,7 +85,7 @@ private:
 	 *
 	 * @param f file descriptor
 	 */
-	virtual void init(int f);
+	virtual void init(int32_t f);
 
 protected:
 	/// FileOutputStream from the opened file

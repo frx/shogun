@@ -48,7 +48,7 @@ public:
 	 *
 	 * @param f descriptor of cache file
 	 */
-	virtual void set_file(int f);
+	virtual void set_file(int32_t f);
 
 	/**
 	 * Cache one example
@@ -80,14 +80,14 @@ private:
 	 * Use run-length encoding on an int
 	 *
 	 * @param p compressed data ptr
-	 * @param i int to compress
+	 * @param i int32_t to compress
 	 *
 	 * @return ptr to compressed data
 	 */
 	char* run_len_encode(char *p, size_t i);
 
 	/**
-	 * Encode a signed int into an unsigned representation
+	 * Encode a signed int32_t into an unsigned representation
 	 *
 	 * @param n signed int
 	 *

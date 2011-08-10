@@ -59,7 +59,7 @@ public:
 	 * @param f file descriptor of cache
 	 * @param env_to_use environment
 	 */
-	CVwProtobufCacheReader(int f, CVwEnvironment* env_to_use);
+	CVwProtobufCacheReader(int32_t f, CVwEnvironment* env_to_use);
 
 	/**
 	 * Destructor
@@ -71,7 +71,7 @@ public:
 	 *
 	 * @param f descriptor of cache file
 	 */
-	virtual void set_file(int f);
+	virtual void set_file(int32_t f);
 
 	/**
 	 * Read one example from the cache
@@ -96,7 +96,7 @@ private:
 	 *
 	 * @param f file descriptor
 	 */
-	virtual void init(int f);
+	virtual void init(int32_t f);
 
 protected:
 	/// FileInputStream from the opened file

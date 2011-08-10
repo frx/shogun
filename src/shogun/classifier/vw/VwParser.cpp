@@ -56,7 +56,7 @@ CVwParser::~CVwParser()
 int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
-	int num_chars = buf->read_line(line);
+	int32_t num_chars = buf->read_line(line);
 	if (num_chars == 0)
 		return num_chars;
 
@@ -106,7 +106,7 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 			continue;
 
 		/* Set default scale value for channel */
-		float channel_v = 1.;
+		float32_t channel_v = 1.;
 		size_t channel_hash;
 
 		/* Index by which to refer to the namespace */
@@ -146,7 +146,7 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 		for (substring* j = words.begin+feature_offset; j != words.end; j++)
 		{
 			/* Get individual features and multiply by scale value */
-			float v;
+			float32_t v;
 			feature_value(*j, name, v);
 			v *= channel_v;
 
@@ -172,7 +172,7 @@ int32_t CVwParser::read_features(CIOBuffer* buf, VwExample*& ae)
 int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
-	int num_chars = buf->read_line(line);
+	int32_t num_chars = buf->read_line(line);
 	if (num_chars == 0)
 		return num_chars;
 
@@ -196,7 +196,7 @@ int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 	/* Now parse the individual features */
 	for (substring* i = feature_start; i != words.end; i++)
 	{
-		float v;
+		float32_t v;
 		feature_value(*i, name, v);
 
 		size_t word_hash = (hasher(name[0], channel_hash)) & mask;
@@ -214,7 +214,7 @@ int32_t CVwParser::read_svmlight_features(CIOBuffer* buf, VwExample*& ae)
 int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 {
 	char *line=NULL;
-	int num_chars = buf->read_line(line);
+	int32_t num_chars = buf->read_line(line);
 	if (num_chars == 0)
 		return num_chars;
 
@@ -239,7 +239,7 @@ int32_t CVwParser::read_dense_features(CIOBuffer* buf, VwExample*& ae)
 	int32_t j=0;
 	for (substring* i = feature_start; i != words.end; i++)
 	{
-		float v = float_of_substring(*i);
+		float32_t v = float_of_substring(*i);
 		size_t word_hash = j & mask;
 		VwFeature f = {v,word_hash};
 		ae->sum_feat_sq[index] += v*v;
@@ -278,7 +278,7 @@ void CVwParser::init_cache(char * fname, EVwCacheType type)
 	cache_type = type;
 }
 
-void CVwParser::feature_value(substring &s, v_array<substring>& feat_name, float &v)
+void CVwParser::feature_value(substring &s, v_array<substring>& feat_name, float32_t &v)
 {
 	// Get the value of the feature in the substring
 	tokenize(':', s, feat_name);

@@ -81,7 +81,7 @@ public:
 	 *
 	 * @return prediction
 	 */
-	virtual float predict(VwExample* ex);
+	virtual float32_t predict(VwExample* ex);
 
 	/**
 	 * Get the environment
@@ -116,7 +116,7 @@ private:
 	 *
 	 * @return prediction
 	 */
-	virtual float inline_l1_predict(VwExample* &ex);
+	virtual float32_t inline_l1_predict(VwExample* &ex);
 
 	/**
 	 * Predict with no regularization term
@@ -125,7 +125,7 @@ private:
 	 *
 	 * @return prediction
 	 */
-	virtual float inline_predict(VwExample* &ex);
+	virtual float32_t inline_predict(VwExample* &ex);
 
 	/**
 	 * Reduce the prediction within limits
@@ -134,10 +134,10 @@ private:
 	 *
 	 * @return prediction within limits
 	 */
-	virtual float finalize_prediction(float ret);
+	virtual float32_t finalize_prediction(float32_t ret);
 
 	/**
-	 * Print statistics
+	 * Print32_t statistics
 	 *
 	 * @param ex example
 	 */
