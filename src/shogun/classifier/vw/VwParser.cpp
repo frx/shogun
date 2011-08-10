@@ -14,7 +14,6 @@
  */
 
 #include <shogun/classifier/vw/VwParser.h>
-#include <shogun/classifier/vw/cache/VwProtobufCacheWriter.h>
 #include <shogun/classifier/vw/cache/VwNativeCacheWriter.h>
 
 using namespace shogun;
@@ -268,7 +267,7 @@ void CVwParser::init_cache(char * fname, EVwCacheType type)
 		break;
 
 	case C_PROTOBUF:
-		cache_writer = new CVwProtobufCacheWriter(file_name, env);
+		SG_ERROR("Protocol buffers cache support is not implemented yet.\n");
 		break;
 	default:
 		SG_ERROR("Unexpected cache type specified!\n");

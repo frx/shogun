@@ -13,7 +13,6 @@
 #include <shogun/io/StreamingFile.h>
 #include <shogun/classifier/vw/vw_common.h>
 #include <shogun/classifier/vw/cache/VwCacheReader.h>
-#include <shogun/classifier/vw/cache/VwProtobufCacheReader.h>
 #include <shogun/classifier/vw/cache/VwNativeCacheReader.h>
 
 namespace shogun
@@ -92,7 +91,7 @@ public:
 		if (cache_format == C_NATIVE)
 			cache_reader = new CVwNativeCacheReader(buf->working_file, env);
 		else if (cache_format == C_PROTOBUF)
-			cache_reader = new CVwProtobufCacheReader(buf->working_file, env);
+			SG_ERROR("Protocol buffers cache support is not implemented yet!\n");
 	}
 
 	/**

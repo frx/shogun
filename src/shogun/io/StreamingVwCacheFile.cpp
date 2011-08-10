@@ -60,5 +60,5 @@ void CStreamingVwCacheFile::init(EVwCacheType cache_type)
 	if (cache_type == C_NATIVE)
 		cache_reader = new CVwNativeCacheReader(buf->working_file, env);
 	else if (cache_type == C_PROTOBUF)
-		cache_reader = new CVwProtobufCacheReader(buf->working_file, env);
+		SG_ERROR("Protocol buffers cache support is not implemented yet!\n");
 }
