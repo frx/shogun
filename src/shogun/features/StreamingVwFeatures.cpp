@@ -50,7 +50,7 @@ void CStreamingVwFeatures::init(CStreamingVwFile* file, bool is_labelled, int32_
 	parser.set_do_delete(false);
 	seekable=false;
 
-	/* Get environment from the StreamingVwFile */
+	// Get environment from the StreamingVwFile
 	env = ((CStreamingVwFile*) file)->get_env();
 }
 
@@ -63,7 +63,7 @@ void CStreamingVwFeatures::init(CStreamingVwCacheFile* file, bool is_labelled, i
 	parser.set_do_delete(false);
 	seekable=true;
 
-	/* Get environment from the StreamingVwFile */
+	// Get environment from the StreamingVwFile
 	env = ((CStreamingVwCacheFile*) file)->get_env();
 }
 
@@ -111,7 +111,7 @@ void CStreamingVwFeatures::setup_example(VwExample* ae)
 		ae->total_sum_feat_sq += ae->sum_feat_sq[*i];
 	}
 
-	// For quadratic updates
+	// For quadratic features
 	for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
 	{
 		char* i = env->pairs.get_element(k);
