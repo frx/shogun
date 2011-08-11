@@ -17,14 +17,15 @@
 #define _STREAMING_VWFEATURES__H__
 
 #include <shogun/lib/common.h>
-#include <shogun/mathematics/Math.h>
-#include <shogun/features/StreamingDotFeatures.h>
 #include <shogun/lib/DataType.h>
-#include <shogun/classifier/vw/vw_common.h>
-#include <shogun/classifier/vw/sparse_dense.h>
+#include <shogun/mathematics/Math.h>
+
+#include <shogun/io/InputParser.h>
 #include <shogun/io/StreamingVwFile.h>
 #include <shogun/io/StreamingVwCacheFile.h>
-#include <shogun/io/InputParser.h>
+#include <shogun/features/StreamingDotFeatures.h>
+#include <shogun/classifier/vw/vw_common.h>
+#include <shogun/classifier/vw/sparse_dense.h>
 
 namespace shogun
 {
@@ -89,9 +90,9 @@ public:
 		parser.end_parser();
 	}
 
-	CStreamingVwFeatures* duplicate() const
+	CFeatures* duplicate() const
 	{
-		SG_NOTIMPLEMENTED;
+		return new CStreamingVwFeatures(*this);
 	}
 
 	/**
@@ -354,11 +355,14 @@ public:
 	/**
 	 * Return the number of vectors stored in this object.
 	 *
-	 * @return 1 if current_vector exists, else 0.
+	 * @return 1 if current_example exists, else 0.
 	 */
 	inline virtual int32_t get_num_vectors() const
 	{
-		SG_NOTIMPLEMENTED;
+		if (current_example)
+			return 1;
+		else
+			return 0;
 	}
 
 	/**
@@ -384,8 +388,21 @@ private:
 	 */
 	virtual void init(CStreamingVwFile *file, bool is_labelled, int32_t size);
 
+	/**
+	 * Init function when input is from a cache file
+	 *
+	 * @param file StreamingVwCacheFile to read from
+	 * @param is_labelled whether labelled or not
+	 * @param size number of examples in the parser's ring
+	 */
 	virtual void init(CStreamingVwCacheFile *file, bool is_labelled, int32_t size);
 
+	/**
+	 * Setup the example obtained from the parser so it
+	 * can be directly updated by the learner.
+	 *
+	 * @param ae example object
+	 */
 	virtual void setup_example(VwExample* ae);
 
 protected:
@@ -393,6 +410,7 @@ protected:
 	/// The parser object, which reads from input and returns parsed example objects.
 	CInputParser<VwExample> parser;
 
+	/// Number of examples processed at a point of time
 	size_t example_count;
 
 	/// The current example's label.
@@ -401,8 +419,10 @@ protected:
 	/// Number of features in current example.
 	int32_t current_length;
 
+	/// Environment for VW
 	CVwEnvironment* env;
 
+	/// Example currently being processed
 	VwExample* current_example;
 };
 }

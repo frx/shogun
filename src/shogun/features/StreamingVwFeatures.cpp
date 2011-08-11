@@ -231,6 +231,7 @@ float32_t CStreamingVwFeatures::dense_dot_truncated(const float32_t* vec2, VwExa
 			ret += wprime*f->x;
 		}
 	}
+
 	return ret;
 }
 
@@ -266,5 +267,5 @@ int32_t CStreamingVwFeatures::get_num_features()
 
 EFeatureClass CStreamingVwFeatures::get_feature_class()
 {
-	return C_STREAMING_SIMPLE;
+	return C_STREAMING_VW;
 }
