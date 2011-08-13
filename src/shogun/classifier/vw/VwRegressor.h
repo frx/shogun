@@ -82,6 +82,14 @@ public:
 	}
 
 	/**
+	 * Dump regressor in binary/text form
+	 *
+	 * @param reg_name output file name
+	 * @param as_text whether to dump as text
+	 */
+	virtual void dump_regressor(char* reg_name, bool as_text);
+
+	/**
 	 * Return name of the object
 	 * @return VwRegressor
 	 */
