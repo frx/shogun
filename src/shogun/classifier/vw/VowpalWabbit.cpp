@@ -14,7 +14,6 @@
  */
 
 #include <shogun/classifier/vw/VowpalWabbit.h>
-#include <iostream>
 
 using namespace std;
 using namespace shogun;
