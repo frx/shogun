@@ -48,21 +48,20 @@ void CIOBuffer::use_file(int fd)
 
 int CIOBuffer::open_file(const char* name, char flag)
 {
-	int ret=1;
-	switch(flag){
+	switch(flag)
+	{
 	case 'r':
 		working_file = open(name, O_RDONLY|O_LARGEFILE);
 		break;
 
 	case 'w':
-		working_file = open(name, O_WRONLY|O_LARGEFILE);
+		working_file = open(name, O_CREAT|O_WRONLY|O_LARGEFILE|O_TRUNC,0666);
 		break;
 
 	default:
 		SG_ERROR("Unknown file operation. Something other than 'r'/'w' specified.\n");
-		ret = 0;
 	}
-	return ret;
+	return working_file;
 }
 
 void CIOBuffer::reset_file()

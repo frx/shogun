@@ -14,7 +14,9 @@
  */
 
 #include <shogun/classifier/vw/VowpalWabbit.h>
+#include <iostream>
 
+using namespace std;
 using namespace shogun;
 
 CVowpalWabbit::CVowpalWabbit(CStreamingVwFeatures* feat)
@@ -59,11 +61,15 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 	float32_t dump_interval = exp(1.);
 
 	const char * header_fmt = "%-10s %-10s %8s %8s %10s %8s %8s\n";
-	fprintf(stdout, header_fmt,
-		"average", "since", "example", "example",
-		"current", "current", "current");
-	fprintf(stdout, header_fmt,
-		"loss", "last", "counter", "weight", "label", "predict", "features");
+
+	if (!quiet)
+	{
+		fprintf(stdout, header_fmt,
+			"average", "since", "example", "example",
+			"current", "current", "current");
+		fprintf(stdout, header_fmt,
+			"loss", "last", "counter", "weight", "label", "predict", "features");
+	}
 
 	int32_t cnt = 0;
 	features->start_parser();
@@ -81,16 +87,19 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 
 			cnt++;
 
-			float32_t out = predict(example);
-			//printf("eta round is: %f.\n", example->eta_round);
+			float32_t out = predict_and_finalize(example);
+
 			learner->train(example, example->eta_round);
-			//printf ("\nExample %d: Prediction = %f. eta_round = %f.\n", cnt, example->final_prediction, example->eta_round);
+
 			example->eta_round = 0.;
 
-			if (env->weighted_examples + example->ld->weight > dump_interval)
+			if (!quiet)
 			{
-				print_update(example);
-				dump_interval *= 2;
+				if (env->weighted_examples + example->ld->weight > dump_interval)
+				{
+					print_update(example);
+					dump_interval *= 2;
+				}
 			}
 
 			features->release_example();
@@ -109,9 +118,11 @@ void CVowpalWabbit::train(CStreamingVwFeatures* feat)
 		for (uint32_t i = 0; i < length; i++)
 			reg->weight_vectors[0][stride*i] = real_weight(reg->weight_vectors[0][stride*i], gravity);
 	}
+
+	dump_regressor("/home/shashwat/vw_binary_dumped_model", false);
 }
 
-float32_t CVowpalWabbit::predict(VwExample* ex)
+float32_t CVowpalWabbit::predict_and_finalize(VwExample* ex)
 {
 	float32_t prediction;
 	if (env->l1_regularization != 0.)
@@ -143,6 +154,8 @@ void CVowpalWabbit::init(CStreamingVwFeatures* feat)
 	reg=new CVwRegressor(env);
 	SG_REF(env);
 	SG_REF(reg);
+
+	quiet=false;
 }
 
 void CVowpalWabbit::set_learner()
@@ -228,5 +241,80 @@ void CVowpalWabbit::print_update(VwExample* &ex)
 	       env->weighted_examples,
 	       ex->ld->label,
 	       ex->final_prediction,
-	       (long unsigned int)ex->num_features);
+	       (uint32_t)ex->num_features);
+}
+
+void CVowpalWabbit::dump_regressor(char* reg_name, bool as_text)
+{
+	CIOBuffer io_temp;
+	int32_t f = io_temp.open_file(reg_name,'w');
+
+	if (f<0)
+		SG_SERROR("Can't open: %s for writing! Exiting.\n", reg_name);
+
+	char* version = env->version;
+	size_t v_length = env->v_length;
+
+	if (!as_text)
+	{
+		io_temp.write_file((char*)&v_length, sizeof(v_length));
+		io_temp.write_file(version,v_length);
+
+		io_temp.write_file((char*)&env->min_label, sizeof(env->min_label));
+		io_temp.write_file((char*)&env->max_label, sizeof(env->max_label));
+
+		io_temp.write_file((char *)&env->num_bits, sizeof(env->num_bits));
+		io_temp.write_file((char *)&env->thread_bits, sizeof(env->thread_bits));
+		int len = env->pairs.get_num_elements();
+		io_temp.write_file((char *)&len, sizeof(len));
+		for (int32_t k = 0; k < env->pairs.get_num_elements(); k++)
+			io_temp.write_file(env->pairs.get_element(k), 2);
+
+		io_temp.write_file((char*)&env->ngram, sizeof(env->ngram));
+		io_temp.write_file((char*)&env->skips, sizeof(env->skips));
+	}
+	else
+	{
+		char buff[512];
+		int len;
+		len = sprintf(buff, "Version %s\n", version);
+		io_temp.write_file(buff, len);
+		len = sprintf(buff, "Min label:%f max label:%f\n", env->min_label, env->max_label);
+		io_temp.write_file(buff, len);
+		len = sprintf(buff, "bits:%d thread_bits:%d\n", (int)env->num_bits, (int)env->thread_bits);
+		io_temp.write_file(buff, len);
+		if (env->pairs.get_num_elements() > 0)
+		{
+			len = sprintf(buff, "\n");
+			io_temp.write_file(buff, len);
+		}
+		len = sprintf(buff, "ngram:%d skips:%d\nindex:weight pairs:\n", (int)env->ngram, (int)env->skips);
+		io_temp.write_file(buff, len);
+	}
+
+	uint32_t length = 1 << env->num_bits;
+	size_t num_threads = env->num_threads();
+	size_t stride = env->stride;
+
+	for(uint32_t i = 0; i < length; i++)
+	{
+		float32_t v;
+		v = reg->weight_vectors[i%num_threads][stride*(i/num_threads)];
+		if (v != 0.)
+		{
+			if (!as_text)
+			{
+				io_temp.write_file((char *)&i, sizeof (i));
+				io_temp.write_file((char *)&v, sizeof (v));
+			}
+			else
+			{
+				char buff[512];
+				int len = sprintf(buff, "%d:%f\n", i, v);
+				io_temp.write_file(buff, len);
+			}
+		}
+	}
+
+	io_temp.close_file();
 }

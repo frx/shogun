@@ -81,7 +81,7 @@ public:
 	 *
 	 * @return prediction
 	 */
-	virtual float32_t predict(VwExample* ex);
+	virtual float32_t predict_and_finalize(VwExample* ex);
 
 	/**
 	 * Get the environment
@@ -137,11 +137,26 @@ private:
 	virtual float32_t finalize_prediction(float32_t ret);
 
 	/**
-	 * Print32_t statistics
+	 * Print statistics like VW
 	 *
 	 * @param ex example
 	 */
 	virtual void print_update(VwExample* &ex);
+
+	/**
+	 * Set whether to display statistics or not
+	 *
+	 * @param verbose true or false
+	 */
+	void set_verbose(bool verbose);
+
+	/**
+	 * Dump regressor in binary/text form
+	 *
+	 * @param reg_name output file name
+	 * @param as_text whether to dump as text
+	 */
+	void dump_regressor(char* reg_name, bool as_text);
 
 protected:
 	/// Features
@@ -155,6 +170,10 @@ protected:
 
 	/// Regressor
 	CVwRegressor* reg;
+
+private:
+	/// Whether to display statistics or not
+	bool quiet;
 };
 
 }
