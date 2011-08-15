@@ -28,7 +28,7 @@ namespace shogun
  *
  * Stores the weight vectors and loss object, and is used for
  * calculating losses and updates.
- * 
+ *
  * The weight vector uses 'num_bits' number of bits, set in the
  * environment object to store weights.
  */
@@ -40,9 +40,9 @@ public:
 	 */
 	CVwRegressor();
 
-	/** 
+	/**
 	 * Constructor taking an environment object
-	 * 
+	 *
 	 * @param env environment
 	 */
 	CVwRegressor(CVwEnvironment* env_to_use);
@@ -88,6 +88,13 @@ public:
 	 * @param as_text whether to dump as text
 	 */
 	virtual void dump_regressor(char* reg_name, bool as_text);
+
+	/**
+	 * Load the regressor from a file
+	 *
+	 * @param file_name name of dumped regressor binary file
+	 */
+	virtual void load_regressor(char* file_name);
 
 	/**
 	 * Return name of the object
